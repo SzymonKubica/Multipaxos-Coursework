@@ -7,8 +7,6 @@ defmodule Multipaxos do
     start(config.start_function, config)
   end
 
-  # start/0
-
   defp start(:cluster_wait, _), do: :skip
 
   defp start(:cluster_start, config) do

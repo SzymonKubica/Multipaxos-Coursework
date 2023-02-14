@@ -17,6 +17,10 @@ the config.crash_servers map.
 
 Database module:
 
+Allows for executing transactions, accepts one type of messages:
+  {:EXECUTE, transaction}
+
+
 
 
 
