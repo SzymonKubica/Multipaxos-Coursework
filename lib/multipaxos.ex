@@ -1,4 +1,4 @@
-# distributed algorithms, n.dulay 31 jan 2023
+# distributed algorithms, n.dulay 30 jan 2023
 # coursework, paxos made moderately complex
 
 defmodule Multipaxos do
