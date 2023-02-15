@@ -6,8 +6,8 @@
 SERVERS  = 5
 CLIENTS  = 5
 PARAMS   = default
-DEBUG    = 0
-MAX_TIME = 15000
+DEBUG    = 2
+MAX_TIME = 5000
 
 START    = Multipaxos.start
 HOST	:= 127.0.0.1
