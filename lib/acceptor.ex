@@ -1,25 +1,42 @@
 # Szymon Kubica (sk4520) 12 Feb 2023
 defmodule Acceptor do
-  def start() do
+  def start(config) do
     ballot_num = BallotNumber.bottom()
     accepted = MapSet.new()
-    self = %{ballot_num: ballot_num, accepted: accepted}
+    self = %{config: config, ballot_num: ballot_num, accepted: accepted}
     self |> next
   end
 
   def next(self) do
-    receive do
-      {:p1a, l, b} ->
-        self = if b > self.ballot_num, do: self |> update_ballot_num(b), else: self
-        send(l, {:p1b, self(), self.ballot_num, self.accepted})
+    self =
+      receive do
+        {:p1a, l, b} ->
+          self |> log("p1a message received for ballot: #{inspect(b)}")
 
-      {:p2a, l, {b, _s, _c} = pvalue} ->
-        self = if b == self.ballot_num, do: self |> add_to_accepted(pvalue), else: self
-        send(l, {:p2b, self(), self.ballot_num})
+          self =
+            case BallotNumber.compare(b, self.ballot_num) do
+              :gt -> self |> update_ballot_num(b)
+              _ -> self
+            end
 
-      unexpected ->
-        IO.puts("Acceptor: unexpected message #{inspect(unexpected)}")
-    end
+          self |> log("Sending p1b response for ballot: #{inspect(self.ballot_num)}")
+          send(l, {:p1b, self(), self.ballot_num, self.accepted})
+          self
+
+        {:p2a, l, {b, _s, _c} = pvalue} ->
+          self =
+            case BallotNumber.compare(b, self.ballot_num) do
+              :eq -> self |> add_to_accepted(pvalue)
+              _ -> self
+            end
+
+          send(l, {:p2b, self(), self.ballot_num})
+          self
+
+        unexpected ->
+          IO.puts("Acceptor: unexpected message #{inspect(unexpected)}")
+          self
+      end
 
     self |> next
   end
@@ -30,5 +47,14 @@ defmodule Acceptor do
 
   def add_to_accepted(self, pvalue) do
     %{self | accepted: MapSet.put(self.accepted, pvalue)}
+  end
+
+  defp log(self, message) do
+    DebugLogger.log(
+      self.config,
+      :acceptor,
+      "Acceptor#{self.config.node_num} at #{self.config.node_name}",
+      message
+    )
   end
 end

@@ -1,3 +1,4 @@
+import List
 # Szymon Kubica (sk4520) 12 Feb 2023
 defmodule Replica do
   def start(config, database) do
@@ -23,13 +24,23 @@ defmodule Replica do
   defp next(self) do
     self =
       receive do
-        {:REQUEST, c} ->
+        {:CLIENT_REQUEST, c} ->
+          self |> log("Received client request to perform #{inspect(c)}")
+          send(self.config.monitor, {:CLIENT_REQUEST, self.config.node_num})
           self |> add_request(c)
 
         {:DECISION, s, c} ->
-          # Process the decision
+          self |> log("Received a decision to perform #{inspect(c)} in slot #{s}")
+
           self = self |> add_decision({s, c})
           self |> process_pending_decisions
+
+        unexpected ->
+          IO.puts("Replica: unexpected message #{inspect(unexpected)}")
+          self
+      after
+        1000 ->
+          self
       end
 
     self |> propose
@@ -42,6 +53,7 @@ defmodule Replica do
       self =
         if slot_in_not_decided?(self) do
           c = get_next_request(self)
+          self |> log("Proposing new request: #{inspect(c)} in slot #{self.slot_in}")
 
           self =
             self
@@ -53,18 +65,20 @@ defmodule Replica do
           end
 
           self
+        else
+          self
         end
 
       self
       |> increment_slot_in
       |> propose
-    else
-      self
     end
+
+    self |> next
   end
 
   defp get_next_request(self) do
-    MapSet.to_list(self.requests)[0]
+    first(MapSet.to_list(self.requests))
   end
 
   defp slot_in_not_decided?(self) do
@@ -80,26 +94,38 @@ defmodule Replica do
       for {^reconfiguration_slot, {_client, _cid, command}} <- self.decisions,
           do: command
 
-    if length(decisions_for_reconfig_slot) > 0 and isreconfig?(decisions_for_reconfig_slot[0]) do
-      self |> update_leaders(decisions_for_reconfig_slot[0].leaders)
+    if length(decisions_for_reconfig_slot) > 0 and isreconfig?(first(decisions_for_reconfig_slot)) do
+      self |> update_leaders(first(decisions_for_reconfig_slot).leaders)
     else
       self
     end
   end
 
   defp perform(self, {client, cid, op} = command) do
-    if earlier_slot_filled?(self, command) or isreconfig?(op) do
-      self |> increment_slot_out
-    else
-      # Apply the change to the state
-      send(self.database, {:EXECUTE, command})
-      self = self |> increment_slot_out
-      send(client, {:CLIENT_RESPONSE, cid, command})
-      self
-    end
+    self |> log("Trying to perform #{inspect(command)} in slot #{self.slot_out}")
+
+    self =
+      if already_processed?(self, command) or isreconfig?(op) do
+        self |> log("Command was alredy processed")
+        self = self |> increment_slot_out
+        self
+      else
+        send(self.database, {:EXECUTE, op})
+
+        self
+        |> log(
+          "Command: #{inspect(command)} in slot #{self.slot_out} successfully written to the database."
+        )
+
+        send(client, {:CLIENT_RESPONSE, cid, command})
+        self = self |> increment_slot_out
+        self
+      end
+
+    self
   end
 
-  defp earlier_slot_filled?(self, {client, cid, op}) do
+  defp already_processed?(self, {client, cid, op}) do
     slots_filled = for {s, {^client, ^cid, ^op}} <- self.decisions, s < self.slot_out, do: s
     length(slots_filled) != 0
   end
@@ -115,29 +141,32 @@ defmodule Replica do
     decisions_for_current_slot_out =
       MapSet.filter(self.decisions, fn {s, _c} -> s == self.slot_out end)
 
-    if MapSet.size(decisions_for_current_slot_out) != 0 do
+    if MapSet.size(decisions_for_current_slot_out) > 0 do
       slot_out = self.slot_out
-      {^slot_out, c} = MapSet.to_list(decisions_for_current_slot_out)[0]
+      {^slot_out, c} = first(MapSet.to_list(decisions_for_current_slot_out))
 
-      proposals_for_slot_out =
-        for {^slot_out, _c} = proposal <- self.proposals do
-          proposal
-        end
+      proposals_for_slot_out = for {^slot_out, _c} = proposal <- self.proposals, do: proposal
 
       # There can only be one proposal for slot out
       self =
         if length(proposals_for_slot_out) > 0 do
-          {_s, c2} = proposal = proposals_for_slot_out[0]
-          self = self |> remove_proposal(proposal)
-          if c != c2, do: self |> add_request(c2), else: self
+          {slot_out, c2} = first(proposals_for_slot_out)
+          self = self |> remove_proposal({slot_out, c2})
+          self = if c != c2, do: self |> add_request(c2), else: self
+          self
+        else
+          self
         end
 
-      self
-      |> perform(c)
-      |> process_pending_decisions
-    else
+      self =
+        self
+        |> perform(c)
+        |> process_pending_decisions
+
       self
     end
+
+    self
   end
 
   defp update_leaders(self, leaders) do
@@ -170,5 +199,14 @@ defmodule Replica do
 
   defp add_decision(self, decision) do
     %{self | decisions: MapSet.put(self.decisions, decision)}
+  end
+
+  defp log(self, message) do
+    DebugLogger.log(
+      self.config,
+      :replica,
+      "Replica at #{self.config.node_name}",
+      message
+    )
   end
 end

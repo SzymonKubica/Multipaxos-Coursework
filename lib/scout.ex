@@ -1,9 +1,10 @@
 # Szymon Kubica (sk4520) 12 Feb 2023
 defmodule Scout do
-  def start(l, acceptors, b) do
+  def start(config, l, acceptors, b) do
     waitfor = acceptors
 
     self = %{
+      config: config,
       leader: l,
       ballot_number: b,
       waitfor: waitfor,
@@ -21,6 +22,13 @@ defmodule Scout do
   def next(self) do
     receive do
       {:p1b, a, b, r} ->
+        self
+        |> log(
+          "p1b message received from acceptor: #{inspect(a)}\n" <>
+            "--> Ballot number: #{inspect(b)}\n" <>
+            "--> Pvalue: #{inspect(r)}."
+        )
+
         if b == self.ballot_number do
           self =
             self
@@ -29,11 +37,13 @@ defmodule Scout do
 
           if majority_responded?(self) do
             send(self.leader, {:ADOPTED, self.ballot_number, self.pvalues})
+            send(self.config.monitor, {:SCOUT_FINISHED, self.config.node_num})
           else
             self |> next
           end
         else
           send(self.leader, {:PREEMPTED, b})
+          send(self.config.monitor, {:SCOUT_FINISHED, self.config.node_num})
         end
     end
   end
@@ -48,5 +58,14 @@ defmodule Scout do
 
   def remove_acceptor_from_waitfor(self, a) do
     %{self | waitfor: List.delete(self.waitfor, a)}
+  end
+
+  defp log(self, message) do
+    DebugLogger.log(
+      self.config,
+      :scout,
+      "Scout at #{self.config.node_name}",
+      message
+    )
   end
 end

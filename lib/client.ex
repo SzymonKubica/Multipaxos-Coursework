@@ -32,8 +32,6 @@ defmodule Client do
     self |> next()
   end
 
-  # start
-
   defp next(self) do
     # Warning. Setting client_sleep to 0 may overload the system
     # with lots of requests and lots of spawned processes.
@@ -56,8 +54,6 @@ defmodule Client do
           replica = self.replicas[rem(self.seqnum + r, self.config.n_servers)]
           send(replica, {:CLIENT_REQUEST, cmd})
         end
-
-        # for
 
         if self.seqnum == self.config.max_requests do
           send(self(), :CLIENT_STOP)

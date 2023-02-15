@@ -41,7 +41,7 @@ defmodule Configuration do
   def params(:default) do
     %{
       # max requests each client will make
-      max_requests: 500,
+      max_requests: 10,
       # time (ms) to sleep before sending new request
       client_sleep: 2,
       # time (ms) to stop sending further requests
@@ -57,7 +57,9 @@ defmodule Configuration do
       # multi-paxos window size
       window_size: 10,
       # server_num => crash_after_time(ms)
-      crash_servers: %{}
+      crash_servers: %{},
+      # verbose_logging: [:replica, :leader, :commander, :acceptor, :scout]
+      verbose_logging: [:replica]
     }
 
     # redact: performance/liveness/distribution parameters
