@@ -42,10 +42,12 @@ defmodule Client do
         Process.sleep(:infinity)
     after
       self.config.client_sleep ->
+        # Transaction id makes each client request unique.
+        transaction_id = "#{self.config.node_num}_#{self.seqnum}"
         account1 = Enum.random(1..self.config.n_accounts)
         account2 = Enum.random(1..self.config.n_accounts)
         amount = Enum.random(1..self.config.max_amount)
-        transaction = {:MOVE, amount, account1, account2}
+        transaction = {:MOVE, amount, account1, account2, transaction_id}
 
         self = self |> seqnum(self.seqnum + 1)
         cmd = {self(), self.seqnum, transaction}

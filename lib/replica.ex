@@ -33,7 +33,8 @@ defmodule Replica do
           self |> log("Received a decision to perform #{inspect(c)} in slot #{s}")
 
           self = self |> add_decision({s, c})
-          self |> process_pending_decisions
+          self = self |> process_pending_decisions
+          self
 
         unexpected ->
           IO.puts("Replica: unexpected message #{inspect(unexpected)}")
@@ -55,10 +56,8 @@ defmodule Replica do
           c = get_next_request(self)
           self |> log("Proposing new request: #{inspect(c)} in slot #{self.slot_in}")
 
-          self =
-            self
-            |> remove_request(c)
-            |> add_proposal({self.slot_in, c})
+          self = self |> remove_request(c)
+          self = self |> add_proposal({self.slot_in, c})
 
           for l <- self.leaders do
             send(l, {:PROPOSE, self.slot_in, c})
@@ -69,12 +68,12 @@ defmodule Replica do
           self
         end
 
-      self
-      |> increment_slot_in
-      |> propose
+      self = self |> increment_slot_in
+      self |> log("Current slot in: #{self.slot_in}")
+      self |> propose
+    else
+      self |> next
     end
-
-    self |> next
   end
 
   defp get_next_request(self) do
@@ -106,7 +105,7 @@ defmodule Replica do
 
     self =
       if already_processed?(self, command) or isreconfig?(op) do
-        self |> log("Command was alredy processed")
+        self |> log("Command: #{inspect(command)} was already processed")
         self = self |> increment_slot_out
         self
       else
@@ -127,6 +126,7 @@ defmodule Replica do
 
   defp already_processed?(self, {client, cid, op}) do
     slots_filled = for {s, {^client, ^cid, ^op}} <- self.decisions, s < self.slot_out, do: s
+    self |> log("Slots_filled: #{inspect(slots_filled)}")
     length(slots_filled) != 0
   end
 
@@ -138,33 +138,39 @@ defmodule Replica do
   end
 
   defp process_pending_decisions(self) do
+    slot_out = self.slot_out
+
     decisions_for_current_slot_out =
-      MapSet.filter(self.decisions, fn {s, _c} -> s == self.slot_out end)
+      for {^slot_out, _c} = decision <- self.decisions, into: MapSet.new(), do: decision
 
-    if MapSet.size(decisions_for_current_slot_out) > 0 do
-      slot_out = self.slot_out
-      {^slot_out, c} = first(MapSet.to_list(decisions_for_current_slot_out))
+    self =
+      if MapSet.size(decisions_for_current_slot_out) > 0 do
+        {^slot_out, c} = first(MapSet.to_list(decisions_for_current_slot_out))
 
-      proposals_for_slot_out = for {^slot_out, _c} = proposal <- self.proposals, do: proposal
+        proposals_for_slot_out = for {^slot_out, _c} = proposal <- self.proposals, do: proposal
 
-      # There can only be one proposal for slot out
-      self =
-        if length(proposals_for_slot_out) > 0 do
-          {slot_out, c2} = first(proposals_for_slot_out)
-          self = self |> remove_proposal({slot_out, c2})
-          self = if c != c2, do: self |> add_request(c2), else: self
-          self
-        else
-          self
-        end
+        # There can only be one proposal for slot out
+        self =
+          if length(proposals_for_slot_out) > 0 do
+            {slot_out, c2} = first(proposals_for_slot_out)
+            self = self |> remove_proposal({slot_out, c2})
+            self = if c != c2, do: self |> add_request(c2), else: self
 
-      self =
+            self
+            |> log("Comparing commands: \n #{inspect(c)} \n #{inspect(c2)} \n result: #{c != c2}")
+
+            self
+          else
+            self
+          end
+
+        self = self |> perform(c)
+        self = self |> process_pending_decisions
+
         self
-        |> perform(c)
-        |> process_pending_decisions
-
-      self
-    end
+      else
+        self
+      end
 
     self
   end

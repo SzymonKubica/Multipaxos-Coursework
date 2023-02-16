@@ -21,10 +21,11 @@ defmodule Database do
 
     receive do
       {:EXECUTE, transaction} ->
-        {:MOVE, amount, account1, account2} = transaction
+        {:MOVE, amount, account1, account2, _id} = transaction
         self = self |> balance(account1, Map.get(self.balances, account1, 0) + amount)
         self = self |> balance(account2, Map.get(self.balances, account2, 0) - amount)
         self = self |> seqnum(self.seqnum + 1)
+        IO.puts("Received execute transaction: #{inspect(transaction)} for slot: #{self.seqnum}")
         send(self.config.monitor, {:DB_MOVE, self.config.node_num, self.seqnum, transaction})
         self |> next()
 

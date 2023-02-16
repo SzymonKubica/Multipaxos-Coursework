@@ -29,28 +29,32 @@ defmodule Leader do
         {:PROPOSE, s, c} ->
           self |> log("Proposal received: slot_number: #{inspect(s)}, command: #{inspect(c)}")
 
-          if not exists_proposal_for_slot(self, s) do
-            self |> log("No proposals for slot #{s} found, adding a proposal...")
-            self = self |> add_proposal({s, c})
+          self =
+            if(not exists_proposal_for_slot(self, s)) do
+              self |> log("No proposals for slot #{s} found, adding a proposal...")
+              self = self |> add_proposal({s, c})
+              self |> log("#{inspect(self.proposals)}")
 
-            if self.active do
-              spawn(Commander, :start, [
-                self.config,
-                self(),
-                self.acceptors,
-                self.replicas,
-                {self.ballot_num, s, c}
-              ])
+              if self.active do
+                spawn(Commander, :start, [
+                  self.config,
+                  self(),
+                  self.acceptors,
+                  self.replicas,
+                  {self.ballot_num, s, c}
+                ])
 
-              send(self.config.monitor, {:COMMANDER_SPAWNED, self.config.node_num})
+                send(self.config.monitor, {:COMMANDER_SPAWNED, self.config.node_num})
 
-              self |> log("Commander spawned for slot: #{s} and command: #{inspect(c)}")
+                self |> log("Commander spawned for slot: #{s} and command: #{inspect(c)}")
+              end
+
+              self
+            else
+              self
             end
 
-            self
-          else
-            self
-          end
+          self
 
         {:ADOPTED, b, pvalues} ->
           self |> log("Received ADOPTED message for ballot #{inspect(b)}")
@@ -124,33 +128,27 @@ defmodule Leader do
     max_proposals = pmax(pvalues)
 
     remaining_proposals =
-      MapSet.filter(self.proposals, fn {s, _c} -> update_exists?(s, max_proposals) end)
+      for {s, _c} = proposal <- self.proposals,
+          not update_exists?(s, max_proposals),
+          into: MapSet.new(),
+          do: proposal
 
     %{self | proposals: MapSet.union(max_proposals, remaining_proposals)}
   end
 
   def update_exists?(slot_number, pvalues) do
-    updates =
-      for {s, _c} <- pvalues do
-        if s == slot_number, do: s
-      end
-
+    updates = for {^slot_number, _c} = pvalue <- pvalues, do: pvalue
     length(updates) != 0
   end
 
   def pmax(pvalues) do
-    # As defined in the paper, pmax needs to return the pairs {s, c} such that
-    # for each slot s we associate it with the command corresponding to the
-    # highest ballot number. We can do it by first getting the set of all slots
-    slots = for {_b, s, _c} <- pvalues, do: s
-
-    # Now we can iterate over all slots and pick the command corresponding to
-    # the hightest ballot number.
-
-    for s <- slots, into: MapSet.new() do
-      pvals_for_s = MapSet.filter(pvalues, fn {_b, s2, _c} -> s2 == s end)
-      {_b, s, c} = Enum.max(pvals_for_s)
-      {s, c}
+    for {b, s, c} <- pvalues, into: MapSet.new() do
+      if Enum.all?(
+           for {b1, ^s, _c1} <- pvalues,
+               do: BallotNumber.compare(b1, b) == :lt or BallotNumber.compare(b1, b) == :eq
+         ) do
+        {s, c}
+      end
     end
   end
 
