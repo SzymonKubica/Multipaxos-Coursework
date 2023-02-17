@@ -29,11 +29,9 @@ defmodule Scout do
             "--> Pvalue: #{inspect(r)}."
         )
 
-        if b == self.ballot_number do
-          self =
-            self
-            |> remove_acceptor_from_waitfor(a)
-            |> add_pvalue(r)
+        if BallotNumber.compare(b, self.ballot_number) == :eq do
+          self = self |> remove_acceptor_from_waitfor(a)
+          self = self |> add_pvalue(r)
 
           if majority_responded?(self) do
             send(self.leader, {:ADOPTED, self.ballot_number, self.pvalues})
@@ -49,7 +47,7 @@ defmodule Scout do
   end
 
   def majority_responded?(self) do
-    length(self.waitfor) < length(self.acceptors) / 2
+    length(self.waitfor) < div(length(self.acceptors) + 1, 2)
   end
 
   def add_pvalue(self, pvalue) do

@@ -105,7 +105,11 @@ defmodule Replica do
 
     self =
       if already_processed?(self, command) or isreconfig?(op) do
-        self |> log("Command: #{inspect(command)} was already processed")
+        self
+        |> log(
+          "Command: #{inspect(command)} was already processed \n current slot out: #{self.slot_out}"
+        )
+
         self = self |> increment_slot_out
         self
       else
@@ -125,8 +129,14 @@ defmodule Replica do
   end
 
   defp already_processed?(self, {client, cid, op}) do
-    slots_filled = for {s, {^client, ^cid, ^op}} <- self.decisions, s < self.slot_out, do: s
-    self |> log("Slots_filled: #{inspect(slots_filled)}")
+    slots_filled =
+      for {s, {^client, ^cid, ^op}} = decision <- self.decisions, s < self.slot_out, do: decision
+
+    if length(slots_filled) != 0,
+      do:
+        self
+        |> log("Slots filled: #{inspect(slots_filled)} \n current slot out: #{self.slot_out}")
+
     length(slots_filled) != 0
   end
 

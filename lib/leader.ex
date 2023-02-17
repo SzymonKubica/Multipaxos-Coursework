@@ -1,5 +1,6 @@
 # Szymon Kubica (sk4520) 12 Feb 2023
 defmodule Leader do
+  @compile if Mix.env() == :test, do: :export_all
   def start(config) do
     ballot_num = %BallotNumber{value: 0, leader_index: config.node_num}
 
@@ -24,6 +25,8 @@ defmodule Leader do
   end
 
   def next(self) do
+    ballot_num = self.ballot_num
+
     self =
       receive do
         {:PROPOSE, s, c} ->
@@ -31,9 +34,11 @@ defmodule Leader do
 
           self =
             if(not exists_proposal_for_slot(self, s)) do
-              self |> log("No proposals for slot #{s} found, adding a proposal...")
+              self
+              |> log("No proposals for slot #{s} found, adding a proposal: #{inspect({s, c})}")
+
               self = self |> add_proposal({s, c})
-              self |> log("#{inspect(self.proposals)}")
+              self |> log("Current Proposals: #{inspect(self.proposals)}")
 
               if self.active do
                 spawn(Commander, :start, [
@@ -56,9 +61,9 @@ defmodule Leader do
 
           self
 
-        {:ADOPTED, b, pvalues} ->
-          self |> log("Received ADOPTED message for ballot #{inspect(b)}")
-          self = self |> update_proposals(pvalues)
+        {:ADOPTED, ^ballot_num, pvalues} ->
+          self |> log("Received ADOPTED message for the current ballot")
+          self = self |> update_proposals(pmax(pvalues))
 
           for {s, c} <- self.proposals do
             spawn(Commander, :start, [
@@ -72,9 +77,9 @@ defmodule Leader do
             send(self.config.monitor, {:COMMANDER_SPAWNED, self.config.node_num})
           end
 
+          self = self |> activate
+          self = self |> next
           self
-          |> activate
-          |> next
 
         {:PREEMPTED, %BallotNumber{value: value} = b} ->
           self |> log("Received PREEMPTED message for ballot #{inspect(b)}")
@@ -82,10 +87,8 @@ defmodule Leader do
           self =
             case BallotNumber.compare(b, self.ballot_num) do
               :gt ->
-                self =
-                  self
-                  |> deactivate
-                  |> update_ballot_number(value)
+                self = self |> deactivate
+                self = self |> update_ballot_number(value)
 
                 spawn(Scout, :start, [self.config, self(), self.acceptors, self.ballot_num])
                 send(self.config.monitor, {:SCOUT_SPAWNED, self.config.node_num})
@@ -101,55 +104,53 @@ defmodule Leader do
     self |> next
   end
 
-  def add_proposal(self, proposal) do
+  defp add_proposal(self, proposal) do
     %{self | proposals: MapSet.put(self.proposals, proposal)}
   end
 
-  def exists_proposal_for_slot(self, slot_number) do
-    MapSet.size(MapSet.filter(self.proposals, fn {s, _c} -> s == slot_number end)) > 0
+  defp exists_proposal_for_slot(self, slot_number) do
+    proposals = for {^slot_number, _c} = proposal <- self.proposals, do: proposal
+    length(proposals) > 0
   end
 
-  def activate(self) do
+  defp activate(self) do
     %{self | active: true}
   end
 
-  def deactivate(self) do
+  defp deactivate(self) do
     %{self | active: false}
   end
 
-  def update_ballot_number(self, preempting_number) do
+  defp update_ballot_number(self, preempting_number) do
     %{
       self
       | ballot_num: %BallotNumber{self.ballot_num | value: preempting_number + 1}
     }
   end
 
-  def update_proposals(self, pvalues) do
-    max_proposals = pmax(pvalues)
-
+  defp update_proposals(self, max_pvals) do
     remaining_proposals =
       for {s, _c} = proposal <- self.proposals,
-          not update_exists?(s, max_proposals),
+          not update_exists?(s, max_pvals),
           into: MapSet.new(),
           do: proposal
 
-    %{self | proposals: MapSet.union(max_proposals, remaining_proposals)}
+    %{self | proposals: MapSet.union(max_pvals, remaining_proposals)}
   end
 
-  def update_exists?(slot_number, pvalues) do
+  defp update_exists?(slot_number, pvalues) do
     updates = for {^slot_number, _c} = pvalue <- pvalues, do: pvalue
     length(updates) != 0
   end
 
-  def pmax(pvalues) do
-    for {b, s, c} <- pvalues, into: MapSet.new() do
-      if Enum.all?(
-           for {b1, ^s, _c1} <- pvalues,
-               do: BallotNumber.compare(b1, b) == :lt or BallotNumber.compare(b1, b) == :eq
-         ) do
-        {s, c}
-      end
-    end
+  defp pmax(pvalues) do
+    for {b, s, c} <- pvalues,
+        Enum.all?(
+          for {b1, ^s, _c1} <- pvalues,
+              do: BallotNumber.compare(b1, b) == :lt or BallotNumber.compare(b1, b) == :eq
+        ),
+        into: MapSet.new(),
+        do: {s, c}
   end
 
   defp log(self, message) do

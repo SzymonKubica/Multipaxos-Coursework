@@ -30,7 +30,7 @@ defmodule Commander do
           self = self |> remove_acceptor_from_waitfor(a)
 
           if majority_responded?(self) do
-            self |> log("Received majority of responses for #{inspect(b)}")
+            self |> log("Received majority of responses for pvalue: #{inspect(self.pvalue)}")
 
             for replica <- self.replicas do
               send(replica, {:DECISION, s, c})
@@ -48,7 +48,7 @@ defmodule Commander do
   end
 
   def majority_responded?(self) do
-    length(self.waitfor) < length(self.acceptors) / 2
+    length(self.waitfor) < div(length(self.acceptors) + 1, 2)
   end
 
   def remove_acceptor_from_waitfor(self, a) do

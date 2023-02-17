@@ -59,7 +59,7 @@ defmodule Configuration do
       # server_num => crash_after_time(ms)
       crash_servers: %{},
       # verbose_logging: [:replica, :leader, :commander, :acceptor, :scout]
-      verbose_logging: [:replica]
+      verbose_logging: [:replica, :leader, :commander]
       # verbose_logging: []
     }
 
