@@ -12,7 +12,14 @@ defmodule Database do
   end
 
   def start(config) do
-    self = %{config: config, balances: Map.new(), seqnum: 0}
+    self = %{
+      type: :database,
+      id_line: "Database#{config.node_num}",
+      config: config,
+      balances: Map.new(),
+      seqnum: 0
+    }
+
     self |> next()
   end
 
@@ -22,10 +29,19 @@ defmodule Database do
     receive do
       {:EXECUTE, transaction} ->
         {:MOVE, amount, account1, account2, _id} = transaction
-        self = self |> balance(account1, Map.get(self.balances, account1, 0) + amount)
-        self = self |> balance(account2, Map.get(self.balances, account2, 0) - amount)
-        self = self |> seqnum(self.seqnum + 1)
-        IO.puts("Received execute transaction: #{inspect(transaction)} for slot: #{self.seqnum}")
+
+        self =
+          self
+          |> balance(account1, Map.get(self.balances, account1, 0) + amount)
+          |> balance(account2, Map.get(self.balances, account2, 0) - amount)
+          |> seqnum(self.seqnum + 1)
+
+        self
+        |> Debug.log(
+          "Executed transaction: #{inspect(transaction)} in slot #{self.seqnum}",
+          :success
+        )
+
         send(self.config.monitor, {:DB_MOVE, self.config.node_num, self.seqnum, transaction})
         self |> next()
 

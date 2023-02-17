@@ -3,7 +3,15 @@ defmodule Acceptor do
   def start(config) do
     ballot_num = BallotNumber.bottom()
     accepted = MapSet.new()
-    self = %{config: config, ballot_num: ballot_num, accepted: accepted}
+
+    self = %{
+      type: :acceptor,
+      id_line: "Acceptor#{config.node_num}",
+      config: config,
+      ballot_num: ballot_num,
+      accepted: accepted
+    }
+
     self |> next
   end
 
@@ -11,7 +19,7 @@ defmodule Acceptor do
     self =
       receive do
         {:p1a, l, b} ->
-          self |> log("p1a message received for ballot: #{inspect(b)}")
+          self |> Debug.log("Phase 1 a received: ballot: #{inspect(b)}", :verbose)
 
           self =
             case BallotNumber.compare(b, self.ballot_num) do
@@ -19,7 +27,9 @@ defmodule Acceptor do
               _ -> self
             end
 
-          self |> log("Sending p1b response for ballot: #{inspect(self.ballot_num)}")
+          self
+          |> Debug.log("Sending p1b response for ballot: #{inspect(self.ballot_num)}", :verbose)
+
           send(l, {:p1b, self(), self.ballot_num, self.accepted})
           self
 
@@ -47,14 +57,5 @@ defmodule Acceptor do
 
   def add_to_accepted(self, pvalue) do
     %{self | accepted: MapSet.put(self.accepted, pvalue)}
-  end
-
-  defp log(self, message) do
-    DebugLogger.log(
-      self.config,
-      :acceptor,
-      "Acceptor#{self.config.node_num} at #{self.config.node_name}",
-      message
-    )
   end
 end

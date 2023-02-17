@@ -4,6 +4,8 @@ defmodule Commander do
     waitfor = acceptors
 
     self = %{
+      type: :commander,
+      id_line: "Commander#{config.node_num}",
       config: config,
       leader: l,
       waitfor: waitfor,
@@ -24,13 +26,17 @@ defmodule Commander do
 
     receive do
       {:p2b, a, b} ->
-        self |> log("Received p2b message for ballot #{inspect(b)}")
+        self = self |> Debug.log("Phase_2_b message received: ballot: #{inspect(b)}", :verbose)
 
         if BallotNumber.compare(b, ballot_num) == :eq do
           self = self |> remove_acceptor_from_waitfor(a)
 
           if majority_responded?(self) do
-            self |> log("Received majority of responses for pvalue: #{inspect(self.pvalue)}")
+            self
+            |> Debug.log(
+              "Received majority of responses for pvalue: #{inspect(self.pvalue)}",
+              :success
+            )
 
             for replica <- self.replicas do
               send(replica, {:DECISION, s, c})
@@ -53,14 +59,5 @@ defmodule Commander do
 
   def remove_acceptor_from_waitfor(self, a) do
     %{self | waitfor: List.delete(self.waitfor, a)}
-  end
-
-  defp log(self, message) do
-    DebugLogger.log(
-      self.config,
-      :commander,
-      "Commander at #{self.config.node_name}",
-      message
-    )
   end
 end

@@ -4,6 +4,8 @@ defmodule Scout do
     waitfor = acceptors
 
     self = %{
+      type: :scout,
+      id_line: "Scout#{config.node_num}",
       config: config,
       leader: l,
       ballot_number: b,
@@ -22,16 +24,21 @@ defmodule Scout do
   def next(self) do
     receive do
       {:p1b, a, b, r} ->
-        self
-        |> log(
-          "p1b message received from acceptor: #{inspect(a)}\n" <>
-            "--> Ballot number: #{inspect(b)}\n" <>
-            "--> Pvalue: #{inspect(r)}."
-        )
+        self =
+          self
+          |> Debug.log(
+            "Phase_1_b message received:\n" <>
+              "--> Acceptor: #{inspect(a)}\n" <>
+              "--> Ballot number: #{inspect(b)}\n" <>
+              "--> Pvalue: #{inspect(r)}.",
+            :verbose
+          )
 
         if BallotNumber.compare(b, self.ballot_number) == :eq do
-          self = self |> remove_acceptor_from_waitfor(a)
-          self = self |> add_pvalue(r)
+          self =
+            self
+            |> remove_acceptor_from_waitfor(a)
+            |> add_pvalues(r)
 
           if majority_responded?(self) do
             send(self.leader, {:ADOPTED, self.ballot_number, self.pvalues})
@@ -50,20 +57,11 @@ defmodule Scout do
     length(self.waitfor) < div(length(self.acceptors) + 1, 2)
   end
 
-  def add_pvalue(self, pvalue) do
-    %{self | pvalues: MapSet.put(self.pvalues, pvalue)}
+  def add_pvalues(self, pvalues) do
+    %{self | pvalues: MapSet.union(self.pvalues, pvalues)}
   end
 
   def remove_acceptor_from_waitfor(self, a) do
     %{self | waitfor: List.delete(self.waitfor, a)}
-  end
-
-  defp log(self, message) do
-    DebugLogger.log(
-      self.config,
-      :scout,
-      "Scout at #{self.config.node_name}",
-      message
-    )
   end
 end

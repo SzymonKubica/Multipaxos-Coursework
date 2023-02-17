@@ -39,6 +39,8 @@ defmodule Monitor do
 
   def start(config) do
     self = %{
+      type: :monitor,
+      id_line: "Monitor",
       config: config,
       clock: 0,
       seen: Map.new(),
@@ -60,7 +62,7 @@ defmodule Monitor do
   def next(self) do
     receive do
       {:DB_MOVE, db, seqnum, transaction} = msg ->
-        IO.puts("Move received: #{inspect(msg)}")
+        self = self |> Debug.log("DB_MOVE received: #{inspect(msg)}", :success)
         {:MOVE, amount, from, to, _id} = transaction
         done = Map.get(self.done, db, 0)
         expecting = done + 1

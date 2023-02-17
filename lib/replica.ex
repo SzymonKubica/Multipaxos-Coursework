@@ -8,6 +8,8 @@ defmodule Replica do
       end
 
     self = %{
+      type: :replica,
+      id_line: "Replica#{config.node_num}",
       config: config,
       leaders: leaders,
       database: database,
@@ -25,23 +27,20 @@ defmodule Replica do
     self =
       receive do
         {:CLIENT_REQUEST, c} ->
-          self |> log("Received client request to perform #{inspect(c)}")
           send(self.config.monitor, {:CLIENT_REQUEST, self.config.node_num})
-          self |> add_request(c)
+
+          self
+          |> Debug.log("CLIENT_REQUEST: perform #{inspect(c)}.", :verbose)
+          |> add_request(c)
 
         {:DECISION, s, c} ->
-          self |> log("Received a decision to perform #{inspect(c)} in slot #{s}")
-
-          self = self |> add_decision({s, c})
-          self = self |> process_pending_decisions
           self
+          |> Debug.log("DECISION: perform #{inspect(c)} in slot #{s}", :success)
+          |> add_decision({s, c})
+          |> process_pending_decisions
 
         unexpected ->
-          IO.puts("Replica: unexpected message #{inspect(unexpected)}")
-          self
-      after
-        1000 ->
-          self
+          self |> Debug.log("Replica: unexpected message #{inspect(unexpected)}")
       end
 
     self |> propose
@@ -54,23 +53,25 @@ defmodule Replica do
       self =
         if slot_in_not_decided?(self) do
           c = get_next_request(self)
-          self |> log("Proposing new request: #{inspect(c)} in slot #{self.slot_in}")
 
-          self = self |> remove_request(c)
-          self = self |> add_proposal({self.slot_in, c})
+          self =
+            self
+            |> remove_request(c)
+            |> add_proposal({self.slot_in, c})
 
           for l <- self.leaders do
             send(l, {:PROPOSE, self.slot_in, c})
           end
 
           self
+          |> Debug.log("New request proposed: #{inspect(c)} in slot #{self.slot_in}", :verbose)
         else
           self
         end
 
-      self = self |> increment_slot_in
-      self |> log("Current slot in: #{self.slot_in}")
-      self |> propose
+      self
+      |> increment_slot_in
+      |> propose
     else
       self |> next
     end
@@ -101,31 +102,24 @@ defmodule Replica do
   end
 
   defp perform(self, {client, cid, op} = command) do
-    self |> log("Trying to perform #{inspect(command)} in slot #{self.slot_out}")
+    self = self |> Debug.log("Perform: #{inspect(command)} in slot #{self.slot_out}", :verbose)
 
     self =
-      if already_processed?(self, command) or isreconfig?(op) do
-        self
-        |> log(
-          "Command: #{inspect(command)} was already processed \n current slot out: #{self.slot_out}"
-        )
-
-        self = self |> increment_slot_out
-        self
-      else
+      if not already_processed?(self, command) or isreconfig?(op) do
         send(self.database, {:EXECUTE, op})
-
-        self
-        |> log(
-          "Command: #{inspect(command)} in slot #{self.slot_out} successfully written to the database."
-        )
-
         send(client, {:CLIENT_RESPONSE, cid, command})
-        self = self |> increment_slot_out
+
         self
+        |> Debug.log("Command sent to DB: #{inspect(command)} in slot #{self.slot_out}", :success)
+      else
+        self
+        |> Debug.log(
+          "Command already processed: #{inspect(command)} in slot #{self.slot_out}",
+          :error
+        )
       end
 
-    self
+    self |> increment_slot_out
   end
 
   defp already_processed?(self, {client, cid, op}) do
@@ -135,7 +129,10 @@ defmodule Replica do
     if length(slots_filled) != 0,
       do:
         self
-        |> log("Slots filled: #{inspect(slots_filled)} \n current slot out: #{self.slot_out}")
+        |> Debug.log(
+          "Already processed: #{inspect(slots_filled)} \n--> Current slot out: #{self.slot_out}",
+          :error
+        )
 
     length(slots_filled) != 0
   end
@@ -167,17 +164,17 @@ defmodule Replica do
             self = if c != c2, do: self |> add_request(c2), else: self
 
             self
-            |> log("Comparing commands: \n #{inspect(c)} \n #{inspect(c2)} \n result: #{c != c2}")
-
-            self
+            |> Debug.log(
+              "Comparing commands: \n #{inspect(c)} \n #{inspect(c2)} \n equal: #{c == c2}",
+              :verbose
+            )
           else
             self
           end
 
-        self = self |> perform(c)
-        self = self |> process_pending_decisions
-
         self
+        |> perform(c)
+        |> process_pending_decisions
       else
         self
       end
@@ -215,14 +212,5 @@ defmodule Replica do
 
   defp add_decision(self, decision) do
     %{self | decisions: MapSet.put(self.decisions, decision)}
-  end
-
-  defp log(self, message) do
-    DebugLogger.log(
-      self.config,
-      :replica,
-      "Replica at #{self.config.node_name}",
-      message
-    )
   end
 end

@@ -37,8 +37,41 @@ defmodule Configuration do
   # node_info
 
   # -----------------------------------------------------------------------------
-
   def params(:default) do
+    %{
+      # max requests each client will make
+      max_requests: 500,
+      # time (ms) to sleep before sending new request
+      client_sleep: 2,
+      # time (ms) to stop sending further requests
+      client_stop: 15_000,
+      # :round_robin, :quorum or :broadcast
+      send_policy: :round_robin,
+      # number of active bank accounts (init balance=0)
+      n_accounts: 100,
+      # max amount moved between accounts
+      max_amount: 1_000,
+      # print summary every print_after msecs (monitor)
+      print_after: 1_000,
+      # multi-paxos window size
+      window_size: 10,
+      # server_num => crash_after_time(ms)
+      crash_servers: %{},
+      logger_level: %{
+        monitor: :quiet,
+        database: :quiet,
+        replica: :quiet,
+        leader: :quiet,
+        commander: :quiet,
+        acceptor: :quiet,
+        scout: :quiet
+      }
+    }
+
+    # redact: performance/liveness/distribution parameters
+  end
+
+  def params(:debug) do
     %{
       # max requests each client will make
       max_requests: 5,
@@ -58,15 +91,19 @@ defmodule Configuration do
       window_size: 10,
       # server_num => crash_after_time(ms)
       crash_servers: %{},
-      # verbose_logging: [:replica, :leader, :commander, :acceptor, :scout]
-      verbose_logging: [:replica, :leader, :commander]
-      # verbose_logging: []
+      logger_level: %{
+        monitor: :quiet,
+        database: :verbose,
+        replica: :verbose,
+        leader: :verbose,
+        commander: :quiet,
+        acceptor: :quiet,
+        scout: :quiet
+      }
     }
 
     # redact: performance/liveness/distribution parameters
   end
-
-  # params :default
 
   # -----------------------------------------------------------------------------
 
@@ -84,8 +121,6 @@ defmodule Configuration do
     )
   end
 
-  # params :crashes
-
   def params(:tenk) do
     Map.merge(
       params(:default),
@@ -94,8 +129,6 @@ defmodule Configuration do
       }
     )
   end
-
-  # params :tenk
 
   # redact params functions...
 end

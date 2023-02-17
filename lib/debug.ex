@@ -1,35 +1,70 @@
-
 # distributed algorithms, n.dulay, 31 jan 2023
 # coursework, paxos made moderately complex
 #
 # some functions for debugging
 
 defmodule Debug do
-
-def info(config, message, verbose \\ 1) do
-  if config.debug_level >= verbose do
-    IO.puts "--> Debug #{config.node_name} at #{config.node_location} #{message}"
+  def info(config, message, verbose \\ 1) do
+    if config.debug_level >= verbose do
+      IO.puts("--> Debug #{config.node_name} at #{config.node_location} #{message}")
+    end
   end
-end # log
 
-def map(config, themap, verbose \\ 1) do
-  if config.debug_level >= verbose do
-    for {key, value} <- themap do IO.puts "  #{key} #{inspect value}" end
+  def map(config, themap, verbose \\ 1) do
+    if config.debug_level >= verbose do
+      for {key, value} <- themap do
+        IO.puts("  #{key} #{inspect(value)}")
+      end
+    end
   end
-end # map
 
-def starting(config, verbose \\ 0) do
-  if config.debug_level >= verbose do
-    IO.puts "--> Starting #{config.node_name} at #{config.node_location}"
+  def starting(config, verbose \\ 0) do
+    if config.debug_level >= verbose do
+      IO.puts("--> Starting #{config.node_name} at #{config.node_location}")
+    end
   end
-end # starting
 
-def letter(config, letter, verbose \\ 3) do
-  if config.debug_level >= verbose do IO.write letter end
-end # letter
+  def letter(config, letter, verbose \\ 3) do
+    if config.debug_level >= verbose do
+      IO.write(letter)
+    end
+  end
 
-def mapstring(map) do
-  for {key, value} <- map, into: "" do "\n  #{key}\t #{inspect value}" end
-end # mapstring
+  def mapstring(map) do
+    for {key, value} <- map, into: "" do
+      "\n  #{key}\t #{inspect(value)}"
+    end
+  end
 
-end # Log
+  # This function logs a message only if the level (:quiet, :error, :success, :verbose)
+  # in the arguments is lower or equal to the logger_config for the particular module
+  # (entity, i.e. replica, leader, commander etc.). The default parameter is level
+  # value is :quiet which means that such message will always be printed.
+  def log(entity, message, level \\ :quiet) do
+    config = entity.config
+
+    if config.debug_level > 1 and
+         get_priority(level) <= get_priority(config.logger_level[entity.type]) do
+      IO.puts(entity.id_line <> ": log_#{entity.config.line_num}" <> "\n--> " <> message <> "\n")
+
+      entity |> increment_line_num
+    else
+      entity
+    end
+  end
+
+  def increment_line_num(entity) do
+    %{entity | config: %{entity.config | line_num: entity.config.line_num + 1}}
+  end
+
+  def get_priority(level) do
+    case level do
+      :quiet -> 0
+      :error -> 1
+      :success -> 2
+      :verbose -> 3
+    end
+  end
+end
+
+# Log
