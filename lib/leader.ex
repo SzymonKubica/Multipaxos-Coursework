@@ -11,7 +11,6 @@ defmodule Leader do
 
     self = %{
       type: :leader,
-      id_line: "Leader#{config.node_num}",
       config: config,
       ballot_num: ballot_num,
       acceptors: acceptors,

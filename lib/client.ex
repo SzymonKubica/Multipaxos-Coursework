@@ -21,6 +21,7 @@ defmodule Client do
     # case
 
     self = %{
+      type: :client,
       config: config,
       client_num: client_num,
       replicas: Helper.list_to_map(replicas),

@@ -5,7 +5,6 @@ defmodule Commander do
 
     self = %{
       type: :commander,
-      id_line: "Commander#{config.node_num}",
       config: config,
       leader: l,
       waitfor: waitfor,

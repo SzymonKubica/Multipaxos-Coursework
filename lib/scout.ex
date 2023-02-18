@@ -5,7 +5,6 @@ defmodule Scout do
 
     self = %{
       type: :scout,
-      id_line: "Scout#{config.node_num}",
       config: config,
       leader: l,
       ballot_number: b,

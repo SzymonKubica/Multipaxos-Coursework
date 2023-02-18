@@ -1,6 +1,41 @@
 import List
 # Szymon Kubica (sk4520) 12 Feb 2023
 defmodule Replica do
+  # ____________________________________________________________________ Setters
+  defp update_leaders(self, leaders) do
+    %{self | leaders: leaders}
+  end
+
+  defp increment_slot_in(self) do
+    %{self | slot_in: self.slot_in + 1}
+  end
+
+  defp increment_slot_out(self) do
+    %{self | slot_out: self.slot_out + 1}
+  end
+
+  defp add_proposal(self, proposal) do
+    %{self | proposals: MapSet.put(self.proposals, proposal)}
+  end
+
+  defp remove_proposal(self, proposal) do
+    %{self | proposals: MapSet.delete(self.proposals, proposal)}
+  end
+
+  defp add_request(self, request) do
+    %{self | requests: MapSet.put(self.requests, request)}
+  end
+
+  defp remove_request(self, request) do
+    %{self | requests: MapSet.delete(self.requests, request)}
+  end
+
+  defp add_decision(self, decision) do
+    %{self | decisions: MapSet.put(self.decisions, decision)}
+  end
+
+  # ____________________________________________________________________________
+
   def start(config, database) do
     leaders =
       receive do
@@ -180,37 +215,5 @@ defmodule Replica do
       end
 
     self
-  end
-
-  defp update_leaders(self, leaders) do
-    %{self | leaders: leaders}
-  end
-
-  defp increment_slot_out(self) do
-    %{self | slot_out: self.slot_out + 1}
-  end
-
-  defp increment_slot_in(self) do
-    %{self | slot_in: self.slot_in + 1}
-  end
-
-  defp add_proposal(self, proposal) do
-    %{self | proposals: MapSet.put(self.proposals, proposal)}
-  end
-
-  defp remove_proposal(self, proposal) do
-    %{self | proposals: MapSet.delete(self.proposals, proposal)}
-  end
-
-  defp add_request(self, request) do
-    %{self | requests: MapSet.put(self.requests, request)}
-  end
-
-  defp remove_request(self, request) do
-    %{self | requests: MapSet.delete(self.requests, request)}
-  end
-
-  defp add_decision(self, decision) do
-    %{self | decisions: MapSet.put(self.decisions, decision)}
   end
 end

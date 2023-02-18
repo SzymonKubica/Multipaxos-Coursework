@@ -43,9 +43,11 @@ defmodule Debug do
   def log(entity, message, level \\ :quiet) do
     config = entity.config
 
+    id_line = "#{String.capitalize(Atom.to_string(entity.type))}#{entity.config.node_num}"
+
     if config.debug_level > 1 and
          get_priority(level) <= get_priority(config.logger_level[entity.type]) do
-      IO.puts(entity.id_line <> ": log_#{entity.config.line_num}" <> "\n--> " <> message <> "\n")
+      IO.puts(id_line <> ": log_#{entity.config.line_num}" <> "\n--> " <> message <> "\n")
 
       entity |> increment_line_num
     else

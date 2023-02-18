@@ -14,7 +14,6 @@ defmodule Database do
   def start(config) do
     self = %{
       type: :database,
-      id_line: "Database#{config.node_num}",
       config: config,
       balances: Map.new(),
       seqnum: 0
