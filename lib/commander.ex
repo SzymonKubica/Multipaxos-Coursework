@@ -2,8 +2,12 @@
 defmodule Commander do
   # ____________________________________________________________________ Setters
 
-  defp remove_acceptor_from_waitfor(self, a) do
-    %{self | waitfor: List.delete(self.waitfor, a)}
+  def update_ballot_num(self, ballot_num) do
+    %{self | ballot_num: ballot_num}
+  end
+
+  def add_to_accepted(self, pvalue) do
+    %{self | accepted: MapSet.put(self.accepted, pvalue)}
   end
 
   # ____________________________________________________________________________
@@ -26,13 +30,12 @@ defmodule Commander do
     self |> next
   end
 
-  def next(self) do
+  defp next(self) do
     receive do
       {:p2b, a, b} ->
-        self = self |> Debug.log("Phase_2_b message received: ballot: #{inspect(b)}", :verbose)
-        {ballot_num, s, c} = self.pvalue
+        self = self |> Debug.log("p2b received: ballot: #{inspect(b)}", :verbose)
 
-        if not BallotNumber.equal?(b, ballot_num) do
+        if not BallotNumber.equal?(b, self.pvalue.ballot_num) do
           send(self.leader, {:PREEMPTED, b})
           self |> commander_finished
         end
@@ -43,7 +46,8 @@ defmodule Commander do
 
         self |> Debug.log("Majority achieved for: #{inspect(self.pvalue)}", :success)
 
-        for replica <- self.replicas, do: send(replica, {:DECISION, s, c})
+        for replica <- self.replicas,
+            do: send(replica, {:DECISION, self.pvalue.slot_num, self.pvalue.command})
 
         self |> commander_finished
     end

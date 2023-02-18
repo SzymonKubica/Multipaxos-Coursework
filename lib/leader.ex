@@ -59,7 +59,7 @@ defmodule Leader do
                     self(),
                     self.acceptors,
                     self.replicas,
-                    {self.ballot_num, s, c}
+                    %Pvalue{ballot_num: self.ballot_num, slot_num: s, command: c}
                   ])
 
                   send(self.config.monitor, {:COMMANDER_SPAWNED, self.config.node_num})
@@ -96,7 +96,7 @@ defmodule Leader do
               self(),
               self.acceptors,
               self.replicas,
-              {self.ballot_num, s, c}
+              %Pvalue{ballot_num: self.ballot_num, slot_num: s, command: c}
             ])
 
             send(self.config.monitor, {:COMMANDER_SPAWNED, self.config.node_num})
@@ -175,9 +175,9 @@ defmodule Leader do
   end
 
   defp pmax(pvalues) do
-    for {b, s, c} <- pvalues,
+    for %Pvalue{ballot_num: b, slot_num: s, command: c} <- pvalues,
         Enum.all?(
-          for {b1, ^s, _c1} <- pvalues,
+          for %Pvalue{ballot_num: b1, slot_num: ^s} <- pvalues,
               do: BallotNumber.compare(b1, b) == :lt or BallotNumber.compare(b1, b) == :eq
         ),
         into: MapSet.new(),
