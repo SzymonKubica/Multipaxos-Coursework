@@ -2,12 +2,8 @@
 defmodule Commander do
   # ____________________________________________________________________ Setters
 
-  def update_ballot_num(self, ballot_num) do
-    %{self | ballot_num: ballot_num}
-  end
-
-  def add_to_accepted(self, pvalue) do
-    %{self | accepted: MapSet.put(self.accepted, pvalue)}
+  defp remove_acceptor_from_waitfor(self, a) do
+    %{self | waitfor: List.delete(self.waitfor, a)}
   end
 
   # ____________________________________________________________________________

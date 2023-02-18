@@ -1,147 +1,9 @@
 # Szymon Kubica (sk4520) 12 Feb 2023
 defmodule Leader do
-  @compile if Mix.env() == :test, do: :export_all
-  def start(config) do
-    ballot_num = %BallotNumber{value: 0, leader_index: config.node_num}
-
-    {acceptors, replicas} =
-      receive do
-        {:BIND, acceptors, replicas} -> {acceptors, replicas}
-      end
-
-    self = %{
-      type: :leader,
-      config: config,
-      ballot_num: ballot_num,
-      acceptors: acceptors,
-      replicas: replicas,
-      active: false,
-      proposals: MapSet.new()
-    }
-
-    spawn(Scout, :start, [self.config, self(), acceptors, ballot_num])
-    send(self.config.monitor, {:SCOUT_SPAWNED, self.config.node_num})
-
-    self |> next
-  end
-
-  def next(self) do
-    ballot_num = self.ballot_num
-
-    self =
-      receive do
-        {:PROPOSE, s, c} ->
-          self =
-            self |> Debug.log("PROPOSE received: command: #{inspect(c)} in slot #{s}", :verbose)
-
-          self =
-            if(not exists_proposal_for_slot(self, s)) do
-              self =
-                self
-                |> Debug.log(
-                  "No proposals for slot #{s}, adding a proposal: #{inspect({s, c})}",
-                  :verbose
-                )
-
-              self = self |> add_proposal({s, c})
-
-              self =
-                self
-                |> Debug.log(
-                  "Current proposals: #{MapSet.size(self.proposals)} \n #{inspect(self.proposals)}",
-                  :verbose
-                )
-
-              self =
-                if self.active do
-                  spawn(Commander, :start, [
-                    self.config,
-                    self(),
-                    self.acceptors,
-                    self.replicas,
-                    %Pvalue{ballot_num: self.ballot_num, slot_num: s, command: c}
-                  ])
-
-                  send(self.config.monitor, {:COMMANDER_SPAWNED, self.config.node_num})
-
-                  self
-                  |> Debug.log("Commander spawned: command: #{inspect(c)} in slot #{s}", :success)
-                else
-                  self
-                end
-
-              self
-            else
-              self
-            end
-
-          self
-
-        {:ADOPTED, ^ballot_num, pvalues} ->
-          self =
-            self
-            |> Debug.log("ADOPTED received: ballot: #{inspect(ballot_num)}", :success)
-            |> Debug.log("Proposals before update #{inspect(self.proposals)}", :verbose)
-            |> Debug.log("Pvalues #{inspect(pvalues)}", :verbose)
-            |> Debug.log("Pmax #{inspect(pmax(pvalues))}", :verbose)
-            |> update_proposals(pmax(pvalues))
-            |> Debug.log(
-              "#{MapSet.size(self.proposals)} Proposals after update #{inspect(self.proposals)}",
-              :verbose
-            )
-
-          for {s, c} <- self.proposals do
-            spawn(Commander, :start, [
-              self.config,
-              self(),
-              self.acceptors,
-              self.replicas,
-              %Pvalue{ballot_num: self.ballot_num, slot_num: s, command: c}
-            ])
-
-            send(self.config.monitor, {:COMMANDER_SPAWNED, self.config.node_num})
-
-            self
-            |> Debug.log("Commander spawned: command: #{inspect(c)} in slot #{s}", :success)
-          end
-
-          self
-          |> activate
-          |> next
-
-        {:PREEMPTED, %BallotNumber{value: value} = b} ->
-          self = self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
-          Process.sleep(Enum.random(1..100))
-
-          self =
-            case BallotNumber.compare(b, self.ballot_num) do
-              :gt ->
-                self =
-                  self
-                  |> deactivate
-                  |> update_ballot_number(value)
-
-                spawn(Scout, :start, [self.config, self(), self.acceptors, self.ballot_num])
-                send(self.config.monitor, {:SCOUT_SPAWNED, self.config.node_num})
-                self
-
-              _ ->
-                self
-            end
-
-          self
-      end
-
-    self |> next
-  end
+  # ____________________________________________________________________ Setters
 
   defp add_proposal(self, proposal) do
     %{self | proposals: MapSet.put(self.proposals, proposal)}
-  end
-
-  defp exists_proposal_for_slot(self, slot_number) do
-    proposals = for {^slot_number, _c} = proposal <- self.proposals, do: proposal
-    length(proposals) > 0
   end
 
   defp activate(self) do
@@ -152,11 +14,116 @@ defmodule Leader do
     %{self | active: false}
   end
 
-  defp update_ballot_number(self, preempting_number) do
-    %{
-      self
-      | ballot_num: %BallotNumber{self.ballot_num | value: preempting_number + 1}
+  defp update_ballot_number(self, new_value) do
+    %{self | ballot_num: %BallotNumber{self.ballot_num | value: new_value + 1}}
+  end
+
+  # ____________________________________________________________________________
+  @compile if Mix.env() == :test, do: :export_all
+  def start(config) do
+    {acceptors, replicas} =
+      receive do
+        {:BIND, acceptors, replicas} -> {acceptors, replicas}
+      end
+
+    self = %{
+      type: :leader,
+      config: config,
+      ballot_num: %BallotNumber{value: 0, leader_index: config.node_num},
+      acceptors: acceptors,
+      replicas: replicas,
+      active: false,
+      proposals: MapSet.new()
     }
+
+    spawn(Scout, :start, [self.config, self(), acceptors, self.ballot_num])
+
+    self
+    |> Monitor.notify(:SCOUT_SPAWNED)
+    |> next
+  end
+
+  def next(self) do
+    ballot_num = self.ballot_num
+
+    receive do
+      {:PROPOSE, s, c} ->
+        self =
+          self |> Debug.log("PROPOSE received: command: #{inspect(c)} in slot #{s}", :verbose)
+
+        if exists_proposal_for_slot(self, s), do: self |> next
+
+        proposal = {s, c}
+
+        self =
+          self
+          |> Debug.log("Slot #{s} empty, adding a proposal: #{inspect({s, c})}")
+          |> add_proposal(proposal)
+          |> Debug.log("Proposals: #{MapSet.size(self.proposals)} \n #{inspect(self.proposals)}")
+
+        if not self.active, do: self |> next
+
+        self
+        |> spawn_commander(proposal)
+        |> Debug.log("Commander spawned for: #{inspect(c)} in slot #{s}", :success)
+        |> next
+
+      {:ADOPTED, ^ballot_num, pvalues} ->
+        self =
+          self
+          |> Debug.log("ADOPTED received: ballot: #{inspect(ballot_num)}", :success)
+          |> Debug.log(
+            "Proposals before update #{inspect(self.proposals)}\n" <>
+              "--> Pvalues: #{inspect(pvalues)}\n" <>
+              "--> Pmax: #{inspect(pmax(pvalues))}"
+          )
+          |> update_proposals(pmax(pvalues))
+          |> Debug.log("Proposals after update #{inspect(self.proposals)}")
+
+        commander_spawning_logs =
+          for {s, c} = proposal <- self.proposals do
+            self |> spawn_commander(proposal)
+            "Commander spawned: command: #{inspect(c)} in slot #{s}"
+          end
+
+        self
+        |> Debug.log(Enum.join(commander_spawning_logs, "\n-->"))
+        |> activate
+        |> next
+
+      {:PREEMPTED, %BallotNumber{value: value} = b} ->
+        self = self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
+        Process.sleep(Enum.random(1..100))
+
+        if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
+
+        spawn(Scout, :start, [self.config, self(), self.acceptors, self.ballot_num])
+
+        self
+        |> Monitor.notify(:SCOUT_SPAWNED)
+        |> deactivate
+        |> update_ballot_number(value)
+        |> next
+    end
+  end
+
+  defp spawn_commander(self, proposal) do
+    {s, c} = proposal
+
+    spawn(Commander, :start, [
+      self.config,
+      self(),
+      self.acceptors,
+      self.replicas,
+      %Pvalue{ballot_num: self.ballot_num, slot_num: s, command: c}
+    ])
+
+    self |> Monitor.notify(:COMMANDER_SPAWNED)
+  end
+
+  defp exists_proposal_for_slot(self, slot_number) do
+    proposals = for {^slot_number, _c} = proposal <- self.proposals, do: proposal
+    length(proposals) > 0
   end
 
   defp update_proposals(self, max_pvals) do

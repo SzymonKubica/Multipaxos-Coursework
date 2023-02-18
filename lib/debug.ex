@@ -39,8 +39,9 @@ defmodule Debug do
   # This function logs a message only if the level (:quiet, :error, :success, :verbose)
   # in the arguments is lower or equal to the logger_config for the particular module
   # (entity, i.e. replica, leader, commander etc.). The default parameter is level
-  # value is :quiet which means that such message will always be printed.
-  def log(entity, message, level \\ :quiet) do
+  # value is :verbose which means that such message will only be printed when
+  # configured with the highest level of logging (:verbose)
+  def log(entity, message, level \\ :verbose) do
     config = entity.config
 
     id_line = "#{String.capitalize(Atom.to_string(entity.type))}#{entity.config.node_num}"

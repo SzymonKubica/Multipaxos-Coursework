@@ -52,7 +52,7 @@ defmodule Acceptor do
   end
 
   defp accept_pvalue_if_ballot_matches(self, b, pvalue) do
-    if BallotNumber.equal(b, self.ballot_num),
+    if BallotNumber.equal?(b, self.ballot_num),
       do: self |> accept(pvalue),
       else: self
   end

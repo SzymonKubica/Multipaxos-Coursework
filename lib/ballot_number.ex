@@ -18,6 +18,10 @@ defmodule BallotNumber do
   end
 
   def equal?(b1, b2), do: compare(b1, b2) == :eq
+  def less_than?(b1, b2), do: compare(b1, b2) == :lt
+  def greater_than?(b1, b2), do: compare(b1, b2) == :gt
+  def less_or_equal?(b1, b2), do: compare(b1, b2) != :gt
+  def greater_or_equal?(b1, b2), do: compare(b1, b2) != :lt
 
   def bottom() do
     %BallotNumber{is_bottom: true}
