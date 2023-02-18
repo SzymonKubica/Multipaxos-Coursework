@@ -57,8 +57,6 @@ defmodule Monitor do
     |> next()
   end
 
-  # start
-
   def next(self) do
     receive do
       {:DB_MOVE, db, seqnum, transaction} = msg ->
@@ -70,8 +68,6 @@ defmodule Monitor do
         if seqnum != expecting do
           Helper.node_halt("  ** error db #{db}: seq #{seqnum} expecting #{expecting}")
         end
-
-        # if
 
         self =
           case Map.get(self.log, seqnum) do
@@ -87,11 +83,8 @@ defmodule Monitor do
                 )
               end
 
-              # if
               self
           end
-
-        # case
 
         self
         |> done(db, seqnum)
@@ -154,8 +147,6 @@ defmodule Monitor do
           IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
         end
 
-        # if
-
         IO.puts("")
 
         self
@@ -167,18 +158,15 @@ defmodule Monitor do
       unexpected ->
         Helper.node_halt("monitor: unexpected message #{inspect(unexpected)}")
     end
-
-    # receive
   end
-
-  # next
 
   def start_print_timeout(self) do
     Process.send_after(self(), {:PRINT}, self.config.print_after)
     self
   end
 
-  # start_print_timeout
+  def notify(entity, message) do
+    send(entity.config.monitor, {message, entity.config.node_num})
+    entity
+  end
 end
-
-# Monitor

@@ -17,6 +17,8 @@ defmodule BallotNumber do
     end
   end
 
+  def equal?(b1, b2), do: compare(b1, b2) == :eq
+
   def bottom() do
     %BallotNumber{is_bottom: true}
   end

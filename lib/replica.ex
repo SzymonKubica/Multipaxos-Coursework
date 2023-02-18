@@ -44,7 +44,6 @@ defmodule Replica do
 
     self = %{
       type: :replica,
-      id_line: "Replica#{config.node_num}",
       config: config,
       leaders: leaders,
       database: database,
@@ -62,9 +61,8 @@ defmodule Replica do
     self =
       receive do
         {:CLIENT_REQUEST, c} ->
-          send(self.config.monitor, {:CLIENT_REQUEST, self.config.node_num})
-
           self
+          |> Monitor.notify(:CLIENT_REQUEST)
           |> Debug.log("CLIENT_REQUEST: perform #{inspect(c)}.", :verbose)
           |> add_request(c)
 
