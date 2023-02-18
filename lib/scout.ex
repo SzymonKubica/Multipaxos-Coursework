@@ -35,13 +35,10 @@ defmodule Scout do
       {:p1b, a, b, r} ->
         self =
           self
-          |> Debug.log(
-            "p1b received:\n" <>
-              "--> Acceptor: #{inspect(a)}\n" <>
-              "--> Ballot number: #{inspect(b)}\n" <>
-              "--> Pvalue: #{inspect(r)}.",
-            :verbose
-          )
+          |> Debug.log("p1b received:\n
+              --> Acceptor: #{inspect(a)}\n
+              --> Ballot number: #{inspect(b)}\n
+              --> Pvalue: #{inspect(r)}.")
 
         if not BallotNumber.equal?(b, self.ballot_number) do
           send(self.leader, {:PREEMPTED, b})

@@ -36,10 +36,8 @@ defmodule Leader do
       proposals: MapSet.new()
     }
 
-    spawn(Scout, :start, [self.config, self(), acceptors, self.ballot_num])
-
     self
-    |> Monitor.notify(:SCOUT_SPAWNED)
+    |> spawn_scout
     |> next
   end
 
@@ -48,8 +46,7 @@ defmodule Leader do
 
     receive do
       {:PROPOSE, s, c} ->
-        self =
-          self |> Debug.log("PROPOSE received: command: #{inspect(c)} in slot #{s}", :verbose)
+        self = self |> Debug.log("PROPOSE received: command: #{inspect(c)} in slot #{s}")
 
         if exists_proposal_for_slot(self, s), do: self |> next
 
@@ -81,35 +78,32 @@ defmodule Leader do
           |> Debug.log("Proposals after update #{inspect(self.proposals)}")
 
         commander_spawning_logs =
-          for {s, c} = proposal <- self.proposals do
+          for {s, c} = proposal <- self.proposals, into: [] do
             self |> spawn_commander(proposal)
             "Commander spawned: command: #{inspect(c)} in slot #{s}"
           end
 
         self
-        |> Debug.log(Enum.join(commander_spawning_logs, "\n-->"))
+        |> Debug.log(Enum.join(commander_spawning_logs, "\n--> "))
         |> activate
         |> next
 
       {:PREEMPTED, %BallotNumber{value: value} = b} ->
         self = self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
-        Process.sleep(Enum.random(1..100))
+
+        # Process.sleep(Enum.random(1..100))
 
         if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
 
-        spawn(Scout, :start, [self.config, self(), self.acceptors, self.ballot_num])
-
         self
-        |> Monitor.notify(:SCOUT_SPAWNED)
         |> deactivate
         |> update_ballot_number(value)
+        |> spawn_scout
         |> next
     end
   end
 
-  defp spawn_commander(self, proposal) do
-    {s, c} = proposal
-
+  defp spawn_commander(self, {s, c} = _proposal) do
     spawn(Commander, :start, [
       self.config,
       self(),
@@ -119,6 +113,11 @@ defmodule Leader do
     ])
 
     self |> Monitor.notify(:COMMANDER_SPAWNED)
+  end
+
+  defp spawn_scout(self) do
+    spawn(Scout, :start, [self.config, self(), self.acceptors, self.ballot_num])
+    self |> Monitor.notify(:SCOUT_SPAWNED)
   end
 
   defp exists_proposal_for_slot(self, slot_number) do

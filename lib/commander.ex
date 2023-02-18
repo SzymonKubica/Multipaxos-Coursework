@@ -29,7 +29,7 @@ defmodule Commander do
   defp next(self) do
     receive do
       {:p2b, a, b} ->
-        self = self |> Debug.log("p2b received: ballot: #{inspect(b)}", :verbose)
+        self = self |> Debug.log("p2b received: ballot: #{inspect(b)}")
 
         if not BallotNumber.equal?(b, self.pvalue.ballot_num) do
           send(self.leader, {:PREEMPTED, b})

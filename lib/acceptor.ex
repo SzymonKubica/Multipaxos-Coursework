@@ -28,9 +28,9 @@ defmodule Acceptor do
       {:p1a, l, b} ->
         self =
           self
-          |> Debug.log("p1a received: ballot: #{inspect(b)}", :verbose)
+          |> Debug.log("p1a received: ballot: #{inspect(b)}")
           |> adopt_ballot_if_greater_than_current(b)
-          |> Debug.log("Sending p1b response for ballot: #{inspect(self.ballot_num)}", :verbose)
+          |> Debug.log("Sending p1b response for ballot: #{inspect(self.ballot_num)}")
 
         send(l, {:p1b, self(), self.ballot_num, self.accepted})
         self

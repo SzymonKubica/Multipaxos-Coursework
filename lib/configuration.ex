@@ -94,11 +94,11 @@ defmodule Configuration do
       crash_servers: %{},
       logger_level: %{
         monitor: :quiet,
-        database: :verbose,
-        replica: :verbose,
+        database: :quiet,
+        replica: :quiet,
         client: :quiet,
         leader: :verbose,
-        commander: :quiet,
+        commander: :verbose,
         acceptor: :quiet,
         scout: :quiet
       }

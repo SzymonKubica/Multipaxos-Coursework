@@ -63,7 +63,7 @@ defmodule Replica do
         {:CLIENT_REQUEST, c} ->
           self
           |> Monitor.notify(:CLIENT_REQUEST)
-          |> Debug.log("CLIENT_REQUEST: perform #{inspect(c)}.", :verbose)
+          |> Debug.log("CLIENT_REQUEST: perform #{inspect(c)}.")
           |> add_request(c)
 
         {:DECISION, s, c} ->
@@ -96,8 +96,7 @@ defmodule Replica do
             send(l, {:PROPOSE, self.slot_in, c})
           end
 
-          self
-          |> Debug.log("New request proposed: #{inspect(c)} in slot #{self.slot_in}", :verbose)
+          self |> Debug.log("New request proposed: #{inspect(c)} in slot #{self.slot_in}")
         else
           self
         end
@@ -135,7 +134,7 @@ defmodule Replica do
   end
 
   defp perform(self, {client, cid, op} = command) do
-    self = self |> Debug.log("Perform: #{inspect(command)} in slot #{self.slot_out}", :verbose)
+    self = self |> Debug.log("Perform: #{inspect(command)} in slot #{self.slot_out}")
 
     self =
       if not already_processed?(self, command) or isreconfig?(op) do
@@ -197,10 +196,10 @@ defmodule Replica do
             self = if c != c2, do: self |> add_request(c2), else: self
 
             self
-            |> Debug.log(
-              "Comparing commands: \n #{inspect(c)} \n #{inspect(c2)} \n equal: #{c == c2}",
-              :verbose
-            )
+            |> Debug.log("Comparing commands: \n
+              --> #{inspect(c)} \n
+              --> #{inspect(c2)} \n
+              --> equal: #{c == c2}")
           else
             self
           end
