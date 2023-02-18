@@ -5,7 +5,7 @@
 
 SERVERS  = 5
 CLIENTS  = 5
-PARAMS   = default
+PARAMS   = debug
 DEBUG    = 2
 MAX_TIME = 15000
 
