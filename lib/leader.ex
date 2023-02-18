@@ -1,3 +1,4 @@
+# Modified by Szymon Kubica (sk4520) 18 Feb 2023
 # Szymon Kubica (sk4520) 12 Feb 2023
 defmodule Leader do
   # ____________________________________________________________________ Setters

@@ -1,3 +1,4 @@
+# Modified by Szymon Kubica (sk4520) 18 Feb 2023
 defmodule BallotNumber do
   defstruct value: 0, leader_index: 0, is_bottom: false
 

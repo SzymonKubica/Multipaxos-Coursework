@@ -1,3 +1,4 @@
+# Modified by Szymon Kubica (sk4520) 18 Feb 2023
 Multipaxos module:
 
 At the top level the Multipaxos module starts up and spawns the state machine
