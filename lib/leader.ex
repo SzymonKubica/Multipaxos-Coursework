@@ -93,9 +93,9 @@ defmodule Leader do
       {:PREEMPTED, %BallotNumber{value: value} = b} ->
         self = self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
 
-        # Process.sleep(Enum.random(1..100))
-
         if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
+
+        Process.sleep(Enum.random(1..100))
 
         self
         |> deactivate

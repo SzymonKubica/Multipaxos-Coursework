@@ -87,7 +87,7 @@ defmodule Replica do
 
     self = self |> try_to_reconfigure
 
-    if slot_in_already_decided?(self), do: self |> next
+    if slot_in_already_decided?(self), do: self |> increment_slot_in |> next
 
     c = get_next_request(self)
 
@@ -204,10 +204,12 @@ defmodule Replica do
           self = if c != c2, do: self |> add_request(c2), else: self
 
           self
-          |> Debug.log("Comparing commands: \n
-              --> #{inspect(c)} \n
-              --> #{inspect(c2)} \n
-              --> equal: #{c == c2}")
+          |> Debug.log(
+            "Comparing commands: \n" <>
+              "--> #{inspect(c)} \n" <>
+              "--> #{inspect(c2)} \n" <>
+              "--> equal: #{c == c2}"
+          )
         else
           self
         end
