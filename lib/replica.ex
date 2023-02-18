@@ -3,6 +3,7 @@ import List
 
 defmodule Replica do
   # ____________________________________________________________________ Setters
+
   defp update_leaders(self, leaders) do
     %{self | leaders: leaders}
   end
@@ -81,54 +82,56 @@ defmodule Replica do
   end
 
   defp propose(self) do
-    if self.slot_in < self.slot_out + self.config.window_size and MapSet.size(self.requests) > 0 do
-      self = self |> try_to_reconfigure
+    if outside_current_config_window(self) or MapSet.size(self.requests) == 0,
+      do: self |> next
 
-      self =
-        if slot_in_not_decided?(self) do
-          c = get_next_request(self)
+    self = self |> try_to_reconfigure
 
-          self =
-            self
-            |> remove_request(c)
-            |> add_proposal({self.slot_in, c})
+    if slot_in_already_decided?(self), do: self |> next
 
-          for l <- self.leaders do
-            send(l, {:PROPOSE, self.slot_in, c})
-          end
+    c = get_next_request(self)
 
-          self |> Debug.log("New request proposed: #{inspect(c)} in slot #{self.slot_in}")
-        else
-          self
-        end
-
-      self
-      |> increment_slot_in
-      |> propose
-    else
-      self |> next
+    for l <- self.leaders do
+      send(l, {:PROPOSE, self.slot_in, c})
     end
+
+    self
+    |> remove_request(c)
+    |> add_proposal({self.slot_in, c})
+    |> Debug.log("New request proposed: #{inspect(c)} in slot #{self.slot_in}")
+    |> increment_slot_in
+    |> propose
+  end
+
+  defp outside_current_config_window(self) do
+    self.slot_in >= self.slot_out + self.config.window_size
   end
 
   defp get_next_request(self) do
     first(MapSet.to_list(self.requests))
   end
 
-  defp slot_in_not_decided?(self) do
-    slot_in = self.slot_in
-    decisions_for_slot_in = for {^slot_in, _c} = decision <- self.decisions, do: decision
-    length(decisions_for_slot_in) == 0
+  defp slot_in_already_decided?(self) do
+    s = self.slot_in
+    decisions_for_s = for {^s, _c} = decision <- self.decisions, do: decision
+
+    if length(decisions_for_s) > 1 do
+      self |> Debug.log("Error: Multiple decisions for slot #{s} found", :error)
+    end
+
+    length(decisions_for_s) == 1
   end
 
   defp try_to_reconfigure(self) do
-    reconfiguration_slot = self.slot_in - self.config.window_size
+    reconfig_slot = self.slot_in - self.config.window_size
 
-    decisions_for_reconfig_slot =
-      for {^reconfiguration_slot, {_client, _cid, command}} <- self.decisions,
+    reconfig_decisions =
+      for {^reconfig_slot, {_client, _cid, command}} <- self.decisions,
+          isreconfig?(command),
           do: command
 
-    if length(decisions_for_reconfig_slot) > 0 and isreconfig?(first(decisions_for_reconfig_slot)) do
-      self |> update_leaders(first(decisions_for_reconfig_slot).leaders)
+    if length(reconfig_decisions) == 1 do
+      self |> update_leaders(first(reconfig_decisions).leaders)
     else
       self
     end
@@ -155,19 +158,21 @@ defmodule Replica do
     self |> increment_slot_out
   end
 
-  defp already_processed?(self, {client, cid, op}) do
-    slots_filled =
-      for {s, {^client, ^cid, ^op}} = decision <- self.decisions, s < self.slot_out, do: decision
+  defp already_processed?(self, command) do
+    slots_filled = for {s, ^command} <- self.decisions, s < self.slot_out, do: s
 
-    if length(slots_filled) != 0,
+    already_processed = length(slots_filled) != 0
+
+    if already_processed,
       do:
         self
         |> Debug.log(
-          "Already processed: #{inspect(slots_filled)} \n--> Current slot out: #{self.slot_out}",
+          "Already processed: #{inspect(slots_filled)} \n
+          --> Current slot out: #{self.slot_out}",
           :error
         )
 
-    length(slots_filled) != 0
+    already_processed
   end
 
   defp isreconfig?(op) do
@@ -178,40 +183,49 @@ defmodule Replica do
   end
 
   defp process_pending_decisions(self) do
-    slot_out = self.slot_out
+    decisions_for_slot_out = get_pending_decisions(self)
 
-    decisions_for_current_slot_out =
-      for {^slot_out, _c} = decision <- self.decisions, into: MapSet.new(), do: decision
+    if MapSet.size(decisions_for_slot_out) > 0 do
+      {slot_out, c} = first(MapSet.to_list(decisions_for_slot_out))
 
-    self =
-      if MapSet.size(decisions_for_current_slot_out) > 0 do
-        {^slot_out, c} = first(MapSet.to_list(decisions_for_current_slot_out))
+      proposals_for_slot_out = self |> get_proposals_for_slot(slot_out)
 
-        proposals_for_slot_out = for {^slot_out, _c} = proposal <- self.proposals, do: proposal
+      if length(proposals_for_slot_out) > 1 do
+        self
+        |> Debug.log("Error: there can only be one proposal for slot out: #{slot_out}", :error)
 
-        # There can only be one proposal for slot out
-        self =
-          if length(proposals_for_slot_out) > 0 do
-            {slot_out, c2} = first(proposals_for_slot_out)
-            self = self |> remove_proposal({slot_out, c2})
-            self = if c != c2, do: self |> add_request(c2), else: self
+        Process.exit(self(), :normal)
+      end
 
-            self
-            |> Debug.log("Comparing commands: \n
+      self =
+        if length(proposals_for_slot_out) == 1 do
+          {slot_out, c2} = first(proposals_for_slot_out)
+          self = self |> remove_proposal({slot_out, c2})
+          self = if c != c2, do: self |> add_request(c2), else: self
+
+          self
+          |> Debug.log("Comparing commands: \n
               --> #{inspect(c)} \n
               --> #{inspect(c2)} \n
               --> equal: #{c == c2}")
-          else
-            self
-          end
+        else
+          self
+        end
 
-        self
-        |> perform(c)
-        |> process_pending_decisions
-      else
-        self
-      end
+      self
+      |> perform(c)
+      |> process_pending_decisions
+    else
+      self
+    end
+  end
 
-    self
+  defp get_pending_decisions(self) do
+    slot_out = self.slot_out
+    for {^slot_out, _c} = d <- self.decisions, into: MapSet.new(), do: d
+  end
+
+  defp get_proposals_for_slot(self, s) do
+    for {^s, _c} = proposal <- self.proposals, do: proposal
   end
 end

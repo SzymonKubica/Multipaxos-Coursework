@@ -4,6 +4,7 @@
 
 defmodule Monitor do
   # _______________________________________________________________________ Setters
+
   def clock(self, v) do
     Map.put(self, :clock, v)
   end
@@ -24,12 +25,20 @@ defmodule Monitor do
     Map.put(self, :commanders_spawned, Map.put(self.commanders_spawned, k, v))
   end
 
+  def commanders_preempted(self, k, v) do
+    Map.put(self, :commanders_preempted, Map.put(self.commanders_preempted, k, v))
+  end
+
   def commanders_finished(self, k, v) do
     Map.put(self, :commanders_finished, Map.put(self.commanders_finished, k, v))
   end
 
   def scouts_spawned(self, k, v) do
     Map.put(self, :scouts_spawned, Map.put(self.scouts_spawned, k, v))
+  end
+
+  def scouts_preempted(self, k, v) do
+    Map.put(self, :scouts_preempted, Map.put(self.scouts_preempted, k, v))
   end
 
   def scouts_finished(self, k, v) do
@@ -41,15 +50,16 @@ defmodule Monitor do
   def start(config) do
     self = %{
       type: :monitor,
-      id_line: "Monitor",
       config: config,
       clock: 0,
       seen: Map.new(),
       done: Map.new(),
       log: Map.new(),
       scouts_spawned: Map.new(),
+      scouts_preempted: Map.new(),
       scouts_finished: Map.new(),
       commanders_spawned: Map.new(),
+      commanders_preempted: Map.new(),
       commanders_finished: Map.new()
     }
 
@@ -106,6 +116,13 @@ defmodule Monitor do
         |> scouts_spawned(server_num, value + 1)
         |> next()
 
+      {:SCOUT_PREEMPTED, server_num} ->
+        value = Map.get(self.scouts_preempted, server_num, 0)
+
+        self
+        |> scouts_preempted(server_num, value + 1)
+        |> next()
+
       {:SCOUT_FINISHED, server_num} ->
         value = Map.get(self.scouts_finished, server_num, 0)
 
@@ -118,6 +135,13 @@ defmodule Monitor do
 
         self
         |> commanders_spawned(server_num, value + 1)
+        |> next()
+
+      {:COMMANDER_PREEMPTED, server_num} ->
+        value = Map.get(self.commanders_preempted, server_num, 0)
+
+        self
+        |> commanders_preempted(server_num, value + 1)
         |> next()
 
       {:COMMANDER_FINISHED, server_num} ->
@@ -139,11 +163,15 @@ defmodule Monitor do
         if self.config.debug_level > 0 do
           sorted = self.scouts_spawned |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}            scouts up = #{inspect(sorted)}")
+          sorted = self.scouts_preempted |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}     scouts preempted = #{inspect(sorted)}")
           sorted = self.scouts_finished |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}          scouts down = #{inspect(sorted)}")
 
           sorted = self.commanders_spawned |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}        commanders up = #{inspect(sorted)}")
+          sorted = self.commanders_preempted |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock} commanders preempted = #{inspect(sorted)}")
           sorted = self.commanders_finished |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
         end

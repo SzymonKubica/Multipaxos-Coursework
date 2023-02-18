@@ -33,7 +33,10 @@ defmodule Commander do
 
         if not BallotNumber.equal?(b, self.pvalue.ballot_num) do
           send(self.leader, {:PREEMPTED, b})
-          self |> commander_finished
+
+          self
+          |> Monitor.notify(:COMMANDER_PREEMPTED)
+          |> commander_finished
         end
 
         self = self |> remove_acceptor_from_waitfor(a)

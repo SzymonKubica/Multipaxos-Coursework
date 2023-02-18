@@ -1,6 +1,7 @@
 # Modified by Szymon Kubica (sk4520) 18 Feb 2023
-# Szymon Kubica (sk4520) 12 Feb 2023
 defmodule Leader do
+  @compile if Mix.env() == :test, do: :export_all
+
   # ____________________________________________________________________ Setters
 
   defp add_proposal(self, proposal) do
@@ -20,7 +21,7 @@ defmodule Leader do
   end
 
   # ____________________________________________________________________________
-  @compile if Mix.env() == :test, do: :export_all
+
   def start(config) do
     {acceptors, replicas} =
       receive do
@@ -49,7 +50,7 @@ defmodule Leader do
       {:PROPOSE, s, c} ->
         self = self |> Debug.log("PROPOSE received: command: #{inspect(c)} in slot #{s}")
 
-        if exists_proposal_for_slot(self, s), do: self |> next
+        if self |> exists_proposal_for?(s), do: self |> next
 
         proposal = {s, c}
 
@@ -121,7 +122,7 @@ defmodule Leader do
     self |> Monitor.notify(:SCOUT_SPAWNED)
   end
 
-  defp exists_proposal_for_slot(self, slot_number) do
+  defp exists_proposal_for?(self, slot_number) do
     proposals = for {^slot_number, _c} = proposal <- self.proposals, do: proposal
     length(proposals) > 0
   end
@@ -136,8 +137,8 @@ defmodule Leader do
     %{self | proposals: MapSet.union(max_pvals, remaining_proposals)}
   end
 
-  defp update_exists?(slot_number, pvalues) do
-    updates = for {^slot_number, _c} = pvalue <- pvalues, do: pvalue
+  defp update_exists?(slot_number, proposals) do
+    updates = for {^slot_number, _c} = proposal <- proposals, do: proposal
     length(updates) != 0
   end
 
@@ -145,7 +146,7 @@ defmodule Leader do
     for %Pvalue{ballot_num: b, slot_num: s, command: c} <- pvalues,
         Enum.all?(
           for %Pvalue{ballot_num: b1, slot_num: ^s} <- pvalues,
-              do: BallotNumber.compare(b1, b) == :lt or BallotNumber.compare(b1, b) == :eq
+              do: BallotNumber.less_or_equal?(b1, b)
         ),
         into: MapSet.new(),
         do: {s, c}
