@@ -95,7 +95,10 @@ defmodule Leader do
 
         if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
 
-        Process.sleep(Enum.random(1..100))
+        # Cheap attempt to prevent live locks
+        if self.config.wait_before_retrying do
+          Process.sleep(Enum.random(100..self.config.max_wait_time))
+        end
 
         self
         |> deactivate

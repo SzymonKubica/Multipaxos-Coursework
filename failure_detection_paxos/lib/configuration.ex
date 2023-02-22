@@ -19,8 +19,6 @@ defmodule Configuration do
     config |> Map.merge(Configuration.params(config.param_setup))
   end
 
-  # node_init
-
   def node_info(config, node_type, node_num \\ "") do
     Map.merge(
       config,
@@ -35,13 +33,12 @@ defmodule Configuration do
     )
   end
 
-  # node_info
-
   # -----------------------------------------------------------------------------
+  # I found this configuration to livelock almost every time.
   def params(:default) do
     %{
       # max requests each client will make
-      max_requests: 5,
+      max_requests: 500,
       # time (ms) to sleep before sending new request
       client_sleep: 2,
       # time (ms) to stop sending further requests
@@ -56,6 +53,10 @@ defmodule Configuration do
       print_after: 1_000,
       # multi-paxos window size
       window_size: 10,
+      # determines if a leader waits before retrying after being preempted
+      wait_before_retrying: false,
+      # maximum waiting time after preemption (miliseconds)
+      max_wait_time: 400,
       # server_num => crash_after_time(ms)
       crash_servers: %{},
       logger_level: %{
@@ -69,43 +70,36 @@ defmodule Configuration do
         scout: :quiet
       }
     }
-
-    # redact: performance/liveness/distribution parameters
   end
 
   def params(:debug) do
-    %{
-      # max requests each client will make
-      max_requests: 5,
-      # time (ms) to sleep before sending new request
-      client_sleep: 2,
-      # time (ms) to stop sending further requests
-      client_stop: 15_000,
-      # :round_robin, :quorum or :broadcast
-      send_policy: :round_robin,
-      # number of active bank accounts (init balance=0)
-      n_accounts: 100,
-      # max amount moved between accounts
-      max_amount: 1_000,
-      # print summary every print_after msecs (monitor)
-      print_after: 1_000,
-      # multi-paxos window size
-      window_size: 10,
-      # server_num => crash_after_time(ms)
-      crash_servers: %{},
-      logger_level: %{
-        monitor: :quiet,
-        database: :verbose,
-        replica: :verbose,
-        client: :quiet,
-        leader: :quiet,
-        commander: :quiet,
-        acceptor: :quiet,
-        scout: :quiet
+    Map.merge(
+      params(:default),
+      %{
+        logger_level: %{
+          monitor: :quiet,
+          database: :verbose,
+          replica: :verbose,
+          client: :quiet,
+          leader: :quiet,
+          commander: :quiet,
+          acceptor: :quiet,
+          scout: :quiet
+        }
       }
-    }
+    )
+  end
 
-    # redact: performance/liveness/distribution parameters
+  # redact: performance/liveness/distribution parameters
+  def params(:random_leader_wait) do
+    Map.merge(
+      params(:default),
+      %{
+        wait_before_retrying: true,
+        min_wait_time: 500,
+        max_wait_time: 1000
+      }
+    )
   end
 
   # -----------------------------------------------------------------------------

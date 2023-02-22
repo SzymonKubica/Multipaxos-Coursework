@@ -5,7 +5,7 @@
 
 SERVERS  = 5
 CLIENTS  = 5
-PARAMS   = debug
+PARAMS   = random_leader_wait
 DEBUG    = 2
 MAX_TIME = 15000
 
