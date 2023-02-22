@@ -1,6 +1,6 @@
 # Modified by Szymon Kubica (sk4520) 18 Feb 2023
 defmodule BallotNumber do
-  defstruct value: 0, leader_index: 0, is_bottom: false
+  defstruct value: 0, leader_index: 0, leader_pid: nil, is_bottom: false
 
   def compare(
         %BallotNumber{value: v1, leader_index: l1, is_bottom: bot1},

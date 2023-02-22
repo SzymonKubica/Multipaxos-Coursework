@@ -45,6 +45,10 @@ defmodule Monitor do
     Map.put(self, :scouts_finished, Map.put(self.scouts_finished, k, v))
   end
 
+  def timeout_updated(self, k, v) do
+    Map.put(self, :leader_timeouts, Map.put(self.leader_timeouts, k, v))
+  end
+
   # __________________________________________________________________________
 
   def start(config) do
@@ -60,7 +64,8 @@ defmodule Monitor do
       scouts_finished: Map.new(),
       commanders_spawned: Map.new(),
       commanders_preempted: Map.new(),
-      commanders_finished: Map.new()
+      commanders_finished: Map.new(),
+      leader_timeouts: Map.new()
     }
 
     self
@@ -151,6 +156,11 @@ defmodule Monitor do
         |> commanders_finished(server_num, value + 1)
         |> next()
 
+      {:TIMEOUT_UPDATED, leader_num, new_timeout_value} ->
+        self
+        |> timeout_updated(leader_num, new_timeout_value)
+        |> next()
+
       {:PRINT} ->
         clock = self.clock + self.config.print_after
         self = self |> clock(clock)
@@ -174,6 +184,8 @@ defmodule Monitor do
           IO.puts("time = #{clock} commanders preempted = #{inspect(sorted)}")
           sorted = self.commanders_finished |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
+          sorted = self.leader_timeouts |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}      leader timeouts = #{inspect(sorted)}")
         end
 
         IO.puts("")
@@ -194,8 +206,15 @@ defmodule Monitor do
     self
   end
 
-  def notify(entity, message) do
-    send(entity.config.monitor, {message, entity.config.node_num})
+  def notify(entity, message, args \\ nil) do
+    case args do
+      nil ->
+        send(entity.config.monitor, {message, entity.config.node_num})
+
+      _ ->
+        send(entity.config.monitor, {message, entity.config.node_num, args})
+    end
+
     entity
   end
 end
