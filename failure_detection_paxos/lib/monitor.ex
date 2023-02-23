@@ -49,6 +49,18 @@ defmodule Monitor do
     Map.put(self, :leader_timeouts, Map.put(self.leader_timeouts, k, v))
   end
 
+  def timeout_update_count(self, k, v) do
+    Map.put(self, :leader_timeout_update_counts, Map.put(self.leader_timeout_update_counts, k, v))
+  end
+
+  def pings_sent(self, k, v) do
+    Map.put(self, :pings_sent, Map.put(self.pings_sent, k, v))
+  end
+
+  def pings_received(self, k, v) do
+    Map.put(self, :pings_received, Map.put(self.pings_received, k, v))
+  end
+
   # __________________________________________________________________________
 
   def start(config) do
@@ -65,7 +77,10 @@ defmodule Monitor do
       commanders_spawned: Map.new(),
       commanders_preempted: Map.new(),
       commanders_finished: Map.new(),
-      leader_timeouts: Map.new()
+      leader_timeouts: Map.new(),
+      leader_timeout_update_counts: Map.new(),
+      pings_sent: Map.new(),
+      pings_received: Map.new()
     }
 
     self
@@ -156,9 +171,26 @@ defmodule Monitor do
         |> commanders_finished(server_num, value + 1)
         |> next()
 
+      {:PING_SENT, server_num} ->
+        value = Map.get(self.pings_sent, server_num, 0)
+
+        self
+        |> pings_sent(server_num, value + 1)
+        |> next()
+
+      {:PING_RESPONSE_RECEIVED, server_num} ->
+        value = Map.get(self.pings_received, server_num, 0)
+
+        self
+        |> pings_received(server_num, value + 1)
+        |> next()
+
       {:TIMEOUT_UPDATED, leader_num, new_timeout_value} ->
+        value = Map.get(self.leader_timeout_update_counts, leader_num, 0)
+
         self
         |> timeout_updated(leader_num, new_timeout_value)
+        |> timeout_update_count(leader_num, value + 1)
         |> next()
 
       {:PRINT} ->
@@ -186,6 +218,12 @@ defmodule Monitor do
           IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
           sorted = self.leader_timeouts |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}      leader timeouts = #{inspect(sorted)}")
+          sorted = self.leader_timeout_update_counts |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}      timeout updates = #{inspect(sorted)}")
+          sorted = self.pings_sent |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}   ping messages sent = #{inspect(sorted)}")
+          sorted = self.pings_received |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}       ping responses = #{inspect(sorted)}")
         end
 
         IO.puts("")

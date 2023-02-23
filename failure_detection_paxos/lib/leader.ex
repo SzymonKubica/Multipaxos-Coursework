@@ -17,15 +17,33 @@ defmodule Leader do
   end
 
   defp update_ballot_number(self, new_value) do
-    %{self | ballot_num: %BallotNumber{self.ballot_num | value: new_value + 1}}
+    %{
+      self
+      | ballot_num: %BallotNumber{self.ballot_num | value: new_value + 1, timeout: self.timeout}
+    }
   end
 
   defp increase_timeout(self) do
-    %{self | timeout: round(self.timeout * self.config.leader_timeout_increase_factor)}
+    %{
+      self
+      | timeout:
+          min(
+            self.config.max_leader_timeout,
+            round(self.timeout * self.config.leader_timeout_increase_factor)
+          )
+    }
   end
 
   defp decrease_timeout(self) do
-    %{self | timeout: round(self.timeout * self.config.leader_timeout_decrease_factor)}
+    %{
+      self
+      | timeout:
+          max(
+            self.config.min_leader_timeout,
+            round(self.timeout - self.config.leader_timeout_decrease_const)
+          ),
+        ballot_num: %BallotNumber{self.ballot_num | timeout: self.timeout}
+    }
   end
 
   # ____________________________________________________________________________
@@ -39,7 +57,12 @@ defmodule Leader do
     self = %{
       type: :leader,
       config: config,
-      ballot_num: %BallotNumber{value: 0, leader_index: config.node_num, leader_pid: self()},
+      ballot_num: %BallotNumber{
+        value: 0,
+        leader_index: config.node_num,
+        leader_pid: self(),
+        timeout: config.leader_starting_timeout
+      },
       timeout: config.leader_starting_timeout,
       acceptors: acceptors,
       replicas: replicas,
@@ -53,85 +76,94 @@ defmodule Leader do
   end
 
   def next(self) do
-    ballot_num = self.ballot_num
-
     receive do
-      {:RESPONSE_REQUESTED, requestor} -> send(requestor, {:STILL_ALIVE, self()})
-    after
-      0 ->
-        receive do
-          {:PROPOSE, s, c} ->
-            self = self |> Debug.log("PROPOSE received: command: #{inspect(c)} in slot #{s}")
+      {:PROPOSE, s, c} ->
+        self = self |> Debug.log("PROPOSE received: command: #{inspect(c)} in slot #{s}")
 
-            if self |> exists_proposal_for?(s), do: self |> next
+        if self |> exists_proposal_for?(s), do: self |> next
 
-            proposal = {s, c}
+        proposal = {s, c}
 
-            self =
-              self
-              |> Debug.log("Slot #{s} empty, adding a proposal: #{inspect({s, c})}")
-              |> add_proposal(proposal)
-              |> decrease_timeout
-              |> Monitor.notify(:TIMEOUT_UPDATED, self.timeout)
-              |> Debug.log(
-                "Proposals: #{MapSet.size(self.proposals)} \n #{inspect(self.proposals)}"
-              )
+        self =
+          self
+          |> Debug.log("Slot #{s} empty, adding a proposal: #{inspect({s, c})}")
+          |> add_proposal(proposal)
+          |> Debug.log("Proposals: #{MapSet.size(self.proposals)} \n #{inspect(self.proposals)}")
 
-            if not self.active, do: self |> next
+        if not self.active, do: self |> next
 
-            self
-            |> spawn_commander(proposal)
-            |> Debug.log("Commander spawned for: #{inspect(c)} in slot #{s}", :success)
-            |> next
+        self
+        |> spawn_commander(proposal)
+        |> Debug.log("Commander spawned for: #{inspect(c)} in slot #{s}", :success)
+        |> next
 
-          {:ADOPTED, ^ballot_num, pvalues} ->
-            self =
-              self
-              |> Debug.log("ADOPTED received: ballot: #{inspect(ballot_num)}", :success)
-              |> Debug.log(
-                "Proposals before update #{inspect(self.proposals)}\n" <>
-                  "--> Pvalues: #{inspect(pvalues)}\n" <>
-                  "--> Pmax: #{inspect(pmax(pvalues))}"
-              )
-              |> update_proposals(pmax(pvalues))
-              |> Debug.log("Proposals after update #{inspect(self.proposals)}")
+      {:ADOPTED, b, pvalues} ->
+        # We cannot just pin the value of self.ballot_num in the match because
+        # we might have updated the value of the timeout in the meantime in which case the ballot will be different.
+        if not BallotNumber.equal?(b, self.ballot_num), do: self |> next
 
-            commander_spawning_logs =
-              for {s, c} = proposal <- self.proposals, into: [] do
-                self |> spawn_commander(proposal)
-                "Commander spawned: command: #{inspect(c)} in slot #{s}"
-              end
+        self =
+          self
+          |> Debug.log("ADOPTED received: ballot: #{inspect(b)}", :success)
+          |> Debug.log(
+            "Proposals before update #{inspect(self.proposals)}\n" <>
+              "--> Pvalues: #{inspect(pvalues)}\n" <>
+              "--> Pmax: #{inspect(pmax(pvalues))}"
+          )
+          |> update_proposals(pmax(pvalues))
+          |> Debug.log("Proposals after update #{inspect(self.proposals)}")
 
-            self
-            |> Debug.log(Enum.join(commander_spawning_logs, "\n--> "))
-            |> activate
-            |> next
+        commander_spawning_logs =
+          for {s, c} = proposal <- self.proposals, into: [] do
+            self |> spawn_commander(proposal)
+            "Commander spawned: command: #{inspect(c)} in slot #{s}"
+          end
 
-          {:PREEMPTED, b} ->
-            self =
-              self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
+        self
+        |> Debug.log(Enum.join(commander_spawning_logs, "\n--> "))
+        |> activate
+        |> next
 
-            if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
+      {:RESPONSE_REQUESTED, requestor} ->
+        send(requestor, {:STILL_ALIVE, self(), self.ballot_num})
 
-            self |> ping_preempting_leader(b)
-        end
-    end
-  end
+      {:PROPOSAL_CHOSEN} ->
+        self
+        |> decrease_timeout
+        |> Monitor.notify(:TIMEOUT_UPDATED, self.timeout)
+        |> next
 
-  defp ping_preempting_leader(self, %BallotNumber{value: value} = b) do
-    preempting_leader = b.leader_pid
-    send(preempting_leader, {:RESPONSE_REQUESTED})
+      {:PREEMPTED, b} ->
+        self = self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
 
-    receive do
-      {:STILL_ALIVE, ^preempting_leader} ->
-        self |> ping_preempting_leader(b)
-    after
-      self.timeout ->
+        if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
+
+        %BallotNumber{value: value} = b
+
         self
         |> deactivate
         |> increase_timeout
         |> Monitor.notify(:TIMEOUT_UPDATED, self.timeout)
         |> update_ballot_number(value)
+        |> ping_preempting_leader(b)
+    end
+  end
+
+  defp ping_preempting_leader(self, b) do
+    preempting_leader = b.leader_pid
+    send(preempting_leader, {:RESPONSE_REQUESTED, self()})
+    self |> Monitor.notify(:PING_SENT)
+
+    receive do
+      {:STILL_ALIVE, ^preempting_leader, current_ballot} ->
+        # Here we invoke the ping with the currenb ballot received from the leader
+        # that way the timeout will be updated
+        self
+        |> Monitor.notify(:PING_RESPONSE_RECEIVED)
+        |> ping_preempting_leader(current_ballot)
+    after
+      b.timeout ->
+        self
         |> spawn_scout
         |> next
     end
