@@ -42,7 +42,7 @@ defmodule Configuration do
       # time (ms) to sleep before sending new request
       client_sleep: 2,
       # time (ms) to stop sending further requests
-      client_stop: 15_000,
+      client_stop: 15_0000,
       # :round_robin, :quorum or :broadcast
       send_policy: :round_robin,
       # number of active bank accounts (init balance=0)
@@ -56,7 +56,7 @@ defmodule Configuration do
       # determines if a leader waits before retrying after being preempted
       wait_before_retrying: false,
       # maximum waiting time after preemption (miliseconds)
-      leader_starting_timeout: 100,
+      leader_starting_timeout: 400,
       leader_timeout_increase_factor: 1.3,
       leader_timeout_decrease_const: 10,
       min_leader_timeout: 2,

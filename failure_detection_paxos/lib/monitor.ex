@@ -45,8 +45,16 @@ defmodule Monitor do
     Map.put(self, :scouts_finished, Map.put(self.scouts_finished, k, v))
   end
 
+  def timeout_increased(self, k, v) do
+    Map.put(self, :timeout_increased, Map.put(self.timeout_increased, k, v))
+  end
+
   def timeout_updated(self, k, v) do
     Map.put(self, :leader_timeouts, Map.put(self.leader_timeouts, k, v))
+  end
+
+  def timeout_decreased(self, k, v) do
+    Map.put(self, :timeout_decreased, Map.put(self.timeout_decreased, k, v))
   end
 
   def timeout_update_count(self, k, v) do
@@ -78,6 +86,8 @@ defmodule Monitor do
       commanders_preempted: Map.new(),
       commanders_finished: Map.new(),
       leader_timeouts: Map.new(),
+      timeout_increased: Map.new(),
+      timeout_decreased: Map.new(),
       leader_timeout_update_counts: Map.new(),
       pings_sent: Map.new(),
       pings_received: Map.new()
@@ -185,11 +195,23 @@ defmodule Monitor do
         |> pings_received(server_num, value + 1)
         |> next()
 
-      {:TIMEOUT_UPDATED, leader_num, new_timeout_value} ->
+      {:TIMEOUT_INCREASED, leader_num, new_timeout_value} ->
         value = Map.get(self.leader_timeout_update_counts, leader_num, 0)
+        increase_counts = Map.get(self.timeout_increased, leader_num, 0)
 
         self
         |> timeout_updated(leader_num, new_timeout_value)
+        |> timeout_increased(leader_num, increase_counts + 1)
+        |> timeout_update_count(leader_num, value + 1)
+        |> next()
+
+      {:TIMEOUT_DECREASED, leader_num, new_timeout_value} ->
+        value = Map.get(self.leader_timeout_update_counts, leader_num, 0)
+        decrease_counts = Map.get(self.timeout_decreased, leader_num, 0)
+
+        self
+        |> timeout_updated(leader_num, new_timeout_value)
+        |> timeout_decreased(leader_num, decrease_counts + 1)
         |> timeout_update_count(leader_num, value + 1)
         |> next()
 
@@ -220,6 +242,10 @@ defmodule Monitor do
           IO.puts("time = #{clock}      leader timeouts = #{inspect(sorted)}")
           sorted = self.leader_timeout_update_counts |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}      timeout updates = #{inspect(sorted)}")
+          sorted = self.timeout_increased |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}    timeout increases = #{inspect(sorted)}")
+          sorted = self.timeout_decreased |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}    timeout decreases = #{inspect(sorted)}")
           sorted = self.pings_sent |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}   ping messages sent = #{inspect(sorted)}")
           sorted = self.pings_received |> Map.to_list() |> List.keysort(0)

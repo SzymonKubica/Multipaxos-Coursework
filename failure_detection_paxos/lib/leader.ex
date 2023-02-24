@@ -35,14 +35,16 @@ defmodule Leader do
   end
 
   defp decrease_timeout(self) do
+    new_timeout =
+      max(
+        self.config.min_leader_timeout,
+        round(self.timeout - self.config.leader_timeout_decrease_const)
+      )
+
     %{
       self
-      | timeout:
-          max(
-            self.config.min_leader_timeout,
-            round(self.timeout - self.config.leader_timeout_decrease_const)
-          ),
-        ballot_num: %BallotNumber{self.ballot_num | timeout: self.timeout}
+      | timeout: new_timeout,
+        ballot_num: %BallotNumber{self.ballot_num | timeout: new_timeout}
     }
   end
 
@@ -78,13 +80,16 @@ defmodule Leader do
   def next(self) do
     receive do
       {:RESPONSE_REQUESTED, requestor} ->
-        send(requestor, {:STILL_ALIVE, self(), self.ballot_num})
+        if self.active do
+          send(requestor, {:STILL_ALIVE, self(), self.ballot_num})
+        end
+
         self |> next
 
       {:PROPOSAL_CHOSEN} ->
         self
         |> decrease_timeout
-        |> Monitor.notify(:TIMEOUT_UPDATED, self.timeout)
+        |> Monitor.notify(:TIMEOUT_DECREASED, self.timeout)
         |> next
     after
       0 ->
@@ -149,7 +154,7 @@ defmodule Leader do
             self
             |> deactivate
             |> increase_timeout
-            |> Monitor.notify(:TIMEOUT_UPDATED, self.timeout)
+            |> Monitor.notify(:TIMEOUT_INCREASED, self.timeout)
             |> update_ballot_number(value)
             |> ping_preempting_leader(b)
         end
