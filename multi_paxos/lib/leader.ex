@@ -44,6 +44,7 @@ defmodule Leader do
   end
 
   def next(self) do
+    Debug.letter(self.config, "L")
     ballot_num = self.ballot_num
 
     receive do

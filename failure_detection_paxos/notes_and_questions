@@ -1,0 +1,5 @@
+-> Does 'the leader associates an initial timeout with each ballot' mean that
+   the timeout is visible on the ballot and other leaders need to respect it before
+   they try to preempt it? I think it would make sense
+
+-> What if you ping a leader working on some ballot but he has moved to another one.

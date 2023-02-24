@@ -60,6 +60,8 @@ defmodule Replica do
   end
 
   defp next(self) do
+    Debug.letter(self.config, "R")
+
     self =
       receive do
         {:CLIENT_REQUEST, c} ->
@@ -87,7 +89,7 @@ defmodule Replica do
 
     self = self |> try_to_reconfigure
 
-    if slot_in_already_decided?(self), do: self |> increment_slot_in |> next
+    if slot_in_already_decided?(self), do: self |> increment_slot_in |> propose
 
     c = get_next_request(self)
 

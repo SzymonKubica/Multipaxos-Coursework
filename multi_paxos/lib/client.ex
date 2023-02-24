@@ -35,6 +35,7 @@ defmodule Client do
   end
 
   defp next(self) do
+    Debug.letter(self.config, "C")
     # Warning. Setting client_sleep to 0 may overload the system
     # with lots of requests and lots of spawned processes.
 

@@ -56,9 +56,9 @@ defmodule Configuration do
       # determines if a leader waits before retrying after being preempted
       wait_before_retrying: false,
       # maximum waiting time after preemption (miliseconds)
-      leader_starting_timeout: 10,
+      leader_starting_timeout: 100,
       leader_timeout_increase_factor: 1.3,
-      leader_timeout_decrease_const: 20,
+      leader_timeout_decrease_const: 10,
       min_leader_timeout: 2,
       max_leader_timeout: 1000,
       # server_num => crash_after_time(ms)

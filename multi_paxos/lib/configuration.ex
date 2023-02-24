@@ -72,6 +72,13 @@ defmodule Configuration do
     }
   end
 
+  def params(:few_requests) do
+    Map.merge(
+      params(:default),
+      %{max_requests: 5}
+    )
+  end
+
   def params(:debug) do
     Map.merge(
       params(:default),

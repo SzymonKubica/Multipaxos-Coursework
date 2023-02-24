@@ -1,1411 +1,2100 @@
 mix compile
 Compiling 1 file (.ex)
---> Starting Multipaxos at multipaxos_36_szymon@127.0.0.1 (172.18.0.1)
+--> Starting Multipaxos at multipaxos_34_szymon@127.0.0.1 (172.19.0.1)
   client_sleep 2
   client_stop 15000
   crash_servers %{}
   debug_level 2
+  leader_starting_timeout 10
+  leader_timeout_decrease_const 20
+  leader_timeout_increase_factor 1.3
   line_num 0
-  logger_level %{acceptor: :quiet, client: :quiet, commander: :quiet, database: :verbose, leader: :quiet, monitor: :quiet, replica: :verbose, scout: :quiet}
+  logger_level %{acceptor: :quiet, client: :quiet, commander: :quiet, database: :verbose, leader: :quiet, monitor: :quiet, replica: :quiet, scout: :quiet}
   max_amount 1000
-  max_requests 5
+  max_leader_timeout 1000
+  max_requests 500
+  max_wait_time 1000
+  min_leader_timeout 2
+  min_wait_time 500
   monitor #PID<0.146.0>
   n_accounts 100
   n_clients 5
   n_servers 5
-  node_location "multipaxos_36_szymon@127.0.0.1 (172.18.0.1)"
+  node_location "multipaxos_34_szymon@127.0.0.1 (172.19.0.1)"
   node_name "Multipaxos"
   node_num ""
-  node_suffix "36_szymon@127.0.0.1"
+  node_suffix "34_szymon@127.0.0.1"
   node_type "Multipaxos"
-  param_setup :debug
+  param_setup :random_leader_wait
   print_after 1000
   send_policy :round_robin
   start_function :cluster_start
   timelimit 15000
+  wait_before_retrying true
   window_size 10
---> Starting Server1 at server1_36_szymon@127.0.0.1 (172.18.0.1)
---> Starting Server2 at server2_36_szymon@127.0.0.1 (172.18.0.1)
---> Starting Server3 at server3_36_szymon@127.0.0.1 (172.18.0.1)
---> Starting Server4 at server4_36_szymon@127.0.0.1 (172.18.0.1)
---> Starting Server5 at server5_36_szymon@127.0.0.1 (172.18.0.1)
---> Starting Client1 at client1_36_szymon@127.0.0.1 (172.18.0.1)
---> Starting Client3 at client3_36_szymon@127.0.0.1 (172.18.0.1)
---> Starting Client4 at client4_36_szymon@127.0.0.1 (172.18.0.1)
-  Client 1 going to sleep, sent = 5
---> Starting Client2 at client2_36_szymon@127.0.0.1 (172.18.0.1)
-Replica4: log_0
---> CLIENT_REQUEST: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}}.
-
-Replica1: log_0
---> CLIENT_REQUEST: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}}.
-
-Replica1: log_1
---> New request proposed: {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_2
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_3
---> Comparing commands: 
-
-              --> {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} 
-
-              --> {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} 
-
-              --> equal: true
-
-Replica1: log_4
---> Perform: {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_5
---> Command sent to DB: {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Database1: log_0
---> Executed transaction: {:MOVE, 103, 52, 93, "1_3"} in slot 1
-
-Replica4: log_1
---> New request proposed: {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 1
-
-Replica4: log_2
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-  Client 4 going to sleep, sent = 5
-  Client 3 going to sleep, sent = 5
-Replica4: log_3
---> Comparing commands: 
-
-              --> {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} 
-
-              --> {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} 
-
-              --> equal: false
-
-Replica1: log_6
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_4
---> Perform: {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_5
---> Command sent to DB: {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Database4: log_0
---> Executed transaction: {:MOVE, 103, 52, 93, "1_3"} in slot 1
-
-Replica3: log_0
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_6
---> New request proposed: {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica4: log_7
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_8
---> CLIENT_REQUEST: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}}.
-
-Replica4: log_9
---> New request proposed: {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica1: log_7
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_10
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_11
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
---> Starting Client5 at client5_36_szymon@127.0.0.1 (172.18.0.1)
-Replica4: log_12
---> Comparing commands: 
-
-              --> {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} 
-
-              --> {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} 
-
-              --> equal: true
-
-Replica1: log_8
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_0
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_1
---> Perform: {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_9
---> Perform: {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica1: log_10
---> Command sent to DB: {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Database1: log_0
---> Executed transaction: {:MOVE, 847, 2, 22, "1_1"} in slot 2
-
-Replica3: log_2
---> Command sent to DB: {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Database3: log_0
---> Executed transaction: {:MOVE, 103, 52, 93, "1_3"} in slot 1
-
-Replica2: log_1
---> Perform: {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_11
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_2
---> Command sent to DB: {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Database2: log_0
---> Executed transaction: {:MOVE, 103, 52, 93, "1_3"} in slot 1
-
-Replica3: log_3
---> CLIENT_REQUEST: perform {#PID<19037.149.0>, 1, {:MOVE, 655, 10, 14, "1_0"}}.
-
-Replica2: log_3
---> CLIENT_REQUEST: perform {#PID<19036.149.0>, 5, {:MOVE, 118, 99, 7, "1_4"}}.
-
-Replica3: log_4
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_4
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_12
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica3: log_5
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-  Client 2 going to sleep, sent = 5
-Replica3: log_6
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica1: log_13
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_5
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_14
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica1: log_15
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica3: log_7
---> Perform: {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica1: log_16
---> Perform: {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica1: log_17
---> Command sent to DB: {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Database1: log_0
---> Executed transaction: {:MOVE, 671, 81, 82, "4_1"} in slot 3
-
-Replica1: log_18
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica1: log_19
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica1: log_20
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_6
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_7
---> Perform: {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_8
---> Command sent to DB: {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica1: log_21
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_22
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica1: log_23
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Database2: log_0
---> Executed transaction: {:MOVE, 847, 2, 22, "1_1"} in slot 2
-
-Replica2: log_9
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_10
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_11
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_12
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_13
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica2: log_14
---> Perform: {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica2: log_15
---> Command sent to DB: {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Database2: log_0
---> Executed transaction: {:MOVE, 671, 81, 82, "4_1"} in slot 3
-
-Replica3: log_8
---> Command sent to DB: {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Database3: log_0
---> Executed transaction: {:MOVE, 847, 2, 22, "1_1"} in slot 2
-
-Replica4: log_13
---> Perform: {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_16
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica4: log_14
---> Command sent to DB: {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Database4: log_0
---> Executed transaction: {:MOVE, 847, 2, 22, "1_1"} in slot 2
-
-Replica3: log_9
---> CLIENT_REQUEST: perform {#PID<19038.149.0>, 1, {:MOVE, 979, 13, 36, "4_0"}}.
-
-Replica2: log_17
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica3: log_10
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_18
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_11
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_19
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_12
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_13
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica3: log_14
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica3: log_15
---> Perform: {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Database3: log_0
---> Executed transaction: {:MOVE, 671, 81, 82, "4_1"} in slot 3
-
-Replica3: log_16
---> Command sent to DB: {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica3: log_17
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica3: log_18
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica3: log_19
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_20
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_21
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica3: log_22
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica3: log_23
---> CLIENT_REQUEST: perform {#PID<19042.149.0>, 1, {:MOVE, 838, 63, 67, "3_0"}}.
-
-Replica2: log_20
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica2: log_21
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_22
---> CLIENT_REQUEST: perform {#PID<19037.149.0>, 5, {:MOVE, 712, 99, 40, "4_4"}}.
-
-Replica1: log_24
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_15
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_25
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_23
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_24
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_26
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica2: log_24
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica3: log_25
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica4: log_16
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_25
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica1: log_27
---> CLIENT_REQUEST: perform {#PID<19046.149.0>, 4, {:MOVE, 83, 78, 91, "4_3"}}.
-
-Replica4: log_17
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_26
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica4: log_18
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica4: log_19
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica4: log_20
---> Comparing commands: 
-
-              --> {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} 
-
-              --> {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} 
-
-              --> equal: true
-
-Replica4: log_21
---> Perform: {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica4: log_22
---> Command sent to DB: {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Database4: log_0
---> Executed transaction: {:MOVE, 671, 81, 82, "4_1"} in slot 3
-
-Replica4: log_23
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica4: log_24
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica4: log_25
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_26
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_27
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica4: log_28
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica4: log_29
---> CLIENT_REQUEST: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}}.
-
-Replica4: log_30
---> New request proposed: {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica4: log_31
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_27
---> CLIENT_REQUEST: perform {#PID<19048.148.0>, 1, {:MOVE, 960, 3, 14, "2_0"}}.
-
-Replica4: log_32
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica1: log_28
---> CLIENT_REQUEST: perform {#PID<19047.149.0>, 4, {:MOVE, 355, 22, 50, "3_3"}}.
-
-Replica4: log_33
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica4: log_34
---> CLIENT_REQUEST: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}}.
-
-Replica5: log_0
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_35
---> New request proposed: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica5: log_1
---> Perform: {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_26
---> CLIENT_REQUEST: perform {#PID<19047.149.0>, 5, {:MOVE, 601, 70, 19, "3_4"}}.
-
-Replica5: log_2
---> Command sent to DB: {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+--> Starting Server1 at server1_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Server2 at server2_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Server3 at server3_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Server4 at server4_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Server5 at server5_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Client1 at client1_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Client2 at client2_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Client3 at client3_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Client4 at client4_34_szymon@127.0.0.1 (172.19.0.1)
+--> Starting Client5 at client5_34_szymon@127.0.0.1 (172.19.0.1)
+Database5: log_0
+--> Executed transaction: {:MOVE, 592, 52, 6, "1_2"} in slot 1
 
 Database5: log_0
---> Executed transaction: {:MOVE, 103, 52, 93, "1_3"} in slot 1
-
-Replica5: log_3
---> CLIENT_REQUEST: perform {#PID<19011.149.0>, 3, {:MOVE, 116, 37, 58, "1_2"}}.
-
-Replica5: log_4
---> CLIENT_REQUEST: perform {#PID<19033.149.0>, 3, {:MOVE, 113, 62, 86, "4_2"}}.
-
-Replica5: log_5
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_6
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_7
---> Perform: {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_8
---> Command sent to DB: {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+--> Executed transaction: {:MOVE, 115, 6, 57, "2_4"} in slot 2
 
 Database5: log_0
---> Executed transaction: {:MOVE, 847, 2, 22, "1_1"} in slot 2
-
-Replica5: log_9
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_10
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_11
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_12
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_13
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_14
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica5: log_15
---> Perform: {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica5: log_16
---> Command sent to DB: {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+--> Executed transaction: {:MOVE, 498, 12, 100, "2_7"} in slot 3
 
 Database5: log_0
---> Executed transaction: {:MOVE, 671, 81, 82, "4_1"} in slot 3
-
-Replica5: log_17
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_18
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica5: log_19
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_20
---> CLIENT_REQUEST: perform {#PID<19038.149.0>, 3, {:MOVE, 922, 82, 86, "3_2"}}.
-
-Replica5: log_21
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_22
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica5: log_23
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_24
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_25
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_26
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica5: log_27
---> CLIENT_REQUEST: perform {#PID<19039.148.0>, 3, {:MOVE, 726, 41, 38, "2_2"}}.
-
-  Client 5 going to sleep, sent = 5
-Replica3: log_28
---> CLIENT_REQUEST: perform {#PID<19049.149.0>, 1, {:MOVE, 502, 54, 4, "5_0"}}.
-
-Replica2: log_27
---> CLIENT_REQUEST: perform {#PID<19048.148.0>, 5, {:MOVE, 550, 6, 35, "2_4"}}.
-
-Replica1: log_29
---> CLIENT_REQUEST: perform {#PID<19048.148.0>, 4, {:MOVE, 854, 96, 50, "2_3"}}.
-
-Replica3: log_29
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_28
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_28
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica2: log_29
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_36
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_29
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_30
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica3: log_30
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_31
---> Perform: {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica2: log_32
---> Command sent to DB: {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Database2: log_0
---> Executed transaction: {:MOVE, 901, 54, 84, "3_1"} in slot 4
-
-Replica2: log_33
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica5: log_30
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica5: log_31
---> Perform: {#PID<19038.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica5: log_32
---> Command sent to DB: {#PID<19038.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+--> Executed transaction: {:MOVE, 227, 72, 68, "1_7"} in slot 4
 
 Database5: log_0
---> Executed transaction: {:MOVE, 901, 54, 84, "3_1"} in slot 4
-
-Replica5: log_33
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica3: log_31
---> DECISION: perform {#PID<19042.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica3: log_32
---> Perform: {#PID<19042.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica2: log_34
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica5: log_34
---> DECISION: perform {#PID<19039.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica4: log_37
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_35
---> Perform: {#PID<19039.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica4: log_38
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica2: log_35
---> Perform: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica5: log_36
---> Command sent to DB: {#PID<19039.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica4: log_39
---> Comparing commands: 
-
-              --> {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} 
-
-              --> {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} 
-
-              --> equal: true
-
-Replica2: log_36
---> Command sent to DB: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+--> Executed transaction: {:MOVE, 977, 5, 18, "3_2"} in slot 5
 
 Database5: log_0
---> Executed transaction: {:MOVE, 873, 27, 28, "2_1"} in slot 5
+--> Executed transaction: {:MOVE, 819, 57, 4, "2_12"} in slot 6
 
-Replica3: log_33
---> Command sent to DB: {#PID<19042.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Database3: log_0
---> Executed transaction: {:MOVE, 901, 54, 84, "3_1"} in slot 4
-
-Database2: log_0
---> Executed transaction: {:MOVE, 873, 27, 28, "2_1"} in slot 5
-
-Replica3: log_34
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica4: log_40
---> Perform: {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica4: log_41
---> Command sent to DB: {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database5: log_0
+--> Executed transaction: {:MOVE, 87, 24, 63, "2_17"} in slot 7
 
 Database4: log_0
---> Executed transaction: {:MOVE, 901, 54, 84, "3_1"} in slot 4
+--> Executed transaction: {:MOVE, 592, 52, 6, "1_2"} in slot 1
 
-Replica4: log_42
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database1: log_0
+--> Executed transaction: {:MOVE, 592, 52, 6, "1_2"} in slot 1
 
-Replica3: log_35
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database1: log_0
+--> Executed transaction: {:MOVE, 115, 6, 57, "2_4"} in slot 2
 
-Replica4: log_43
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica3: log_36
---> Perform: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica4: log_44
---> Comparing commands: 
-
-              --> {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} 
-
-              --> {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} 
-
-              --> equal: true
-
-Replica3: log_37
---> Command sent to DB: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Database3: log_0
---> Executed transaction: {:MOVE, 873, 27, 28, "2_1"} in slot 5
-
-Replica4: log_45
---> Perform: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica4: log_46
---> Command sent to DB: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Database4: log_0
---> Executed transaction: {:MOVE, 873, 27, 28, "2_1"} in slot 5
-
-Replica4: log_47
---> CLIENT_REQUEST: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}}.
-
-Replica4: log_48
---> New request proposed: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica3: log_38
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica3: log_39
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_37
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica2: log_37
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica5: log_38
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica3: log_40
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica5: log_39
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica2: log_38
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_40
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica5: log_41
---> DECISION: perform {#PID<19039.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica3: log_41
---> DECISION: perform {#PID<19042.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica1: log_30
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica5: log_42
---> DECISION: perform {#PID<19045.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica3: log_42
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica5: log_43
---> Perform: {#PID<19045.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica4: log_49
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica4: log_50
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica4: log_51
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica4: log_52
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica4: log_53
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica4: log_54
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica4: log_55
---> Comparing commands: 
-
-              --> {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} 
-
-              --> {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} 
-
-              --> equal: true
-
-Replica4: log_56
---> Perform: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Database4: log_0
---> Executed transaction: {:MOVE, 250, 7, 72, "5_1"} in slot 6
-
-Replica4: log_57
---> Command sent to DB: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica2: log_39
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica2: log_40
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica2: log_41
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica2: log_42
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica2: log_43
---> Perform: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica5: log_44
---> Command sent to DB: {#PID<19045.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database1: log_0
+--> Executed transaction: {:MOVE, 498, 12, 100, "2_7"} in slot 3
 
 Database5: log_0
---> Executed transaction: {:MOVE, 250, 7, 72, "5_1"} in slot 6
-
-Replica2: log_44
---> Command sent to DB: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Database2: log_0
---> Executed transaction: {:MOVE, 250, 7, 72, "5_1"} in slot 6
-
-Replica1: log_31
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_32
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica1: log_33
---> Perform: {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica1: log_34
---> Command sent to DB: {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+--> Executed transaction: {:MOVE, 37, 49, 92, "1_12"} in slot 8
 
 Database1: log_0
---> Executed transaction: {:MOVE, 901, 54, 84, "3_1"} in slot 4
+--> Executed transaction: {:MOVE, 227, 72, 68, "1_7"} in slot 4
 
-Replica1: log_35
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database1: log_0
+--> Executed transaction: {:MOVE, 977, 5, 18, "3_2"} in slot 5
 
-Replica3: log_43
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database1: log_0
+--> Executed transaction: {:MOVE, 819, 57, 4, "2_12"} in slot 6
 
-Replica3: log_44
---> Perform: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database1: log_0
+--> Executed transaction: {:MOVE, 87, 24, 63, "2_17"} in slot 7
 
-Replica3: log_45
---> Command sent to DB: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database4: log_0
+--> Executed transaction: {:MOVE, 115, 6, 57, "2_4"} in slot 2
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 498, 12, 100, "2_7"} in slot 3
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 227, 72, 68, "1_7"} in slot 4
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 977, 5, 18, "3_2"} in slot 5
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 819, 57, 4, "2_12"} in slot 6
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 87, 24, 63, "2_17"} in slot 7
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 37, 49, 92, "1_12"} in slot 8
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 998, 39, 59, "3_7"} in slot 9
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 334, 64, 7, "2_22"} in slot 10
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 847, 90, 10, "1_6"} in slot 11
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 215, 51, 78, "2_1"} in slot 12
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 248, 13, 80, "2_6"} in slot 13
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 847, 81, 43, "3_1"} in slot 14
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 35, 88, 57, "2_11"} in slot 15
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 600, 93, 78, "1_11"} in slot 16
 
 Database3: log_0
---> Executed transaction: {:MOVE, 250, 7, 72, "5_1"} in slot 6
+--> Executed transaction: {:MOVE, 592, 52, 6, "1_2"} in slot 1
 
-Replica2: log_45
---> CLIENT_REQUEST: perform {#PID<19049.149.0>, 5, {:MOVE, 413, 66, 47, "5_4"}}.
-
-Replica5: log_45
---> CLIENT_REQUEST: perform {#PID<19045.149.0>, 3, {:MOVE, 234, 75, 56, "5_2"}}.
-
-Replica1: log_36
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica1: log_37
---> Perform: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica1: log_38
---> Command sent to DB: {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database4: log_0
+--> Executed transaction: {:MOVE, 554, 93, 94, "2_21"} in slot 17
 
 Database1: log_0
---> Executed transaction: {:MOVE, 873, 27, 28, "2_1"} in slot 5
+--> Executed transaction: {:MOVE, 37, 49, 92, "1_12"} in slot 8
 
-Replica1: log_39
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
-
-Replica1: log_40
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
-
-Replica1: log_41
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
-
-Replica1: log_42
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
-
-Replica1: log_43
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
-
-Replica1: log_44
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica1: log_45
---> Perform: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
-
-Replica1: log_46
---> Command sent to DB: {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database3: log_0
+--> Executed transaction: {:MOVE, 115, 6, 57, "2_4"} in slot 2
 
 Database1: log_0
---> Executed transaction: {:MOVE, 250, 7, 72, "5_1"} in slot 6
+--> Executed transaction: {:MOVE, 998, 39, 59, "3_7"} in slot 9
 
-Replica1: log_47
---> CLIENT_REQUEST: perform {#PID<19049.149.0>, 4, {:MOVE, 732, 3, 75, "5_3"}}.
+Database3: log_0
+--> Executed transaction: {:MOVE, 498, 12, 100, "2_7"} in slot 3
 
-Replica5: log_46
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database5: log_0
+--> Executed transaction: {:MOVE, 998, 39, 59, "3_7"} in slot 9
 
-Replica3: log_46
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database3: log_0
+--> Executed transaction: {:MOVE, 227, 72, 68, "1_7"} in slot 4
 
-Replica2: log_46
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database3: log_0
+--> Executed transaction: {:MOVE, 977, 5, 18, "3_2"} in slot 5
 
-Replica2: log_47
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database3: log_0
+--> Executed transaction: {:MOVE, 819, 57, 4, "2_12"} in slot 6
 
-Replica2: log_48
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database3: log_0
+--> Executed transaction: {:MOVE, 87, 24, 63, "2_17"} in slot 7
 
-Replica4: log_58
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database3: log_0
+--> Executed transaction: {:MOVE, 37, 49, 92, "1_12"} in slot 8
 
-Replica2: log_49
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database3: log_0
+--> Executed transaction: {:MOVE, 998, 39, 59, "3_7"} in slot 9
 
-Replica2: log_50
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database3: log_0
+--> Executed transaction: {:MOVE, 334, 64, 7, "2_22"} in slot 10
 
-Replica4: log_59
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database3: log_0
+--> Executed transaction: {:MOVE, 847, 90, 10, "1_6"} in slot 11
 
-Replica3: log_47
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database3: log_0
+--> Executed transaction: {:MOVE, 215, 51, 78, "2_1"} in slot 12
 
-Replica2: log_51
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database3: log_0
+--> Executed transaction: {:MOVE, 248, 13, 80, "2_6"} in slot 13
 
-Replica4: log_60
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database3: log_0
+--> Executed transaction: {:MOVE, 847, 81, 43, "3_1"} in slot 14
 
-Replica4: log_61
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database3: log_0
+--> Executed transaction: {:MOVE, 35, 88, 57, "2_11"} in slot 15
 
-Replica4: log_62
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database3: log_0
+--> Executed transaction: {:MOVE, 600, 93, 78, "1_11"} in slot 16
 
-Replica4: log_63
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database3: log_0
+--> Executed transaction: {:MOVE, 554, 93, 94, "2_21"} in slot 17
 
-Replica5: log_47
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database1: log_0
+--> Executed transaction: {:MOVE, 334, 64, 7, "2_22"} in slot 10
 
-Replica3: log_48
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database5: log_0
+--> Executed transaction: {:MOVE, 334, 64, 7, "2_22"} in slot 10
 
-Replica5: log_48
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database1: log_0
+--> Executed transaction: {:MOVE, 847, 90, 10, "1_6"} in slot 11
 
-Replica3: log_49
---> DECISION: perform {#PID<19042.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database1: log_0
+--> Executed transaction: {:MOVE, 215, 51, 78, "2_1"} in slot 12
 
-Replica5: log_49
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database5: log_0
+--> Executed transaction: {:MOVE, 847, 90, 10, "1_6"} in slot 11
 
-Replica1: log_48
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database5: log_0
+--> Executed transaction: {:MOVE, 215, 51, 78, "2_1"} in slot 12
 
-Replica5: log_50
---> DECISION: perform {#PID<19039.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database1: log_0
+--> Executed transaction: {:MOVE, 248, 13, 80, "2_6"} in slot 13
 
-Replica5: log_51
---> DECISION: perform {#PID<19045.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database1: log_0
+--> Executed transaction: {:MOVE, 847, 81, 43, "3_1"} in slot 14
 
-Replica1: log_49
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database1: log_0
+--> Executed transaction: {:MOVE, 35, 88, 57, "2_11"} in slot 15
 
-Replica1: log_50
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database1: log_0
+--> Executed transaction: {:MOVE, 600, 93, 78, "1_11"} in slot 16
 
-Replica1: log_51
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database1: log_0
+--> Executed transaction: {:MOVE, 554, 93, 94, "2_21"} in slot 17
 
-Replica1: log_52
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 592, 52, 6, "1_2"} in slot 1
 
-Replica1: log_53
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database5: log_0
+--> Executed transaction: {:MOVE, 248, 13, 80, "2_6"} in slot 13
 
-Replica3: log_50
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 115, 6, 57, "2_4"} in slot 2
 
-Replica3: log_51
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database2: log_0
+--> Executed transaction: {:MOVE, 498, 12, 100, "2_7"} in slot 3
 
-Replica1: log_54
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database2: log_0
+--> Executed transaction: {:MOVE, 227, 72, 68, "1_7"} in slot 4
 
-Replica3: log_52
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database2: log_0
+--> Executed transaction: {:MOVE, 977, 5, 18, "3_2"} in slot 5
 
-Replica5: log_52
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database2: log_0
+--> Executed transaction: {:MOVE, 819, 57, 4, "2_12"} in slot 6
 
-Replica3: log_53
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database5: log_0
+--> Executed transaction: {:MOVE, 847, 81, 43, "3_1"} in slot 14
 
-Replica5: log_53
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database2: log_0
+--> Executed transaction: {:MOVE, 87, 24, 63, "2_17"} in slot 7
 
-Replica3: log_54
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database2: log_0
+--> Executed transaction: {:MOVE, 37, 49, 92, "1_12"} in slot 8
 
-Replica5: log_54
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database5: log_0
+--> Executed transaction: {:MOVE, 35, 88, 57, "2_11"} in slot 15
 
-Replica4: log_64
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database5: log_0
+--> Executed transaction: {:MOVE, 600, 93, 78, "1_11"} in slot 16
 
-Replica5: log_55
---> DECISION: perform {#PID<19045.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database5: log_0
+--> Executed transaction: {:MOVE, 554, 93, 94, "2_21"} in slot 17
 
-Replica5: log_56
---> DECISION: perform {#PID<19039.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 998, 39, 59, "3_7"} in slot 9
 
-Replica4: log_65
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database2: log_0
+--> Executed transaction: {:MOVE, 334, 64, 7, "2_22"} in slot 10
 
-Replica5: log_57
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database2: log_0
+--> Executed transaction: {:MOVE, 847, 90, 10, "1_6"} in slot 11
 
-Replica4: log_66
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database2: log_0
+--> Executed transaction: {:MOVE, 215, 51, 78, "2_1"} in slot 12
 
-Replica1: log_55
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database2: log_0
+--> Executed transaction: {:MOVE, 248, 13, 80, "2_6"} in slot 13
 
-Replica4: log_67
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database2: log_0
+--> Executed transaction: {:MOVE, 847, 81, 43, "3_1"} in slot 14
 
-Replica4: log_68
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 35, 88, 57, "2_11"} in slot 15
 
-Replica1: log_56
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database2: log_0
+--> Executed transaction: {:MOVE, 600, 93, 78, "1_11"} in slot 16
 
-Replica4: log_69
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database2: log_0
+--> Executed transaction: {:MOVE, 554, 93, 94, "2_21"} in slot 17
 
-Replica3: log_55
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database1: log_0
+--> Executed transaction: {:MOVE, 824, 55, 67, "2_26"} in slot 18
 
-Replica1: log_57
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database5: log_0
+--> Executed transaction: {:MOVE, 824, 55, 67, "2_26"} in slot 18
 
-Replica2: log_52
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database3: log_0
+--> Executed transaction: {:MOVE, 824, 55, 67, "2_26"} in slot 18
 
-Replica3: log_56
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 824, 55, 67, "2_26"} in slot 18
 
-Replica3: log_57
---> DECISION: perform {#PID<19042.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database3: log_0
+--> Executed transaction: {:MOVE, 412, 49, 13, "3_6"} in slot 19
 
-Replica1: log_58
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 412, 49, 13, "3_6"} in slot 19
 
-Replica1: log_59
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database3: log_0
+--> Executed transaction: {:MOVE, 588, 61, 16, "2_27"} in slot 20
 
-Replica2: log_53
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database5: log_0
+--> Executed transaction: {:MOVE, 412, 49, 13, "3_6"} in slot 19
 
-Replica2: log_54
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database2: log_0
+--> Executed transaction: {:MOVE, 588, 61, 16, "2_27"} in slot 20
 
-Replica2: log_55
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database2: log_0
+--> Executed transaction: {:MOVE, 5, 22, 77, "3_12"} in slot 21
 
-Replica2: log_56
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database3: log_0
+--> Executed transaction: {:MOVE, 5, 22, 77, "3_12"} in slot 21
 
-Replica2: log_57
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database2: log_0
+--> Executed transaction: {:MOVE, 994, 3, 26, "2_18"} in slot 22
 
-Replica1: log_60
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database2: log_0
+--> Executed transaction: {:MOVE, 901, 80, 97, "2_23"} in slot 23
 
-Replica4: log_70
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database2: log_0
+--> Executed transaction: {:MOVE, 870, 15, 13, "2_28"} in slot 24
 
-Replica5: log_58
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database3: log_0
+--> Executed transaction: {:MOVE, 994, 3, 26, "2_18"} in slot 22
 
-Replica2: log_58
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database3: log_0
+--> Executed transaction: {:MOVE, 901, 80, 97, "2_23"} in slot 23
 
-Replica1: log_61
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database2: log_0
+--> Executed transaction: {:MOVE, 858, 67, 6, "3_3"} in slot 25
 
-Replica1: log_62
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database4: log_0
+--> Executed transaction: {:MOVE, 824, 55, 67, "2_26"} in slot 18
 
-Replica3: log_58
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database2: log_0
+--> Executed transaction: {:MOVE, 803, 75, 37, "1_3"} in slot 26
 
-Replica1: log_63
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database4: log_0
+--> Executed transaction: {:MOVE, 412, 49, 13, "3_6"} in slot 19
 
-Replica4: log_71
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database3: log_0
+--> Executed transaction: {:MOVE, 870, 15, 13, "2_28"} in slot 24
 
-Replica2: log_59
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database1: log_0
+--> Executed transaction: {:MOVE, 412, 49, 13, "3_6"} in slot 19
 
-Replica1: log_64
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database5: log_0
+--> Executed transaction: {:MOVE, 588, 61, 16, "2_27"} in slot 20
 
-Replica1: log_65
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database5: log_0
+--> Executed transaction: {:MOVE, 5, 22, 77, "3_12"} in slot 21
 
-Replica2: log_60
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database3: log_0
+--> Executed transaction: {:MOVE, 858, 67, 6, "3_3"} in slot 25
 
-Replica4: log_72
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database5: log_0
+--> Executed transaction: {:MOVE, 994, 3, 26, "2_18"} in slot 22
 
-Replica2: log_61
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database5: log_0
+--> Executed transaction: {:MOVE, 901, 80, 97, "2_23"} in slot 23
 
-Replica2: log_62
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database1: log_0
+--> Executed transaction: {:MOVE, 588, 61, 16, "2_27"} in slot 20
 
-Replica2: log_63
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database5: log_0
+--> Executed transaction: {:MOVE, 870, 15, 13, "2_28"} in slot 24
 
-Replica5: log_59
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database4: log_0
+--> Executed transaction: {:MOVE, 588, 61, 16, "2_27"} in slot 20
 
-Replica4: log_73
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database5: log_0
+--> Executed transaction: {:MOVE, 858, 67, 6, "3_3"} in slot 25
 
-Replica3: log_59
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database3: log_0
+--> Executed transaction: {:MOVE, 803, 75, 37, "1_3"} in slot 26
 
-Replica5: log_60
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database1: log_0
+--> Executed transaction: {:MOVE, 5, 22, 77, "3_12"} in slot 21
 
-Replica4: log_74
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database4: log_0
+--> Executed transaction: {:MOVE, 5, 22, 77, "3_12"} in slot 21
 
-Replica5: log_61
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database5: log_0
+--> Executed transaction: {:MOVE, 803, 75, 37, "1_3"} in slot 26
 
-Replica5: log_62
---> DECISION: perform {#PID<19039.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database4: log_0
+--> Executed transaction: {:MOVE, 994, 3, 26, "2_18"} in slot 22
 
-Replica5: log_63
---> DECISION: perform {#PID<19045.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database1: log_0
+--> Executed transaction: {:MOVE, 994, 3, 26, "2_18"} in slot 22
 
-Replica3: log_60
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database5: log_0
+--> Executed transaction: {:MOVE, 139, 19, 41, "1_8"} in slot 27
 
-Replica3: log_61
---> DECISION: perform {#PID<19042.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database4: log_0
+--> Executed transaction: {:MOVE, 901, 80, 97, "2_23"} in slot 23
 
-Replica4: log_75
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database4: log_0
+--> Executed transaction: {:MOVE, 870, 15, 13, "2_28"} in slot 24
 
-Replica3: log_62
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database1: log_0
+--> Executed transaction: {:MOVE, 901, 80, 97, "2_23"} in slot 23
 
-Replica3: log_63
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database3: log_0
+--> Executed transaction: {:MOVE, 139, 19, 41, "1_8"} in slot 27
 
-Replica2: log_64
---> DECISION: perform {#PID<19036.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database1: log_0
+--> Executed transaction: {:MOVE, 870, 15, 13, "2_28"} in slot 24
 
-Replica5: log_64
---> DECISION: perform {#PID<19011.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database4: log_0
+--> Executed transaction: {:MOVE, 858, 67, 6, "3_3"} in slot 25
 
-Replica3: log_64
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database4: log_0
+--> Executed transaction: {:MOVE, 803, 75, 37, "1_3"} in slot 26
 
-Replica1: log_66
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database4: log_0
+--> Executed transaction: {:MOVE, 139, 19, 41, "1_8"} in slot 27
 
-Replica4: log_76
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database2: log_0
+--> Executed transaction: {:MOVE, 139, 19, 41, "1_8"} in slot 27
 
-Replica3: log_65
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database1: log_0
+--> Executed transaction: {:MOVE, 858, 67, 6, "3_3"} in slot 25
 
-Replica3: log_66
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database1: log_0
+--> Executed transaction: {:MOVE, 803, 75, 37, "1_3"} in slot 26
 
-Replica4: log_77
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database1: log_0
+--> Executed transaction: {:MOVE, 139, 19, 41, "1_8"} in slot 27
 
-Replica5: log_65
---> DECISION: perform {#PID<19011.149.0>, 2, {:MOVE, 847, 2, 22, "1_1"}} in slot 2
+Database5: log_0
+--> Executed transaction: {:MOVE, 97, 21, 37, "1_77"} in slot 28
 
-Replica3: log_67
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database5: log_0
+--> Executed transaction: {:MOVE, 685, 15, 31, "1_42"} in slot 29
 
-Replica2: log_65
---> DECISION: perform {#PID<19036.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database4: log_0
+--> Executed transaction: {:MOVE, 97, 21, 37, "1_77"} in slot 28
 
-Replica5: log_66
---> DECISION: perform {#PID<19033.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database4: log_0
+--> Executed transaction: {:MOVE, 685, 15, 31, "1_42"} in slot 29
 
-Replica1: log_67
---> DECISION: perform {#PID<19037.149.0>, 4, {:MOVE, 103, 52, 93, "1_3"}} in slot 1
+Database5: log_0
+--> Executed transaction: {:MOVE, 40, 97, 85, "4_47"} in slot 30
 
-Replica4: log_78
---> DECISION: perform {#PID<19041.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database5: log_0
+--> Executed transaction: {:MOVE, 734, 33, 76, "2_85"} in slot 31
 
-Replica3: log_68
---> DECISION: perform {#PID<19042.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database4: log_0
+--> Executed transaction: {:MOVE, 40, 97, 85, "4_47"} in slot 30
 
-Replica5: log_67
---> DECISION: perform {#PID<19039.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database5: log_0
+--> Executed transaction: {:MOVE, 682, 70, 52, "2_70"} in slot 32
 
-Replica4: log_79
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 97, 21, 37, "1_77"} in slot 28
 
-Replica3: log_69
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database5: log_0
+--> Executed transaction: {:MOVE, 165, 6, 9, "1_80"} in slot 33
 
-Replica2: log_66
---> DECISION: perform {#PID<19037.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database5: log_0
+--> Executed transaction: {:MOVE, 491, 79, 25, "4_55"} in slot 34
 
-Replica1: log_68
---> DECISION: perform {#PID<19046.149.0>, 2, {:MOVE, 671, 81, 82, "4_1"}} in slot 3
+Database5: log_0
+--> Executed transaction: {:MOVE, 752, 40, 88, "5_40"} in slot 35
 
-Replica5: log_68
---> DECISION: perform {#PID<19038.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database5: log_0
+--> Executed transaction: {:MOVE, 285, 74, 22, "2_60"} in slot 36
 
-Replica4: log_80
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database5: log_0
+--> Executed transaction: {:MOVE, 611, 21, 51, "1_85"} in slot 37
 
-Replica1: log_69
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database2: log_0
+--> Executed transaction: {:MOVE, 685, 15, 31, "1_42"} in slot 29
 
-Replica5: log_69
---> DECISION: perform {#PID<19045.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database2: log_0
+--> Executed transaction: {:MOVE, 40, 97, 85, "4_47"} in slot 30
 
-Replica4: log_81
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database2: log_0
+--> Executed transaction: {:MOVE, 734, 33, 76, "2_85"} in slot 31
 
-Replica2: log_67
---> DECISION: perform {#PID<19047.149.0>, 2, {:MOVE, 901, 54, 84, "3_1"}} in slot 4
+Database2: log_0
+--> Executed transaction: {:MOVE, 682, 70, 52, "2_70"} in slot 32
 
-Replica1: log_70
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 165, 6, 9, "1_80"} in slot 33
 
-Replica2: log_68
---> DECISION: perform {#PID<19048.148.0>, 2, {:MOVE, 873, 27, 28, "2_1"}} in slot 5
+Database2: log_0
+--> Executed transaction: {:MOVE, 491, 79, 25, "4_55"} in slot 34
 
-Replica1: log_71
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database2: log_0
+--> Executed transaction: {:MOVE, 752, 40, 88, "5_40"} in slot 35
 
-Replica2: log_69
---> DECISION: perform {#PID<19049.149.0>, 2, {:MOVE, 250, 7, 72, "5_1"}} in slot 6
+Database2: log_0
+--> Executed transaction: {:MOVE, 285, 74, 22, "2_60"} in slot 36
 
-time = 1000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 1000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 1000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 1000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 1000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 1000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 1000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 1000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database2: log_0
+--> Executed transaction: {:MOVE, 611, 21, 51, "1_85"} in slot 37
 
-time = 2000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 2000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 2000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 2000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 2000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 2000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 2000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 2000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database4: log_0
+--> Executed transaction: {:MOVE, 734, 33, 76, "2_85"} in slot 31
 
-time = 3000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 3000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 3000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 3000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 3000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 3000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 3000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 3000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database4: log_0
+--> Executed transaction: {:MOVE, 682, 70, 52, "2_70"} in slot 32
 
-time = 4000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 4000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 4000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 4000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 4000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 4000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 4000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 4000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database4: log_0
+--> Executed transaction: {:MOVE, 165, 6, 9, "1_80"} in slot 33
 
-time = 5000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 5000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 5000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 5000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 5000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 5000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 5000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 5000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database3: log_0
+--> Executed transaction: {:MOVE, 97, 21, 37, "1_77"} in slot 28
 
-time = 6000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 6000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 6000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 6000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 6000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 6000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 6000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 6000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database4: log_0
+--> Executed transaction: {:MOVE, 491, 79, 25, "4_55"} in slot 34
 
-time = 7000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 7000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 7000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 7000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 7000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 7000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 7000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 7000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database4: log_0
+--> Executed transaction: {:MOVE, 752, 40, 88, "5_40"} in slot 35
 
-time = 8000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 8000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 8000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 8000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 8000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 8000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 8000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 8000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database3: log_0
+--> Executed transaction: {:MOVE, 685, 15, 31, "1_42"} in slot 29
 
-time = 9000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 9000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 9000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 9000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 9000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 9000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 9000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 9000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database4: log_0
+--> Executed transaction: {:MOVE, 285, 74, 22, "2_60"} in slot 36
 
-time = 10000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 10000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 10000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 10000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 10000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 10000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 10000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 10000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database4: log_0
+--> Executed transaction: {:MOVE, 611, 21, 51, "1_85"} in slot 37
 
-time = 11000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 11000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 11000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 11000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 11000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 11000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 11000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 11000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database3: log_0
+--> Executed transaction: {:MOVE, 40, 97, 85, "4_47"} in slot 30
 
-time = 12000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 12000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 12000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 12000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 12000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 12000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 12000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 12000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database3: log_0
+--> Executed transaction: {:MOVE, 734, 33, 76, "2_85"} in slot 31
 
-  Node server4_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node client3_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node server3_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node client1_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node server5_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node server1_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node server2_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node client4_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node client2_36_szymon@127.0.0.1 exiting - maxtime reached
-  Node client5_36_szymon@127.0.0.1 exiting - maxtime reached
-time = 13000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 13000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 13000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 13000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 13000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 13000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 13000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 13000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database3: log_0
+--> Executed transaction: {:MOVE, 682, 70, 52, "2_70"} in slot 32
 
-time = 14000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 14000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 14000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 14000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 14000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 14000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 14000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 14000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database3: log_0
+--> Executed transaction: {:MOVE, 165, 6, 9, "1_80"} in slot 33
 
-  Node multipaxos_36_szymon@127.0.0.1 exiting - maxtime reached
-time = 15000 client requests seen = [{1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}]
-time = 15000     db requests done = [{1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}]
-time = 15000            scouts up = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 15000     scouts preempted = [{1, 30}, {2, 14}, {3, 4}, {4, 3}, {5, 4}]
-time = 15000          scouts down = [{1, 57}, {2, 48}, {3, 15}, {4, 45}, {5, 21}]
-time = 15000        commanders up = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
-time = 15000 commanders preempted = [{1, 133}, {2, 189}, {3, 37}, {4, 216}, {5, 96}]
-time = 15000      commanders down = [{1, 145}, {2, 198}, {3, 51}, {4, 228}, {5, 102}]
+Database3: log_0
+--> Executed transaction: {:MOVE, 491, 79, 25, "4_55"} in slot 34
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 752, 40, 88, "5_40"} in slot 35
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 285, 74, 22, "2_60"} in slot 36
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 611, 21, 51, "1_85"} in slot 37
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 97, 21, 37, "1_77"} in slot 28
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 685, 15, 31, "1_42"} in slot 29
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 40, 97, 85, "4_47"} in slot 30
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 734, 33, 76, "2_85"} in slot 31
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 682, 70, 52, "2_70"} in slot 32
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 165, 6, 9, "1_80"} in slot 33
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 491, 79, 25, "4_55"} in slot 34
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 752, 40, 88, "5_40"} in slot 35
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 285, 74, 22, "2_60"} in slot 36
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 611, 21, 51, "1_85"} in slot 37
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 7, 15, 97, "3_15"} in slot 38
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 203, 93, 60, "2_0"} in slot 39
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 7, 15, 97, "3_15"} in slot 38
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 7, 15, 97, "3_15"} in slot 38
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 7, 15, 97, "3_15"} in slot 38
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 203, 93, 60, "2_0"} in slot 39
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 474, 64, 24, "3_65"} in slot 40
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 253, 77, 22, "2_110"} in slot 41
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 857, 17, 8, "2_120"} in slot 42
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 474, 64, 24, "3_65"} in slot 40
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 350, 65, 43, "1_95"} in slot 43
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 975, 81, 21, "5_15"} in slot 44
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 891, 11, 12, "2_55"} in slot 45
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 154, 10, 68, "2_75"} in slot 46
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 557, 46, 58, "1_20"} in slot 47
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 203, 93, 60, "2_0"} in slot 39
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 474, 64, 24, "3_65"} in slot 40
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 253, 77, 22, "2_110"} in slot 41
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 203, 93, 60, "2_0"} in slot 39
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 857, 17, 8, "2_120"} in slot 42
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 350, 65, 43, "1_95"} in slot 43
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 975, 81, 21, "5_15"} in slot 44
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 253, 77, 22, "2_110"} in slot 41
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 891, 11, 12, "2_55"} in slot 45
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 857, 17, 8, "2_120"} in slot 42
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 154, 10, 68, "2_75"} in slot 46
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 474, 64, 24, "3_65"} in slot 40
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 557, 46, 58, "1_20"} in slot 47
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 596, 27, 35, "5_87"} in slot 48
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 253, 77, 22, "2_110"} in slot 41
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 350, 65, 43, "1_95"} in slot 43
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 857, 17, 8, "2_120"} in slot 42
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 350, 65, 43, "1_95"} in slot 43
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 975, 81, 21, "5_15"} in slot 44
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 596, 27, 35, "5_87"} in slot 48
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 891, 11, 12, "2_55"} in slot 45
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 154, 10, 68, "2_75"} in slot 46
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 557, 46, 58, "1_20"} in slot 47
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 596, 27, 35, "5_87"} in slot 48
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 975, 81, 21, "5_15"} in slot 44
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 891, 11, 12, "2_55"} in slot 45
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 507, 80, 64, "2_97"} in slot 49
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 154, 10, 68, "2_75"} in slot 46
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 262, 30, 11, "4_42"} in slot 50
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 507, 80, 64, "2_97"} in slot 49
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 557, 46, 58, "1_20"} in slot 47
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 600, 36, 66, "1_107"} in slot 51
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 262, 30, 11, "4_42"} in slot 50
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 596, 27, 35, "5_87"} in slot 48
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 520, 78, 73, "4_99"} in slot 52
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 507, 80, 64, "2_97"} in slot 49
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 600, 36, 66, "1_107"} in slot 51
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 520, 78, 73, "4_99"} in slot 52
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 262, 30, 11, "4_42"} in slot 50
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 600, 36, 66, "1_107"} in slot 51
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 507, 80, 64, "2_97"} in slot 49
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 520, 78, 73, "4_99"} in slot 52
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 963, 2, 64, "3_67"} in slot 53
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 7, 15, 97, "3_15"} in slot 38
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 711, 36, 37, "5_37"} in slot 54
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 963, 2, 64, "3_67"} in slot 53
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 262, 30, 11, "4_42"} in slot 50
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 711, 36, 37, "5_37"} in slot 54
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 963, 2, 64, "3_67"} in slot 53
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 711, 36, 37, "5_37"} in slot 54
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 203, 93, 60, "2_0"} in slot 39
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 474, 64, 24, "3_65"} in slot 40
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 253, 77, 22, "2_110"} in slot 41
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 857, 17, 8, "2_120"} in slot 42
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 538, 39, 7, "5_7"} in slot 55
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 538, 39, 7, "5_7"} in slot 55
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 600, 36, 66, "1_107"} in slot 51
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 538, 39, 7, "5_7"} in slot 55
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 350, 65, 43, "1_95"} in slot 43
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 520, 78, 73, "4_99"} in slot 52
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 963, 2, 64, "3_67"} in slot 53
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 975, 81, 21, "5_15"} in slot 44
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 711, 36, 37, "5_37"} in slot 54
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 538, 39, 7, "5_7"} in slot 55
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 891, 11, 12, "2_55"} in slot 45
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 154, 10, 68, "2_75"} in slot 46
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 557, 46, 58, "1_20"} in slot 47
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 536, 44, 70, "4_77"} in slot 56
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 536, 44, 70, "4_77"} in slot 56
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 536, 44, 70, "4_77"} in slot 56
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 942, 99, 31, "3_57"} in slot 57
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 536, 44, 70, "4_77"} in slot 56
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 942, 99, 31, "3_57"} in slot 57
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 942, 99, 31, "3_57"} in slot 57
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 942, 99, 31, "3_57"} in slot 57
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 596, 27, 35, "5_87"} in slot 48
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 507, 80, 64, "2_97"} in slot 49
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 262, 30, 11, "4_42"} in slot 50
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 600, 36, 66, "1_107"} in slot 51
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 520, 78, 73, "4_99"} in slot 52
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 963, 2, 64, "3_67"} in slot 53
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 711, 36, 37, "5_37"} in slot 54
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 538, 39, 7, "5_7"} in slot 55
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 536, 44, 70, "4_77"} in slot 56
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 942, 99, 31, "3_57"} in slot 57
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 592, 93, 32, "5_42"} in slot 58
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 592, 93, 32, "5_42"} in slot 58
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 592, 93, 32, "5_42"} in slot 58
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 975, 75, 11, "3_92"} in slot 59
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 975, 75, 11, "3_92"} in slot 59
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 975, 75, 11, "3_92"} in slot 59
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 592, 93, 32, "5_42"} in slot 58
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 760, 71, 63, "2_47"} in slot 60
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 760, 71, 63, "2_47"} in slot 60
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 592, 93, 32, "5_42"} in slot 58
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 307, 72, 13, "4_108"} in slot 61
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 760, 71, 63, "2_47"} in slot 60
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 975, 75, 11, "3_92"} in slot 59
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 760, 71, 63, "2_47"} in slot 60
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 307, 72, 13, "4_108"} in slot 61
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 975, 75, 11, "3_92"} in slot 59
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 307, 72, 13, "4_108"} in slot 61
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 760, 71, 63, "2_47"} in slot 60
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 307, 72, 13, "4_108"} in slot 61
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 307, 72, 13, "4_108"} in slot 61
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 609, 95, 32, "5_21"} in slot 62
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 609, 95, 32, "5_21"} in slot 62
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 609, 95, 32, "5_21"} in slot 62
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 648, 12, 91, "3_53"} in slot 63
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 648, 12, 91, "3_53"} in slot 63
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 609, 95, 32, "5_21"} in slot 62
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 609, 95, 32, "5_21"} in slot 62
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 648, 12, 91, "3_53"} in slot 63
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 648, 12, 91, "3_53"} in slot 63
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 291, 76, 43, "1_23"} in slot 64
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 291, 76, 43, "1_23"} in slot 64
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 15, 23, 41, "2_122"} in slot 65
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 291, 76, 43, "1_23"} in slot 64
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 15, 23, 41, "2_122"} in slot 65
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 291, 76, 43, "1_23"} in slot 64
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 648, 12, 91, "3_53"} in slot 63
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 277, 96, 94, "2_42"} in slot 66
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 291, 76, 43, "1_23"} in slot 64
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 15, 23, 41, "2_122"} in slot 65
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 15, 23, 41, "2_122"} in slot 65
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 277, 96, 94, "2_42"} in slot 66
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 277, 96, 94, "2_42"} in slot 66
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 277, 96, 94, "2_42"} in slot 66
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 15, 23, 41, "2_122"} in slot 65
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 277, 96, 94, "2_42"} in slot 66
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 8, 59, 90, "4_83"} in slot 67
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 8, 59, 90, "4_83"} in slot 67
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 8, 59, 90, "4_83"} in slot 67
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 407, 66, 77, "2_133"} in slot 68
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 8, 59, 90, "4_83"} in slot 67
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 287, 91, 40, "1_118"} in slot 69
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 282, 59, 68, "3_98"} in slot 70
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 619, 83, 55, "2_143"} in slot 71
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 322, 98, 32, "4_38"} in slot 72
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 8, 59, 90, "4_83"} in slot 67
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 407, 66, 77, "2_133"} in slot 68
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 554, 24, 67, "5_78"} in slot 73
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 407, 66, 77, "2_133"} in slot 68
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 407, 66, 77, "2_133"} in slot 68
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 407, 66, 77, "2_133"} in slot 68
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 371, 48, 93, "2_58"} in slot 74
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 307, 11, 38, "4_143"} in slot 75
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 287, 91, 40, "1_118"} in slot 69
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 287, 91, 40, "1_118"} in slot 69
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 287, 91, 40, "1_118"} in slot 69
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 140, 88, 75, "5_43"} in slot 76
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 282, 59, 68, "3_98"} in slot 70
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 287, 91, 40, "1_118"} in slot 69
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 993, 59, 60, "1_43"} in slot 77
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 282, 59, 68, "3_98"} in slot 70
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 282, 59, 68, "3_98"} in slot 70
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 619, 83, 55, "2_143"} in slot 71
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 619, 83, 55, "2_143"} in slot 71
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 322, 98, 32, "4_38"} in slot 72
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 554, 24, 67, "5_78"} in slot 73
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 322, 98, 32, "4_38"} in slot 72
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 336, 82, 96, "3_113"} in slot 78
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 371, 48, 93, "2_58"} in slot 74
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 554, 24, 67, "5_78"} in slot 73
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 619, 83, 55, "2_143"} in slot 71
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 307, 11, 38, "4_143"} in slot 75
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 322, 98, 32, "4_38"} in slot 72
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 140, 88, 75, "5_43"} in slot 76
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 371, 48, 93, "2_58"} in slot 74
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 34, 7, 33, "4_123"} in slot 79
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 993, 59, 60, "1_43"} in slot 77
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 186, 92, 62, "5_98"} in slot 80
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 554, 24, 67, "5_78"} in slot 73
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 336, 82, 96, "3_113"} in slot 78
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 34, 7, 33, "4_123"} in slot 79
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 213, 44, 66, "1_128"} in slot 81
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 186, 92, 62, "5_98"} in slot 80
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 213, 44, 66, "1_128"} in slot 81
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 80, 82, 11, "4_8"} in slot 82
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 80, 82, 11, "4_8"} in slot 82
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 371, 48, 93, "2_58"} in slot 74
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 792, 42, 92, "4_103"} in slot 83
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 792, 42, 92, "4_103"} in slot 83
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 736, 51, 19, "1_103"} in slot 84
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 736, 51, 19, "1_103"} in slot 84
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 6, 75, 44, "5_128"} in slot 85
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 56, 14, 23, "1_113"} in slot 86
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 6, 75, 44, "5_128"} in slot 85
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 564, 55, 30, "2_153"} in slot 87
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 56, 14, 23, "1_113"} in slot 86
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 111, 51, 6, "5_123"} in slot 88
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 693, 30, 64, "2_168"} in slot 89
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 564, 55, 30, "2_153"} in slot 87
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 42, 21, 48, "4_28"} in slot 90
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 307, 11, 38, "4_143"} in slot 75
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 140, 88, 75, "5_43"} in slot 76
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 111, 51, 6, "5_123"} in slot 88
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 993, 59, 60, "1_43"} in slot 77
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 336, 82, 96, "3_113"} in slot 78
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 693, 30, 64, "2_168"} in slot 89
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 307, 11, 38, "4_143"} in slot 75
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 282, 59, 68, "3_98"} in slot 70
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 34, 7, 33, "4_123"} in slot 79
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 140, 88, 75, "5_43"} in slot 76
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 186, 92, 62, "5_98"} in slot 80
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 993, 59, 60, "1_43"} in slot 77
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 619, 83, 55, "2_143"} in slot 71
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 42, 21, 48, "4_28"} in slot 90
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 336, 82, 96, "3_113"} in slot 78
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 322, 98, 32, "4_38"} in slot 72
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 213, 44, 66, "1_128"} in slot 81
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 34, 7, 33, "4_123"} in slot 79
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 554, 24, 67, "5_78"} in slot 73
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 371, 48, 93, "2_58"} in slot 74
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 186, 92, 62, "5_98"} in slot 80
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 307, 11, 38, "4_143"} in slot 75
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 213, 44, 66, "1_128"} in slot 81
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 80, 82, 11, "4_8"} in slot 82
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 140, 88, 75, "5_43"} in slot 76
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 792, 42, 92, "4_103"} in slot 83
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 993, 59, 60, "1_43"} in slot 77
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 336, 82, 96, "3_113"} in slot 78
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 736, 51, 19, "1_103"} in slot 84
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 34, 7, 33, "4_123"} in slot 79
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 6, 75, 44, "5_128"} in slot 85
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 56, 14, 23, "1_113"} in slot 86
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 564, 55, 30, "2_153"} in slot 87
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 186, 92, 62, "5_98"} in slot 80
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 111, 51, 6, "5_123"} in slot 88
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 80, 82, 11, "4_8"} in slot 82
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 693, 30, 64, "2_168"} in slot 89
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 792, 42, 92, "4_103"} in slot 83
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 213, 44, 66, "1_128"} in slot 81
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 736, 51, 19, "1_103"} in slot 84
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 42, 21, 48, "4_28"} in slot 90
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 80, 82, 11, "4_8"} in slot 82
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 792, 42, 92, "4_103"} in slot 83
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 736, 51, 19, "1_103"} in slot 84
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 6, 75, 44, "5_128"} in slot 85
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 56, 14, 23, "1_113"} in slot 86
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 6, 75, 44, "5_128"} in slot 85
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 56, 14, 23, "1_113"} in slot 86
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 564, 55, 30, "2_153"} in slot 87
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 564, 55, 30, "2_153"} in slot 87
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 111, 51, 6, "5_123"} in slot 88
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 111, 51, 6, "5_123"} in slot 88
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 693, 30, 64, "2_168"} in slot 89
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 693, 30, 64, "2_168"} in slot 89
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 42, 21, 48, "4_28"} in slot 90
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 42, 21, 48, "4_28"} in slot 90
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 260, 62, 87, "5_23"} in slot 91
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 260, 62, 87, "5_23"} in slot 91
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 260, 62, 87, "5_23"} in slot 91
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 722, 91, 86, "5_138"} in slot 92
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 998, 13, 58, "1_25"} in slot 93
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 722, 91, 86, "5_138"} in slot 92
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 927, 6, 86, "3_127"} in slot 94
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 634, 98, 7, "2_162"} in slot 95
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 998, 13, 58, "1_25"} in slot 93
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 483, 78, 83, "2_140"} in slot 96
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 927, 6, 86, "3_127"} in slot 94
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 516, 38, 12, "1_160"} in slot 97
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 634, 98, 7, "2_162"} in slot 95
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 483, 78, 83, "2_140"} in slot 96
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 516, 38, 12, "1_160"} in slot 97
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 339, 86, 44, "2_208"} in slot 98
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 339, 86, 44, "2_208"} in slot 98
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 260, 62, 87, "5_23"} in slot 91
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 722, 91, 86, "5_138"} in slot 92
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 861, 27, 91, "3_173"} in slot 99
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 240, 62, 88, "5_143"} in slot 100
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 260, 62, 87, "5_23"} in slot 91
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 998, 13, 58, "1_25"} in slot 93
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 803, 80, 25, "3_148"} in slot 101
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 927, 6, 86, "3_127"} in slot 94
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 855, 28, 37, "4_183"} in slot 102
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 807, 85, 40, "3_133"} in slot 103
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 634, 98, 7, "2_162"} in slot 95
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 483, 78, 83, "2_140"} in slot 96
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 516, 38, 12, "1_160"} in slot 97
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 13, 48, 38, "4_133"} in slot 104
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 339, 86, 44, "2_208"} in slot 98
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 722, 91, 86, "5_138"} in slot 92
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 861, 27, 91, "3_173"} in slot 99
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 240, 62, 88, "5_143"} in slot 100
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 803, 80, 25, "3_148"} in slot 101
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 662, 35, 9, "5_173"} in slot 105
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 855, 28, 37, "4_183"} in slot 102
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 807, 85, 40, "3_133"} in slot 103
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 236, 76, 28, "3_8"} in slot 106
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 471, 11, 70, "3_28"} in slot 107
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 582, 77, 49, "2_33"} in slot 108
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 998, 13, 58, "1_25"} in slot 93
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 13, 48, 38, "4_133"} in slot 104
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 927, 6, 86, "3_127"} in slot 94
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 722, 91, 86, "5_138"} in slot 92
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 634, 98, 7, "2_162"} in slot 95
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 662, 35, 9, "5_173"} in slot 105
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 483, 78, 83, "2_140"} in slot 96
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 861, 27, 91, "3_173"} in slot 99
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 516, 38, 12, "1_160"} in slot 97
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 339, 86, 44, "2_208"} in slot 98
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 861, 27, 91, "3_173"} in slot 99
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 240, 62, 88, "5_143"} in slot 100
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 236, 76, 28, "3_8"} in slot 106
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 240, 62, 88, "5_143"} in slot 100
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 471, 11, 70, "3_28"} in slot 107
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 803, 80, 25, "3_148"} in slot 101
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 855, 28, 37, "4_183"} in slot 102
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 582, 77, 49, "2_33"} in slot 108
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 803, 80, 25, "3_148"} in slot 101
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 855, 28, 37, "4_183"} in slot 102
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 807, 85, 40, "3_133"} in slot 103
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 998, 13, 58, "1_25"} in slot 93
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 807, 85, 40, "3_133"} in slot 103
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 927, 6, 86, "3_127"} in slot 94
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 13, 48, 38, "4_133"} in slot 104
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 634, 98, 7, "2_162"} in slot 95
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 483, 78, 83, "2_140"} in slot 96
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 662, 35, 9, "5_173"} in slot 105
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 13, 48, 38, "4_133"} in slot 104
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 236, 76, 28, "3_8"} in slot 106
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 471, 11, 70, "3_28"} in slot 107
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 516, 38, 12, "1_160"} in slot 97
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 339, 86, 44, "2_208"} in slot 98
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 861, 27, 91, "3_173"} in slot 99
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 662, 35, 9, "5_173"} in slot 105
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 236, 76, 28, "3_8"} in slot 106
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 471, 11, 70, "3_28"} in slot 107
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 582, 77, 49, "2_33"} in slot 108
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 240, 62, 88, "5_143"} in slot 100
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 803, 80, 25, "3_148"} in slot 101
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 855, 28, 37, "4_183"} in slot 102
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 582, 77, 49, "2_33"} in slot 108
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 807, 85, 40, "3_133"} in slot 103
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 13, 48, 38, "4_133"} in slot 104
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 662, 35, 9, "5_173"} in slot 105
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 236, 76, 28, "3_8"} in slot 106
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 471, 11, 70, "3_28"} in slot 107
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 582, 77, 49, "2_33"} in slot 108
+
+time = 1000 client requests seen = [{1, 260}, {2, 260}, {3, 263}, {4, 263}, {5, 260}]
+time = 1000     db requests done = [{1, 108}, {2, 108}, {3, 108}, {4, 108}, {5, 108}]
+time = 1000            scouts up = [{1, 17}, {2, 15}, {3, 10}, {4, 19}, {5, 20}]
+time = 1000     scouts preempted = [{1, 14}, {2, 12}, {3, 7}, {4, 13}, {5, 13}]
+time = 1000          scouts down = [{1, 17}, {2, 14}, {3, 10}, {4, 18}, {5, 19}]
+time = 1000        commanders up = [{1, 479}, {2, 242}, {3, 146}, {4, 380}, {5, 690}]
+time = 1000 commanders preempted = [{1, 67}, {2, 206}, {3, 146}, {4, 234}, {5, 652}]
+time = 1000      commanders down = [{1, 479}, {2, 242}, {3, 146}, {4, 380}, {5, 690}]
+time = 1000      leader timeouts = [{1, 2}, {2, 3}, {3, 10}, {4, 4}, {5, 16}]
+time = 1000      timeout updates = [{1, 428}, {2, 50}, {3, 9}, {4, 164}, {5, 47}]
+time = 1000   ping messages sent = [{1, 373}, {2, 297}, {3, 26}, {4, 570}, {5, 119}]
+time = 1000       ping responses = [{1, 356}, {2, 282}, {3, 17}, {4, 552}, {5, 99}]
+
+  Client 2 going to sleep, sent = 500
+  Client 1 going to sleep, sent = 500
+  Client 4 going to sleep, sent = 500
+  Client 3 going to sleep, sent = 500
+  Client 5 going to sleep, sent = 500
+time = 2000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 2000     db requests done = [{1, 108}, {2, 108}, {3, 108}, {4, 108}, {5, 108}]
+time = 2000            scouts up = [{1, 42}, {2, 20}, {3, 10}, {4, 45}, {5, 71}]
+time = 2000     scouts preempted = [{1, 35}, {2, 16}, {3, 7}, {4, 37}, {5, 65}]
+time = 2000          scouts down = [{1, 42}, {2, 20}, {3, 10}, {4, 45}, {5, 71}]
+time = 2000        commanders up = [{1, 1155}, {2, 425}, {3, 146}, {4, 673}, {5, 811}]
+time = 2000 commanders preempted = [{1, 743}, {2, 272}, {3, 146}, {4, 527}, {5, 773}]
+time = 2000      commanders down = [{1, 1155}, {2, 425}, {3, 146}, {4, 673}, {5, 811}]
+time = 2000      leader timeouts = [{1, 60}, {2, 2}, {3, 10}, {4, 5}, {5, 4}]
+time = 2000      timeout updates = [{1, 453}, {2, 172}, {3, 9}, {4, 190}, {5, 98}]
+time = 2000   ping messages sent = [{1, 643}, {2, 305}, {3, 26}, {4, 845}, {5, 177}]
+time = 2000       ping responses = [{1, 601}, {2, 286}, {3, 17}, {4, 800}, {5, 107}]
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 534, 4, 83, "5_19"} in slot 109
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 534, 4, 83, "5_19"} in slot 109
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 847, 48, 31, "1_179"} in slot 110
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 847, 48, 31, "1_179"} in slot 110
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 534, 4, 83, "5_19"} in slot 109
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 225, 79, 24, "2_196"} in slot 111
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 847, 48, 31, "1_179"} in slot 110
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 534, 4, 83, "5_19"} in slot 109
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 785, 86, 58, "2_216"} in slot 112
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 225, 79, 24, "2_196"} in slot 111
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 963, 34, 74, "2_200"} in slot 113
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 225, 79, 24, "2_196"} in slot 111
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 847, 48, 31, "1_179"} in slot 110
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 107, 37, 67, "2_210"} in slot 114
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 785, 86, 58, "2_216"} in slot 112
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 785, 86, 58, "2_216"} in slot 112
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 534, 4, 83, "5_19"} in slot 109
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 963, 34, 74, "2_200"} in slot 113
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 847, 48, 31, "1_179"} in slot 110
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 963, 34, 74, "2_200"} in slot 113
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 537, 64, 12, "5_453"} in slot 115
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 225, 79, 24, "2_196"} in slot 111
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 107, 37, 67, "2_210"} in slot 114
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 785, 86, 58, "2_216"} in slot 112
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 537, 64, 12, "5_453"} in slot 115
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 641, 75, 18, "5_312"} in slot 116
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 709, 17, 75, "4_367"} in slot 117
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 600, 85, 99, "3_382"} in slot 118
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 968, 34, 94, "2_282"} in slot 119
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 107, 37, 67, "2_210"} in slot 114
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 88, 55, 99, "5_192"} in slot 120
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 641, 75, 18, "5_312"} in slot 116
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 537, 64, 12, "5_453"} in slot 115
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 83, 20, 24, "1_357"} in slot 121
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 641, 75, 18, "5_312"} in slot 116
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 55, 91, 14, "4_277"} in slot 122
+
+Database3: log_0
+--> Executed transaction: {:MOVE, 913, 75, 18, "1_177"} in slot 123
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 963, 34, 74, "2_200"} in slot 113
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 107, 37, 67, "2_210"} in slot 114
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 709, 17, 75, "4_367"} in slot 117
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 709, 17, 75, "4_367"} in slot 117
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 600, 85, 99, "3_382"} in slot 118
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 968, 34, 94, "2_282"} in slot 119
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 600, 85, 99, "3_382"} in slot 118
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 88, 55, 99, "5_192"} in slot 120
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 968, 34, 94, "2_282"} in slot 119
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 83, 20, 24, "1_357"} in slot 121
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 537, 64, 12, "5_453"} in slot 115
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 88, 55, 99, "5_192"} in slot 120
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 83, 20, 24, "1_357"} in slot 121
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 55, 91, 14, "4_277"} in slot 122
+
+Database5: log_0
+--> Executed transaction: {:MOVE, 913, 75, 18, "1_177"} in slot 123
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 641, 75, 18, "5_312"} in slot 116
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 55, 91, 14, "4_277"} in slot 122
+
+Database1: log_0
+--> Executed transaction: {:MOVE, 913, 75, 18, "1_177"} in slot 123
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 709, 17, 75, "4_367"} in slot 117
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 225, 79, 24, "2_196"} in slot 111
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 600, 85, 99, "3_382"} in slot 118
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 785, 86, 58, "2_216"} in slot 112
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 968, 34, 94, "2_282"} in slot 119
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 88, 55, 99, "5_192"} in slot 120
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 83, 20, 24, "1_357"} in slot 121
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 55, 91, 14, "4_277"} in slot 122
+
+Database2: log_0
+--> Executed transaction: {:MOVE, 913, 75, 18, "1_177"} in slot 123
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 963, 34, 74, "2_200"} in slot 113
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 107, 37, 67, "2_210"} in slot 114
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 537, 64, 12, "5_453"} in slot 115
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 641, 75, 18, "5_312"} in slot 116
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 709, 17, 75, "4_367"} in slot 117
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 600, 85, 99, "3_382"} in slot 118
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 968, 34, 94, "2_282"} in slot 119
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 88, 55, 99, "5_192"} in slot 120
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 83, 20, 24, "1_357"} in slot 121
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 55, 91, 14, "4_277"} in slot 122
+
+Database4: log_0
+--> Executed transaction: {:MOVE, 913, 75, 18, "1_177"} in slot 123
+
+time = 3000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 3000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 3000            scouts up = [{1, 91}, {2, 24}, {3, 10}, {4, 81}, {5, 71}]
+time = 3000     scouts preempted = [{1, 83}, {2, 16}, {3, 7}, {4, 73}, {5, 65}]
+time = 3000          scouts down = [{1, 91}, {2, 24}, {3, 10}, {4, 81}, {5, 71}]
+time = 3000        commanders up = [{1, 1359}, {2, 426}, {3, 146}, {4, 673}, {5, 811}]
+time = 3000 commanders preempted = [{1, 765}, {2, 273}, {3, 146}, {4, 527}, {5, 773}]
+time = 3000      commanders down = [{1, 1359}, {2, 426}, {3, 146}, {4, 673}, {5, 811}]
+time = 3000      leader timeouts = [{1, 1000}, {2, 2}, {3, 10}, {4, 5}, {5, 4}]
+time = 3000      timeout updates = [{1, 679}, {2, 176}, {3, 9}, {4, 226}, {5, 98}]
+time = 3000   ping messages sent = [{1, 723}, {2, 360}, {3, 26}, {4, 881}, {5, 177}]
+time = 3000       ping responses = [{1, 632}, {2, 336}, {3, 17}, {4, 800}, {5, 107}]
+
+time = 4000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 4000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 4000            scouts up = [{1, 126}, {2, 24}, {3, 10}, {4, 117}, {5, 71}]
+time = 4000     scouts preempted = [{1, 118}, {2, 16}, {3, 7}, {4, 108}, {5, 65}]
+time = 4000          scouts down = [{1, 126}, {2, 24}, {3, 10}, {4, 116}, {5, 71}]
+time = 4000        commanders up = [{1, 1359}, {2, 426}, {3, 146}, {4, 673}, {5, 811}]
+time = 4000 commanders preempted = [{1, 765}, {2, 273}, {3, 146}, {4, 527}, {5, 773}]
+time = 4000      commanders down = [{1, 1359}, {2, 426}, {3, 146}, {4, 673}, {5, 811}]
+time = 4000      leader timeouts = [{1, 1000}, {2, 2}, {3, 10}, {4, 5}, {5, 4}]
+time = 4000      timeout updates = [{1, 714}, {2, 176}, {3, 9}, {4, 262}, {5, 98}]
+time = 4000   ping messages sent = [{1, 794}, {2, 395}, {3, 26}, {4, 917}, {5, 177}]
+time = 4000       ping responses = [{1, 668}, {2, 371}, {3, 17}, {4, 800}, {5, 107}]
+
+time = 5000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 5000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 5000            scouts up = [{1, 162}, {2, 24}, {3, 10}, {4, 152}, {5, 71}]
+time = 5000     scouts preempted = [{1, 154}, {2, 16}, {3, 7}, {4, 144}, {5, 65}]
+time = 5000          scouts down = [{1, 162}, {2, 24}, {3, 10}, {4, 152}, {5, 71}]
+time = 5000        commanders up = [{1, 1359}, {2, 426}, {3, 146}, {4, 673}, {5, 811}]
+time = 5000 commanders preempted = [{1, 765}, {2, 273}, {3, 146}, {4, 527}, {5, 773}]
+time = 5000      commanders down = [{1, 1359}, {2, 426}, {3, 146}, {4, 673}, {5, 811}]
+time = 5000      leader timeouts = [{1, 1000}, {2, 2}, {3, 10}, {4, 5}, {5, 4}]
+time = 5000      timeout updates = [{1, 750}, {2, 176}, {3, 9}, {4, 297}, {5, 98}]
+time = 5000   ping messages sent = [{1, 865}, {2, 431}, {3, 26}, {4, 952}, {5, 177}]
+time = 5000       ping responses = [{1, 703}, {2, 407}, {3, 17}, {4, 800}, {5, 107}]
+
+time = 6000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 6000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 6000            scouts up = [{1, 198}, {2, 24}, {3, 10}, {4, 188}, {5, 71}]
+time = 6000     scouts preempted = [{1, 190}, {2, 16}, {3, 7}, {4, 180}, {5, 65}]
+time = 6000          scouts down = [{1, 198}, {2, 24}, {3, 10}, {4, 188}, {5, 71}]
+time = 6000        commanders up = [{1, 1359}, {2, 426}, {3, 146}, {4, 673}, {5, 811}]
+time = 6000 commanders preempted = [{1, 765}, {2, 273}, {3, 146}, {4, 527}, {5, 773}]
+time = 6000      commanders down = [{1, 1359}, {2, 426}, {3, 146}, {4, 673}, {5, 811}]
+time = 6000      leader timeouts = [{1, 1000}, {2, 2}, {3, 10}, {4, 5}, {5, 4}]
+time = 6000      timeout updates = [{1, 786}, {2, 176}, {3, 9}, {4, 333}, {5, 98}]
+time = 6000   ping messages sent = [{1, 937}, {2, 467}, {3, 26}, {4, 988}, {5, 177}]
+time = 6000       ping responses = [{1, 739}, {2, 443}, {3, 17}, {4, 800}, {5, 107}]
+
+time = 7000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 7000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 7000            scouts up = [{1, 221}, {2, 24}, {3, 10}, {4, 210}, {5, 71}]
+time = 7000     scouts preempted = [{1, 213}, {2, 16}, {3, 7}, {4, 202}, {5, 65}]
+time = 7000          scouts down = [{1, 221}, {2, 24}, {3, 10}, {4, 210}, {5, 71}]
+time = 7000        commanders up = [{1, 1359}, {2, 426}, {3, 146}, {4, 1033}, {5, 811}]
+time = 7000 commanders preempted = [{1, 765}, {2, 273}, {3, 146}, {4, 887}, {5, 773}]
+time = 7000      commanders down = [{1, 1359}, {2, 426}, {3, 146}, {4, 1033}, {5, 811}]
+time = 7000      leader timeouts = [{1, 1000}, {2, 2}, {3, 10}, {4, 3}, {5, 4}]
+time = 7000      timeout updates = [{1, 809}, {2, 176}, {3, 9}, {4, 355}, {5, 98}]
+time = 7000   ping messages sent = [{1, 1617}, {2, 490}, {3, 26}, {4, 1018}, {5, 177}]
+time = 7000       ping responses = [{1, 1396}, {2, 466}, {3, 17}, {4, 808}, {5, 107}]
+
+time = 8000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 8000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 8000            scouts up = [{1, 223}, {2, 24}, {3, 10}, {4, 261}, {5, 71}]
+time = 8000     scouts preempted = [{1, 215}, {2, 16}, {3, 7}, {4, 253}, {5, 65}]
+time = 8000          scouts down = [{1, 223}, {2, 24}, {3, 10}, {4, 261}, {5, 71}]
+time = 8000        commanders up = [{1, 1359}, {2, 426}, {3, 146}, {4, 1160}, {5, 811}]
+time = 8000 commanders preempted = [{1, 765}, {2, 273}, {3, 146}, {4, 1014}, {5, 773}]
+time = 8000      commanders down = [{1, 1359}, {2, 426}, {3, 146}, {4, 1160}, {5, 811}]
+time = 8000      leader timeouts = [{1, 1000}, {2, 2}, {3, 10}, {4, 4}, {5, 4}]
+time = 8000      timeout updates = [{1, 811}, {2, 176}, {3, 9}, {4, 406}, {5, 98}]
+time = 8000   ping messages sent = [{1, 1875}, {2, 492}, {3, 26}, {4, 1068}, {5, 177}]
+time = 8000       ping responses = [{1, 1652}, {2, 468}, {3, 17}, {4, 808}, {5, 107}]
+
+time = 9000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 9000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 9000            scouts up = [{1, 248}, {2, 45}, {3, 10}, {4, 261}, {5, 71}]
+time = 9000     scouts preempted = [{1, 240}, {2, 36}, {3, 7}, {4, 253}, {5, 65}]
+time = 9000          scouts down = [{1, 248}, {2, 44}, {3, 10}, {4, 261}, {5, 71}]
+time = 9000        commanders up = [{1, 1359}, {2, 490}, {3, 146}, {4, 1160}, {5, 811}]
+time = 9000 commanders preempted = [{1, 765}, {2, 337}, {3, 146}, {4, 1014}, {5, 773}]
+time = 9000      commanders down = [{1, 1359}, {2, 490}, {3, 146}, {4, 1160}, {5, 811}]
+time = 9000      leader timeouts = [{1, 27}, {2, 4}, {3, 10}, {4, 4}, {5, 4}]
+time = 9000      timeout updates = [{1, 836}, {2, 197}, {3, 9}, {4, 406}, {5, 98}]
+time = 9000   ping messages sent = [{1, 1900}, {2, 628}, {3, 26}, {4, 1068}, {5, 177}]
+time = 9000       ping responses = [{1, 1652}, {2, 584}, {3, 17}, {4, 808}, {5, 107}]
+
+time = 10000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 10000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 10000            scouts up = [{1, 276}, {2, 66}, {3, 10}, {4, 261}, {5, 71}]
+time = 10000     scouts preempted = [{1, 268}, {2, 58}, {3, 7}, {4, 253}, {5, 65}]
+time = 10000          scouts down = [{1, 276}, {2, 66}, {3, 10}, {4, 261}, {5, 71}]
+time = 10000        commanders up = [{1, 1359}, {2, 525}, {3, 146}, {4, 1160}, {5, 811}]
+time = 10000 commanders preempted = [{1, 765}, {2, 372}, {3, 146}, {4, 1014}, {5, 773}]
+time = 10000      commanders down = [{1, 1359}, {2, 525}, {3, 146}, {4, 1160}, {5, 811}]
+time = 10000      leader timeouts = [{1, 27}, {2, 3}, {3, 10}, {4, 4}, {5, 4}]
+time = 10000      timeout updates = [{1, 864}, {2, 218}, {3, 9}, {4, 406}, {5, 98}]
+time = 10000   ping messages sent = [{1, 1928}, {2, 768}, {3, 26}, {4, 1068}, {5, 177}]
+time = 10000       ping responses = [{1, 1652}, {2, 702}, {3, 17}, {4, 808}, {5, 107}]
+
+time = 11000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 11000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 11000            scouts up = [{1, 304}, {2, 84}, {3, 10}, {4, 261}, {5, 71}]
+time = 11000     scouts preempted = [{1, 296}, {2, 76}, {3, 7}, {4, 253}, {5, 65}]
+time = 11000          scouts down = [{1, 304}, {2, 84}, {3, 10}, {4, 261}, {5, 71}]
+time = 11000        commanders up = [{1, 1359}, {2, 525}, {3, 146}, {4, 1160}, {5, 811}]
+time = 11000 commanders preempted = [{1, 765}, {2, 372}, {3, 146}, {4, 1014}, {5, 773}]
+time = 11000      commanders down = [{1, 1359}, {2, 525}, {3, 146}, {4, 1160}, {5, 811}]
+time = 11000      leader timeouts = [{1, 27}, {2, 3}, {3, 10}, {4, 4}, {5, 4}]
+time = 11000      timeout updates = [{1, 892}, {2, 236}, {3, 9}, {4, 406}, {5, 98}]
+time = 11000   ping messages sent = [{1, 1956}, {2, 834}, {3, 26}, {4, 1068}, {5, 177}]
+time = 11000       ping responses = [{1, 1652}, {2, 750}, {3, 17}, {4, 808}, {5, 107}]
+
+time = 12000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 12000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 12000            scouts up = [{1, 332}, {2, 99}, {3, 10}, {4, 261}, {5, 71}]
+time = 12000     scouts preempted = [{1, 324}, {2, 90}, {3, 7}, {4, 253}, {5, 65}]
+time = 12000          scouts down = [{1, 332}, {2, 98}, {3, 10}, {4, 261}, {5, 71}]
+time = 12000        commanders up = [{1, 1359}, {2, 525}, {3, 146}, {4, 1160}, {5, 811}]
+time = 12000 commanders preempted = [{1, 765}, {2, 372}, {3, 146}, {4, 1014}, {5, 773}]
+time = 12000      commanders down = [{1, 1359}, {2, 525}, {3, 146}, {4, 1160}, {5, 811}]
+time = 12000      leader timeouts = [{1, 27}, {2, 3}, {3, 10}, {4, 4}, {5, 4}]
+time = 12000      timeout updates = [{1, 920}, {2, 251}, {3, 9}, {4, 406}, {5, 98}]
+time = 12000   ping messages sent = [{1, 1984}, {2, 877}, {3, 26}, {4, 1068}, {5, 177}]
+time = 12000       ping responses = [{1, 1652}, {2, 778}, {3, 17}, {4, 808}, {5, 107}]
+
+  Node server1_34_szymon@127.0.0.1 exiting - maxtime reached
+  Node server5_34_szymon@127.0.0.1 exiting - maxtime reached
+time = 13000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 13000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 13000            scouts up = [{1, 359}, {2, 129}, {3, 10}, {4, 261}, {5, 71}]
+time = 13000     scouts preempted = [{1, 351}, {2, 121}, {3, 7}, {4, 253}, {5, 65}]
+time = 13000          scouts down = [{1, 359}, {2, 129}, {3, 10}, {4, 261}, {5, 71}]
+time = 13000        commanders up = [{1, 1359}, {2, 643}, {3, 146}, {4, 1160}, {5, 811}]
+time = 13000 commanders preempted = [{1, 765}, {2, 490}, {3, 146}, {4, 1014}, {5, 773}]
+time = 13000      commanders down = [{1, 1359}, {2, 643}, {3, 146}, {4, 1160}, {5, 811}]
+time = 13000      leader timeouts = [{1, 27}, {2, 5}, {3, 10}, {4, 4}, {5, 4}]
+time = 13000      timeout updates = [{1, 947}, {2, 281}, {3, 9}, {4, 406}, {5, 98}]
+time = 13000   ping messages sent = [{1, 2011}, {2, 1152}, {3, 26}, {4, 1068}, {5, 177}]
+time = 13000       ping responses = [{1, 1652}, {2, 1023}, {3, 17}, {4, 808}, {5, 107}]
+
+  Node client2_34_szymon@127.0.0.1 exiting - maxtime reached
+  Node client1_34_szymon@127.0.0.1 exiting - maxtime reached
+  Node client5_34_szymon@127.0.0.1 exiting - maxtime reached
+  Node server3_34_szymon@127.0.0.1 exiting - maxtime reached
+  Node server4_34_szymon@127.0.0.1 exiting - maxtime reached
+  Node server2_34_szymon@127.0.0.1 exiting - maxtime reached
+  Node client4_34_szymon@127.0.0.1 exiting - maxtime reached
+  Node client3_34_szymon@127.0.0.1 exiting - maxtime reached
+time = 14000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 14000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 14000            scouts up = [{1, 385}, {2, 165}, {3, 10}, {4, 261}, {5, 71}]
+time = 14000     scouts preempted = [{1, 377}, {2, 157}, {3, 7}, {4, 253}, {5, 65}]
+time = 14000          scouts down = [{1, 385}, {2, 165}, {3, 10}, {4, 261}, {5, 71}]
+time = 14000        commanders up = [{1, 1359}, {2, 643}, {3, 146}, {4, 1160}, {5, 811}]
+time = 14000 commanders preempted = [{1, 765}, {2, 490}, {3, 146}, {4, 1014}, {5, 773}]
+time = 14000      commanders down = [{1, 1359}, {2, 643}, {3, 146}, {4, 1160}, {5, 811}]
+time = 14000      leader timeouts = [{1, 27}, {2, 5}, {3, 10}, {4, 4}, {5, 4}]
+time = 14000      timeout updates = [{1, 973}, {2, 317}, {3, 9}, {4, 406}, {5, 98}]
+time = 14000   ping messages sent = [{1, 2037}, {2, 1218}, {3, 26}, {4, 1068}, {5, 177}]
+time = 14000       ping responses = [{1, 1652}, {2, 1053}, {3, 17}, {4, 808}, {5, 107}]
+
+  Node multipaxos_34_szymon@127.0.0.1 exiting - maxtime reached
+time = 15000 client requests seen = [{1, 500}, {2, 500}, {3, 500}, {4, 500}, {5, 500}]
+time = 15000     db requests done = [{1, 123}, {2, 123}, {3, 123}, {4, 123}, {5, 123}]
+time = 15000            scouts up = [{1, 385}, {2, 172}, {3, 10}, {4, 261}, {5, 71}]
+time = 15000     scouts preempted = [{1, 377}, {2, 164}, {3, 7}, {4, 253}, {5, 65}]
+time = 15000          scouts down = [{1, 385}, {2, 172}, {3, 10}, {4, 261}, {5, 71}]
+time = 15000        commanders up = [{1, 1359}, {2, 643}, {3, 146}, {4, 1160}, {5, 811}]
+time = 15000 commanders preempted = [{1, 765}, {2, 490}, {3, 146}, {4, 1014}, {5, 773}]
+time = 15000      commanders down = [{1, 1359}, {2, 643}, {3, 146}, {4, 1160}, {5, 811}]
+time = 15000      leader timeouts = [{1, 27}, {2, 5}, {3, 10}, {4, 4}, {5, 4}]
+time = 15000      timeout updates = [{1, 973}, {2, 324}, {3, 9}, {4, 406}, {5, 98}]
+time = 15000   ping messages sent = [{1, 2037}, {2, 1256}, {3, 26}, {4, 1068}, {5, 177}]
+time = 15000       ping responses = [{1, 1652}, {2, 1084}, {3, 17}, {4, 808}, {5, 107}]
 
