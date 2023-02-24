@@ -34,7 +34,6 @@ defmodule Configuration do
   end
 
   # -----------------------------------------------------------------------------
-  # I found this configuration to livelock almost every time.
   def params(:default) do
     %{
       # max requests each client will make
@@ -72,6 +71,7 @@ defmodule Configuration do
     }
   end
 
+  # I found this configuration to livelock almost every time.
   def params(:few_requests) do
     Map.merge(
       params(:default),
@@ -79,16 +79,23 @@ defmodule Configuration do
     )
   end
 
+  # This configuration was used for debugging when implementing the core algorithm
+  # It allows for specifying how verbose should the logs coming from each component
+  # be. It supports four operation modes:
+  # :quiet -> no logs at all
+  # :error -> logs only when something bad / undesired happens.
+  # :success -> logs all errors plus successful steps (e.g. ballot adopted)
+  # :verbose -> all logs are printed.
   def params(:debug) do
     Map.merge(
-      params(:default),
+      params(:random_leader_wait_working),
       %{
         logger_level: %{
           monitor: :quiet,
           database: :verbose,
           replica: :verbose,
           client: :quiet,
-          leader: :quiet,
+          leader: :success,
           commander: :quiet,
           acceptor: :quiet,
           scout: :quiet
@@ -97,13 +104,28 @@ defmodule Configuration do
     )
   end
 
-  # redact: performance/liveness/distribution parameters
-  def params(:random_leader_wait) do
+  # This configuration was introduced to partially solve the livelock problem.
+  # It causes the leader to randomly sleep after it was preempted to increase
+  # the chance of live locking. It fixes livelocks for small numbers of requests
+  # e.g. 5 per client, however it doesn't affect higher congestion.
+  def params(:random_leader_wait_working) do
+    Map.merge(
+      params(:few_requests),
+      %{
+        wait_before_retrying: true,
+        min_wait_time: 100,
+        max_wait_time: 1000
+      }
+    )
+  end
+
+  # Here there are too many requests so the random wait doesn't help.
+  def params(:random_leader_wait_not_working) do
     Map.merge(
       params(:default),
       %{
         wait_before_retrying: true,
-        min_wait_time: 500,
+        min_wait_time: 100,
         max_wait_time: 1000
       }
     )

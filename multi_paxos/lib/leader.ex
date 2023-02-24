@@ -98,7 +98,7 @@ defmodule Leader do
 
         # Cheap attempt to prevent live locks
         if self.config.wait_before_retrying do
-          Process.sleep(Enum.random(100..self.config.max_wait_time))
+          Process.sleep(Enum.random(self.config.min_wait_time..self.config.max_wait_time))
         end
 
         self
