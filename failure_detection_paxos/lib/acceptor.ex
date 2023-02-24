@@ -46,7 +46,7 @@ defmodule Acceptor do
   end
 
   defp adopt_ballot_if_greater_than_current(self, b) do
-    if BallotNumber.compare(b, self.ballot_num) == :gt,
+    if BallotNumber.greater_than?(b, self.ballot_num),
       do: self |> update_ballot_num(b),
       else: self
   end

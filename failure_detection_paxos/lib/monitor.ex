@@ -188,7 +188,7 @@ defmodule Monitor do
         |> pings_sent(server_num, value + 1)
         |> next()
 
-      {:PING_RESPONSE_RECEIVED, server_num} ->
+      {:PING_RESPONSE_SENT, server_num} ->
         value = Map.get(self.pings_received, server_num, 0)
 
         self

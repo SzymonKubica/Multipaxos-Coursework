@@ -5,9 +5,9 @@
 
 SERVERS  = 5
 CLIENTS  = 5
-PARAMS   = random_leader_wait
+PARAMS   = default
 DEBUG    = 2
-MAX_TIME = 30000
+MAX_TIME = 180000
 
 START    = Multipaxos.start
 HOST	:= 127.0.0.1

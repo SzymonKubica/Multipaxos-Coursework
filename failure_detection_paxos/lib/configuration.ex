@@ -38,7 +38,7 @@ defmodule Configuration do
   def params(:default) do
     %{
       # max requests each client will make
-      max_requests: 500,
+      max_requests: 5000,
       # time (ms) to sleep before sending new request
       client_sleep: 2,
       # time (ms) to stop sending further requests
@@ -56,10 +56,10 @@ defmodule Configuration do
       # determines if a leader waits before retrying after being preempted
       wait_before_retrying: false,
       # maximum waiting time after preemption (miliseconds)
-      leader_starting_timeout: 400,
-      leader_timeout_increase_factor: 1.3,
-      leader_timeout_decrease_const: 10,
-      min_leader_timeout: 2,
+      leader_starting_timeout: 200,
+      leader_timeout_increase_factor: 1.2,
+      leader_timeout_decrease_const: 25,
+      min_leader_timeout: 10,
       max_leader_timeout: 1000,
       # server_num => crash_after_time(ms)
       crash_servers: %{},
@@ -87,7 +87,7 @@ defmodule Configuration do
           client: :quiet,
           leader: :quiet,
           commander: :quiet,
-          acceptor: :quiet,
+          acceptor: :verbose,
           scout: :quiet
         }
       }
