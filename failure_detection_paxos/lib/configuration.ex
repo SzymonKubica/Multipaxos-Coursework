@@ -62,7 +62,7 @@ defmodule Configuration do
       min_leader_timeout: 500,
       max_leader_timeout: 5000,
       # server_num => crash_after_time(ms)
-      crash_servers: %{},
+      crash_servers: %{4 => 20000},
       logger_level: %{
         monitor: :quiet,
         database: :quiet,

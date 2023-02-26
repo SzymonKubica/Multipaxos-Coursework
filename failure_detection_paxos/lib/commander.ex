@@ -50,7 +50,7 @@ defmodule Commander do
 
         # Here we send a message back to the leader to tell him that a proposal
         # has been chosen and that the timeout for his ballots needs to be decreased
-        send(self.leader, {:PROPOSAL_CHOSEN})
+        send(self.leader({:PROPOSAL_CHOSEN}))
 
         self |> commander_finished
     end

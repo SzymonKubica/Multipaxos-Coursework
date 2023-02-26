@@ -53,10 +53,6 @@ defmodule Leader do
     %{self | timeout: new_timeout}
   end
 
-  defp set_preempting_ballot(self, preempting_ballot) do
-    %{self | preempting_ballot: preempting_ballot}
-  end
-
   # ____________________________________________________________________________
 
   def start(config) do
@@ -91,9 +87,6 @@ defmodule Leader do
           self.active ->
             send(requestor, {:STILL_ALIVE, self.ballot_num, self.timeout})
 
-          self.preempting_ballot != nil ->
-            send(requestor, {:PREEMPTED_BY, self.preempting_ballot})
-
           true ->
             :skip
         end
@@ -118,7 +111,7 @@ defmodule Leader do
         if not self.active, do: self |> next
 
         self
-        |> spawn_commander(proposal)
+        |> spawn_commander({self.ballot_num, s, c})
         |> Debug.log("Commander spawned for: #{inspect(c)} in slot #{s}", :success)
         |> next
 
@@ -128,8 +121,6 @@ defmodule Leader do
         |> next
 
       {:ADOPTED, b, pvalues} ->
-        # We cannot just pin the value of self.ballot_num in the match because
-        # we might have updated the value of the timeout in the meantime in which case the ballot will be different.
         if not BallotNumber.equal?(b, self.ballot_num), do: self |> next
 
         self =
@@ -144,24 +135,21 @@ defmodule Leader do
           |> Debug.log("Proposals after update #{inspect(self.proposals)}")
 
         commander_spawning_logs =
-          for {s, c} = proposal <- self.proposals, into: [] do
-            self |> spawn_commander(proposal)
+          for {s, c} <- self.proposals, into: [] do
+            spawn_commander(self, {b, s, c})
             "Commander spawned: command: #{inspect(c)} in slot #{s}"
           end
 
         self
         |> Debug.log(Enum.join(commander_spawning_logs, "\n--> "))
         |> activate
-        |> set_preempting_ballot(nil)
         |> next
 
       {:PREEMPTED, b} ->
         self = self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
-
         send(self.failure_detector, {:PING, b})
 
         self
-        |> set_preempting_ballot(b)
         |> deactivate
         |> next
 
@@ -187,13 +175,13 @@ defmodule Leader do
     %{self | failure_detector: failure_detector}
   end
 
-  defp spawn_commander(self, {s, c} = _proposal) do
+  defp spawn_commander(self, {b, s, c}) do
     spawn(Commander, :start, [
       self.config,
       self(),
       self.acceptors,
       self.replicas,
-      %Pvalue{ballot_num: self.ballot_num, slot_num: s, command: c}
+      %Pvalue{ballot_num: b, slot_num: s, command: c}
     ])
 
     self |> Monitor.notify(:COMMANDER_SPAWNED)
@@ -201,7 +189,9 @@ defmodule Leader do
 
   defp spawn_scout(self) do
     spawn(Scout, :start, [self.config, self(), self.acceptors, self.ballot_num])
-    self |> Monitor.notify(:SCOUT_SPAWNED)
+
+    self
+    |> Monitor.notify(:SCOUT_SPAWNED)
   end
 
   defp exists_proposal_for?(self, slot_number) do
@@ -224,7 +214,7 @@ defmodule Leader do
     length(updates) != 0
   end
 
-  defp pmax(pvalues) do
+  defp pmax1(pvalues) do
     for %Pvalue{ballot_num: b, slot_num: s, command: c} <- pvalues,
         Enum.all?(
           for %Pvalue{ballot_num: b1, slot_num: ^s} <- pvalues,
@@ -232,5 +222,32 @@ defmodule Leader do
         ),
         into: MapSet.new(),
         do: {s, c}
+  end
+
+  # {⟨s,c⟩ | ∃b:⟨b,s,c⟩∈pvals ∧ ∀b′,c′:⟨b′,s,c′⟩∈pvals⇒b′≤b}
+  # All <s,c> pairs that have b > all other pairs with s in
+  defp pmax(pvals) do
+    x =
+      for %Pvalue{ballot_num: b, slot_num: s, command: c} <- pvals do
+        bigger =
+          for %Pvalue{ballot_num: b_p, slot_num: s_p} <- pvals do
+            s != s_p or BallotNumber.less_or_equal?(b_p, b)
+          end
+
+        if Enum.all?(bigger) do
+          {s, c}
+        else
+          nil
+        end
+      end
+
+    x = MapSet.new(x)
+    MapSet.delete(x, nil)
+  end
+
+  # x⊲y≡{⟨s,c⟩ | ⟨s,c⟩∈y ∨ (⟨s,c⟩∈x ∧∄c′:⟨s,c′⟩∈y)}
+  defp update(x, y) do
+    new_x = MapSet.filter(x, fn {s, _} -> not Enum.any?(y, fn {s_y, _} -> s == s_y end) end)
+    MapSet.union(y, new_x)
   end
 end
