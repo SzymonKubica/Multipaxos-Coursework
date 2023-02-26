@@ -1,10 +1,10 @@
 # Modified by Szymon Kubica (sk4520) 18 Feb 2023
 defmodule BallotNumber do
-  defstruct value: 0, leader_index: 0, leader_pid: nil, timeout: 0, is_bottom: false
+  defstruct value: 0, leader: 0, is_bottom: false
 
   def compare(
-        %BallotNumber{value: v1, leader_index: l1, is_bottom: bot1},
-        %BallotNumber{value: v2, leader_index: l2, is_bottom: bot2}
+        %BallotNumber{value: v1, leader: l1, is_bottom: bot1},
+        %BallotNumber{value: v2, leader: l2, is_bottom: bot2}
       ) do
     cond do
       bot1 and bot2 -> :eq

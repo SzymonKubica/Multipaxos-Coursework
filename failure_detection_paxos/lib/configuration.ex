@@ -38,11 +38,11 @@ defmodule Configuration do
   def params(:default) do
     %{
       # max requests each client will make
-      max_requests: 5000,
+      max_requests: 2000,
       # time (ms) to sleep before sending new request
       client_sleep: 2,
       # time (ms) to stop sending further requests
-      client_stop: 15_0000,
+      client_stop: 20_000,
       # :round_robin, :quorum or :broadcast
       send_policy: :round_robin,
       # number of active bank accounts (init balance=0)
@@ -56,11 +56,11 @@ defmodule Configuration do
       # determines if a leader waits before retrying after being preempted
       wait_before_retrying: false,
       # maximum waiting time after preemption (miliseconds)
-      leader_starting_timeout: 200,
       leader_timeout_increase_factor: 1.2,
-      leader_timeout_decrease_const: 25,
-      min_leader_timeout: 10,
-      max_leader_timeout: 1000,
+      leader_timeout_decrease_const: 10,
+      initial_leader_timeout: 1000,
+      min_leader_timeout: 500,
+      max_leader_timeout: 5000,
       # server_num => crash_after_time(ms)
       crash_servers: %{},
       logger_level: %{
@@ -71,7 +71,8 @@ defmodule Configuration do
         leader: :quiet,
         commander: :quiet,
         acceptor: :quiet,
-        scout: :quiet
+        scout: :quiet,
+        failure_detector: :quiet
       }
     }
   end
@@ -88,7 +89,8 @@ defmodule Configuration do
           leader: :quiet,
           commander: :quiet,
           acceptor: :verbose,
-          scout: :quiet
+          scout: :quiet,
+          failure_detector: :verbose
         }
       }
     )

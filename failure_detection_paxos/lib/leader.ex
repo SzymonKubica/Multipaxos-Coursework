@@ -19,32 +19,42 @@ defmodule Leader do
   defp update_ballot_number(self, new_value) do
     %{
       self
-      | ballot_num: %BallotNumber{self.ballot_num | value: new_value + 1, timeout: self.timeout}
+      | ballot_num: %BallotNumber{self.ballot_num | value: new_value + 1}
     }
   end
 
   defp increase_timeout(self) do
-    %{
-      self
-      | timeout: round(self.timeout * self.config.leader_timeout_increase_factor)
-    }
+    base_value = max(self.timeout, self.config.initial_leader_timeout)
+
+    new_timeout =
+      min(
+        self.config.max_leader_timeout,
+        round(base_value * self.config.leader_timeout_increase_factor)
+      )
+
+    self
+    |> update_timeout(new_timeout)
+    |> Monitor.notify(:TIMEOUT_INCREASED, self.timeout)
   end
 
   defp decrease_timeout(self) do
-    new_ballot_timeout =
-      max(0, self.ballot_num.timeout - self.config.leader_timeout_decrease_const)
-
     new_timeout =
       max(
         self.config.min_leader_timeout,
-        new_ballot_timeout
+        self.timeout - self.config.leader_timeout_decrease_const
       )
 
-    %{
-      self
-      | timeout: new_timeout,
-        ballot_num: %BallotNumber{self.ballot_num | timeout: new_ballot_timeout}
-    }
+    self
+    |> update_timeout(new_timeout)
+    |> Monitor.notify(:TIMEOUT_DECREASED, self.timeout)
+  end
+
+  defp update_timeout(self, new_timeout) do
+    %{self | timeout: new_timeout}
+  end
+
+  defp set_preempting_ballot(self, preempting_ballot) do
+    %{self | preempting_ballot: preempting_ballot}
   end
 
   # ____________________________________________________________________________
@@ -58,39 +68,38 @@ defmodule Leader do
     self = %{
       type: :leader,
       config: config,
-      ballot_num: %BallotNumber{
-        value: 0,
-        leader_index: config.node_num,
-        leader_pid: self(),
-        timeout: config.leader_starting_timeout
-      },
-      timeout: config.leader_starting_timeout,
+      ballot_num: %BallotNumber{value: 0, leader: self()},
+      timeout: config.initial_leader_timeout,
       acceptors: acceptors,
       replicas: replicas,
+      failure_detector: nil,
       active: false,
-      proposals: MapSet.new()
+      proposals: MapSet.new(),
+      preempting_ballot: nil
     }
 
     self
     |> spawn_scout
+    |> spawn_failure_detector
     |> next
   end
 
   def next(self) do
     receive do
-      {:RESPONSE_REQUESTED, requestor, ballot} ->
-        if self.active and BallotNumber.equal?(ballot, self.ballot_num) do
-          send(requestor, {:STILL_ALIVE, self.ballot_num})
+      {:RESPONSE_REQUESTED, requestor} ->
+        cond do
+          self.active ->
+            send(requestor, {:STILL_ALIVE, self.ballot_num, self.timeout})
+
+          self.preempting_ballot != nil ->
+            send(requestor, {:PREEMPTED_BY, self.preempting_ballot})
+
+          true ->
+            :skip
         end
 
         self
         |> Monitor.notify(:PING_RESPONSE_SENT)
-        |> next
-
-      {:PROPOSAL_CHOSEN} ->
-        self
-        |> decrease_timeout
-        |> Monitor.notify(:TIMEOUT_DECREASED, self.timeout)
         |> next
 
       {:PROPOSE, s, c} ->
@@ -111,6 +120,11 @@ defmodule Leader do
         self
         |> spawn_commander(proposal)
         |> Debug.log("Commander spawned for: #{inspect(c)} in slot #{s}", :success)
+        |> next
+
+      {:PROPOSAL_CHOSEN} ->
+        self
+        |> decrease_timeout
         |> next
 
       {:ADOPTED, b, pvalues} ->
@@ -138,54 +152,39 @@ defmodule Leader do
         self
         |> Debug.log(Enum.join(commander_spawning_logs, "\n--> "))
         |> activate
+        |> set_preempting_ballot(nil)
         |> next
 
       {:PREEMPTED, b} ->
         self = self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
 
-        if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
-        Process.send_after(self(), {:TIMEOUT_REACHED}, b.timeout)
+        send(self.failure_detector, {:PING, b})
 
         self
-        |> ping_preempting_leader(b)
-    end
-  end
-
-  defp ping_preempting_leader(self, %BallotNumber{value: value} = b) do
-    preempting_leader = b.leader_pid
-    send(preempting_leader, {:RESPONSE_REQUESTED, self(), b})
-    self |> Monitor.notify(:PING_SENT)
-
-    receive do
-      {:TIMEOUT_REACHED} ->
-        self
+        |> set_preempting_ballot(b)
         |> deactivate
+        |> next
+
+      {:PREEMPT, %BallotNumber{value: value} = b} ->
+        if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
+
+        self
         |> increase_timeout
-        |> Monitor.notify(:TIMEOUT_INCREASED, self.timeout)
         |> update_ballot_number(value)
         |> spawn_scout
         |> next
-    after
-      0 ->
-        receive do
-          {:STILL_ALIVE, current_ballot} ->
-            # Here we invoke the ping with the currenb ballot received from the leader
-            # that way the timeout will be updated
-            # change so that the ping interval is configureable
-
-            self
-            |> ping_preempting_leader(current_ballot)
-        after
-          b.timeout ->
-            self
-            |> deactivate
-            |> increase_timeout
-            |> Monitor.notify(:TIMEOUT_INCREASED, self.timeout)
-            |> update_ballot_number(value)
-            |> spawn_scout
-            |> next
-        end
     end
+  end
+
+  defp spawn_failure_detector(self) do
+    failure_detector =
+      spawn(FailureDetector, :start, [
+        self.config,
+        self()
+      ])
+
+    self = self |> Monitor.notify(:FAILURE_DETECTOR_SPAWNED)
+    %{self | failure_detector: failure_detector}
   end
 
   defp spawn_commander(self, {s, c} = _proposal) do

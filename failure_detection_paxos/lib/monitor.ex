@@ -45,6 +45,14 @@ defmodule Monitor do
     Map.put(self, :scouts_finished, Map.put(self.scouts_finished, k, v))
   end
 
+  def failure_detectors_spawned(self, k, v) do
+    Map.put(self, :failure_detectors_spawned, Map.put(self.failure_detectors_spawned, k, v))
+  end
+
+  def failure_detectors_finished(self, k, v) do
+    Map.put(self, :failure_detectors_finished, Map.put(self.failure_detectors_finished, k, v))
+  end
+
   def timeout_increased(self, k, v) do
     Map.put(self, :timeout_increased, Map.put(self.timeout_increased, k, v))
   end
@@ -65,11 +73,21 @@ defmodule Monitor do
     Map.put(self, :pings_sent, Map.put(self.pings_sent, k, v))
   end
 
+  def ping_responses_sent(self, k, v) do
+    Map.put(self, :ping_responses_sent, Map.put(self.ping_responses_sent, k, v))
+  end
+
   def pings_received(self, k, v) do
     Map.put(self, :pings_received, Map.put(self.pings_received, k, v))
   end
 
   # __________________________________________________________________________
+
+  def empty_totals(config) do
+    for i <- 1..config.n_servers, into: Map.new() do
+      {i, 0}
+    end
+  end
 
   def start(config) do
     self = %{
@@ -79,18 +97,21 @@ defmodule Monitor do
       seen: Map.new(),
       done: Map.new(),
       log: Map.new(),
-      scouts_spawned: Map.new(),
-      scouts_preempted: Map.new(),
-      scouts_finished: Map.new(),
-      commanders_spawned: Map.new(),
-      commanders_preempted: Map.new(),
-      commanders_finished: Map.new(),
-      leader_timeouts: Map.new(),
-      timeout_increased: Map.new(),
-      timeout_decreased: Map.new(),
-      leader_timeout_update_counts: Map.new(),
-      pings_sent: Map.new(),
-      pings_received: Map.new()
+      scouts_spawned: empty_totals(config),
+      scouts_preempted: empty_totals(config),
+      scouts_finished: empty_totals(config),
+      commanders_spawned: empty_totals(config),
+      commanders_preempted: empty_totals(config),
+      commanders_finished: empty_totals(config),
+      failure_detectors_spawned: empty_totals(config),
+      failure_detectors_finished: empty_totals(config),
+      leader_timeouts: empty_totals(config),
+      timeout_increased: empty_totals(config),
+      timeout_decreased: empty_totals(config),
+      leader_timeout_update_counts: empty_totals(config),
+      pings_sent: empty_totals(config),
+      ping_responses_sent: empty_totals(config),
+      pings_received: empty_totals(config)
     }
 
     self
@@ -181,6 +202,20 @@ defmodule Monitor do
         |> commanders_finished(server_num, value + 1)
         |> next()
 
+      {:PING_FINISHED, server_num} ->
+        value = Map.get(self.failure_detectors_finished, server_num, 0)
+
+        self
+        |> failure_detectors_finished(server_num, value + 1)
+        |> next()
+
+      {:FAILURE_DETECTOR_SPAWNED, server_num} ->
+        value = Map.get(self.failure_detectors_spawned, server_num, 0)
+
+        self
+        |> failure_detectors_spawned(server_num, value + 1)
+        |> next()
+
       {:PING_SENT, server_num} ->
         value = Map.get(self.pings_sent, server_num, 0)
 
@@ -188,11 +223,18 @@ defmodule Monitor do
         |> pings_sent(server_num, value + 1)
         |> next()
 
-      {:PING_RESPONSE_SENT, server_num} ->
+      {:PING_RESPONSE_RECEIVED, server_num} ->
         value = Map.get(self.pings_received, server_num, 0)
 
         self
         |> pings_received(server_num, value + 1)
+        |> next()
+
+      {:PING_RESPONSE_SENT, server_num} ->
+        value = Map.get(self.ping_responses_sent, server_num, 0)
+
+        self
+        |> ping_responses_sent(server_num, value + 1)
         |> next()
 
       {:TIMEOUT_INCREASED, leader_num, new_timeout_value} ->
@@ -238,6 +280,10 @@ defmodule Monitor do
           IO.puts("time = #{clock} commanders preempted = #{inspect(sorted)}")
           sorted = self.commanders_finished |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
+          sorted = self.failure_detectors_spawned |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}          FDs spawned = #{inspect(sorted)}")
+          sorted = self.failure_detectors_finished |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}       pings finished = #{inspect(sorted)}")
           sorted = self.leader_timeouts |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}      leader timeouts = #{inspect(sorted)}")
           sorted = self.leader_timeout_update_counts |> Map.to_list() |> List.keysort(0)
@@ -249,7 +295,9 @@ defmodule Monitor do
           sorted = self.pings_sent |> Map.to_list() |> List.keysort(0)
           IO.puts("time = #{clock}   ping messages sent = #{inspect(sorted)}")
           sorted = self.pings_received |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}       ping responses = #{inspect(sorted)}")
+          IO.puts("time = #{clock}       pings received = #{inspect(sorted)}")
+          sorted = self.ping_responses_sent |> Map.to_list() |> List.keysort(0)
+          IO.puts("time = #{clock}  ping responses sent = #{inspect(sorted)}")
         end
 
         IO.puts("")
