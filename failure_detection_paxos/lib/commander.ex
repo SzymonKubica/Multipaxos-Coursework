@@ -48,9 +48,11 @@ defmodule Commander do
         for replica <- self.replicas,
             do: send(replica, {:DECISION, self.pvalue.slot_num, self.pvalue.command})
 
-        # Here we send a message back to the leader to tell him that a proposal
-        # has been chosen and that the timeout for his ballots needs to be decreased
-        send(self.leader({:PROPOSAL_CHOSEN}))
+        if self.config.operation_mode == :full_liveness do
+          # Here we send a message back to the leader to tell him that a proposal
+          # has been chosen and that the timeout for his ballots needs to be decreased
+          send(self.leader, {:PROPOSAL_CHOSEN})
+        end
 
         self |> commander_finished
     end

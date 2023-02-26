@@ -70,8 +70,7 @@ defmodule Leader do
       replicas: replicas,
       failure_detector: nil,
       active: false,
-      proposals: MapSet.new(),
-      preempting_ballot: nil
+      proposals: MapSet.new()
     }
 
     self
@@ -145,11 +144,28 @@ defmodule Leader do
         |> activate
         |> next
 
-      {:PREEMPTED, b} ->
+      {:PREEMPTED, %BallotNumber{value: value} = b} ->
         self = self |> Debug.log("Received PREEMPTED message for ballot #{inspect(b)}", :error)
-        send(self.failure_detector, {:PING, b})
 
-        self
+        case self.config.operation_mode do
+          :no_liveness ->
+            self
+            |> update_ballot_number(value)
+            |> spawn_scout
+
+          :partial_liveness ->
+            Process.sleep(
+              Enum.random(self.config.min_random_timeout..self.config.max_random_timeout)
+            )
+
+            self
+            |> update_ballot_number(value)
+            |> spawn_scout
+
+          :full_liveness ->
+            send(self.failure_detector, {:PING, b})
+            self
+        end
         |> deactivate
         |> next
 
@@ -190,8 +206,7 @@ defmodule Leader do
   defp spawn_scout(self) do
     spawn(Scout, :start, [self.config, self(), self.acceptors, self.ballot_num])
 
-    self
-    |> Monitor.notify(:SCOUT_SPAWNED)
+    self |> Monitor.notify(:SCOUT_SPAWNED)
   end
 
   defp exists_proposal_for?(self, slot_number) do
@@ -214,7 +229,7 @@ defmodule Leader do
     length(updates) != 0
   end
 
-  defp pmax1(pvalues) do
+  defp pmax(pvalues) do
     for %Pvalue{ballot_num: b, slot_num: s, command: c} <- pvalues,
         Enum.all?(
           for %Pvalue{ballot_num: b1, slot_num: ^s} <- pvalues,
@@ -222,32 +237,5 @@ defmodule Leader do
         ),
         into: MapSet.new(),
         do: {s, c}
-  end
-
-  # {⟨s,c⟩ | ∃b:⟨b,s,c⟩∈pvals ∧ ∀b′,c′:⟨b′,s,c′⟩∈pvals⇒b′≤b}
-  # All <s,c> pairs that have b > all other pairs with s in
-  defp pmax(pvals) do
-    x =
-      for %Pvalue{ballot_num: b, slot_num: s, command: c} <- pvals do
-        bigger =
-          for %Pvalue{ballot_num: b_p, slot_num: s_p} <- pvals do
-            s != s_p or BallotNumber.less_or_equal?(b_p, b)
-          end
-
-        if Enum.all?(bigger) do
-          {s, c}
-        else
-          nil
-        end
-      end
-
-    x = MapSet.new(x)
-    MapSet.delete(x, nil)
-  end
-
-  # x⊲y≡{⟨s,c⟩ | ⟨s,c⟩∈y ∨ (⟨s,c⟩∈x ∧∄c′:⟨s,c′⟩∈y)}
-  defp update(x, y) do
-    new_x = MapSet.filter(x, fn {s, _} -> not Enum.any?(y, fn {s_y, _} -> s == s_y end) end)
-    MapSet.union(y, new_x)
   end
 end

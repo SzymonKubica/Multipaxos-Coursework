@@ -9,10 +9,6 @@ defmodule FailureDetector do
     %{self | timeout: timeout}
   end
 
-  defp reset_timeout(self) do
-    self |> update_timeout(self.config.initial_leader_timeout)
-  end
-
   # ____________________________________________________________________________
 
   def start(config, l) do
@@ -59,16 +55,6 @@ defmodule FailureDetector do
         |> Monitor.notify(:PING_RESPONSE_RECEIVED)
         |> Debug.log("Ping response received, current timeout: #{timeout}")
         |> update_timeout(timeout)
-        |> ping
-
-      {:PREEMPTED_BY, ballot} ->
-        Process.sleep(self.timeout)
-
-        self
-        |> Monitor.notify(:PING_RESPONSE_RECEIVED)
-        |> Debug.log("Ping response received, current timeout: #{self.timeout}")
-        |> update_ballot_number(ballot)
-        |> reset_timeout
         |> ping
     after
       self.timeout ->

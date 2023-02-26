@@ -7,7 +7,7 @@
 \usepackage{amssymb}
 \usepackage{physics}
 \usepackage{graphicx}
-\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage[left=1cm,right=1cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{multirow}
 \usepackage{booktabs}
 \usepackage{float}
@@ -19,6 +19,38 @@
 \usepackage{parskip}
 \usepackage{blindtext}
 \usepackage{hyperref}
+\usepackage{listings,xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+\usepackage[scaled=0.9]{DejaVuSansMono}
+\definecolor{commentgreen}{RGB}{2,112,10}
+\definecolor{eminence}{RGB}{108,48,130}
+\definecolor{weborange}{RGB}{255,165,0}
+\definecolor{frenchplum}{RGB}{129,20,83}
+
+\lstdefinelanguage{elixir}{
+    morekeywords={case,catch,def,do,else,false,%
+        use,alias,receive,timeout,defmacro,defp,%
+        for,if,import,defmodule,defprotocol,%
+        nil,defmacrop,defoverridable,defimpl,%
+        super,fn,raise,true,try,end,with,%
+        unless},
+    otherkeywords={<-,->, |>, \%\{, \}, \{, \, (, )},
+    sensitive=true,
+    morecomment=[l]{\#},
+    morecomment=[n]{/*}{*/},
+    morecomment=[s][\color{purple}]{:}{\ },
+    morestring=[s][\color{orange}]"",
+    commentstyle=\color{commentgreen},
+    keywordstyle=\color{eminence},
+    stringstyle=\color{red},
+	basicstyle=\ttfamily,
+	breaklines,
+	showstringspaces=false,
+	frame=tb
+}
+
+\lstset{numbers=left,xleftmargin=2em,frame=single,framexleftmargin=0em,numberstyle=\footnotesize\ttfamily}
 \renewcommand{\baselinestretch}{1.5}
 
 %% Commands for inserting big braces.
@@ -31,13 +63,68 @@
 %% Page style settings
 \pagestyle{fancy}
 \fancyfoot{}
-\fancyhead[L]{\slshape{Head here}}
-\fancyhead[R]{\slshape{CID: 01871147}}
+\fancyhead[L]{\slshape{Multi-Paxos}}
+\fancyhead[R]{\slshape{Szymon Kubica, CID: 01871147}}
 \fancyfoot[C]{\thepage}
 \begin{document}
 
-\title{Title here \ Subtitile here}
+\title{Distributed Algorithms 60009 \ Coursework - Multi-Paxos}
 \date{\today}
-\author{CID: 01871147}
+\author{Szymon Kubica, CID: 01871147}
 \maketitle
+
+\section*{Architecture}
+\pagebreak
+\section*{Liveness}
+My initial implementation of the section 3 followed closely the algorithm
+described in the paper. Each leader after receiving a \texttt{:PREEMPTED} message
+becomes inactive and starts pinging the leader that has preempted it, instead of
+picking a higher ballot number and spawning a scout immediately. That pinging
+functionality is achieved by spawning a failure detector module alongside each
+leader. When preempted, a leader sends a request to its failure detector to start
+pinging the leader who preempted it with the ballot number \texttt{b}, then it
+deactivates itself and proceeds to process other messages.
+\begin{lstlisting}[language=elixir, caption={Super fancy code},captionpos=b]
+      {:PREEMPTED, b} ->
+        send(self.failure_detector, {:PING, b})
+        self |> deactivate |> next
+\end{lstlisting}
+The failure detector belonging to this reader maintains the highest ballot number
+that it has ever pinged and on receipt of the message \texttt{\{:PING, b\}} it
+checks if the incoming ballot number is higher than its stored, highest one. If so
+the ballot number gets updated. After that the failure detector starts pinging
+the leader associated with its current ballot number.
+
+\begin{lstlisting}[language=elixir, caption={Super fancy code},captionpos=b]
+defmodule FailureDetector do
+  #  ... Setters, start function
+  defp next(self) do
+    receive do
+      {:PING, ballot_num} ->
+          if BallotNumber.greater_than?(ballot_num, self.ballot_num),
+            do: self |> update_ballot_number(ballot_num) |> ping,
+            else: self |> ping
+    end |> next
+  end
+  defp ping(self) do
+    preempting_leader = self.ballot_num.leader
+    send(preempting_leader, {:RESPONSE_REQUESTED, self()})
+    receive do
+      {:STILL_ALIVE, current_ballot, timeout} ->
+        Process.sleep(self.timeout)
+        self =
+          if BallotNumber.greater_than?(current_ballot, self.ballot_num),
+            do: self |> update_ballot_number(current_ballot),
+            else: self
+        self |> update_timeout(timeout) |> ping
+    after
+      self.timeout ->
+        send(self.leader, {:PREEMPT, self.ballot_num})
+        self|> next
+    end
+  end
+end
+
+\end{lstlisting}
+\section*{Evaluation}
 \end{document}

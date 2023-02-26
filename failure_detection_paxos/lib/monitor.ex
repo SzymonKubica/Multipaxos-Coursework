@@ -266,38 +266,49 @@ defmodule Monitor do
         sorted = self.done |> Map.to_list() |> List.keysort(0)
         IO.puts("time = #{clock}     db requests done = #{inspect(sorted)}")
 
-        if self.config.debug_level > 0 do
-          sorted = self.scouts_spawned |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}            scouts up = #{inspect(sorted)}")
-          sorted = self.scouts_preempted |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}     scouts preempted = #{inspect(sorted)}")
-          sorted = self.scouts_finished |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}          scouts down = #{inspect(sorted)}")
+        cond do
+          self.config.debug_level > 1 ->
+            sorted = self.scouts_spawned |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}            scouts up = #{inspect(sorted)}")
+            sorted = self.scouts_preempted |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}     scouts preempted = #{inspect(sorted)}")
+            sorted = self.scouts_finished |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}          scouts down = #{inspect(sorted)}")
 
-          sorted = self.commanders_spawned |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}        commanders up = #{inspect(sorted)}")
-          sorted = self.commanders_preempted |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock} commanders preempted = #{inspect(sorted)}")
-          sorted = self.commanders_finished |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
-          sorted = self.failure_detectors_spawned |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}          FDs spawned = #{inspect(sorted)}")
-          sorted = self.failure_detectors_finished |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}       pings finished = #{inspect(sorted)}")
-          sorted = self.leader_timeouts |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}      leader timeouts = #{inspect(sorted)}")
-          sorted = self.leader_timeout_update_counts |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}      timeout updates = #{inspect(sorted)}")
-          sorted = self.timeout_increased |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}    timeout increases = #{inspect(sorted)}")
-          sorted = self.timeout_decreased |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}    timeout decreases = #{inspect(sorted)}")
-          sorted = self.pings_sent |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}   ping messages sent = #{inspect(sorted)}")
-          sorted = self.pings_received |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}       pings received = #{inspect(sorted)}")
-          sorted = self.ping_responses_sent |> Map.to_list() |> List.keysort(0)
-          IO.puts("time = #{clock}  ping responses sent = #{inspect(sorted)}")
+            sorted = self.commanders_spawned |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}        commanders up = #{inspect(sorted)}")
+            sorted = self.commanders_preempted |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock} commanders preempted = #{inspect(sorted)}")
+            sorted = self.commanders_finished |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
+            sorted = self.failure_detectors_spawned |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}          FDs spawned = #{inspect(sorted)}")
+            sorted = self.failure_detectors_finished |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}       pings finished = #{inspect(sorted)}")
+            sorted = self.leader_timeouts |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}      leader timeouts = #{inspect(sorted)}")
+            sorted = self.leader_timeout_update_counts |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}      timeout updates = #{inspect(sorted)}")
+            sorted = self.timeout_increased |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}    timeout increases = #{inspect(sorted)}")
+            sorted = self.timeout_decreased |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}    timeout decreases = #{inspect(sorted)}")
+            sorted = self.pings_sent |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}   ping messages sent = #{inspect(sorted)}")
+            sorted = self.pings_received |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}       pings received = #{inspect(sorted)}")
+            sorted = self.ping_responses_sent |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}  ping responses sent = #{inspect(sorted)}")
+
+          self.config.debug_level > 0 ->
+            sorted = self.scouts_spawned |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}            scouts up = #{inspect(sorted)}")
+            sorted = self.scouts_finished |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}          scouts down = #{inspect(sorted)}")
+            sorted = self.commanders_spawned |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}        commanders up = #{inspect(sorted)}")
+            sorted = self.commanders_finished |> Map.to_list() |> List.keysort(0)
+            IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
         end
 
         IO.puts("")
@@ -305,8 +316,6 @@ defmodule Monitor do
         self
         |> start_print_timeout()
         |> next()
-
-      # ** ADD ADDITIONAL MESSAGES OF YOUR OWN HERE
 
       unexpected ->
         Helper.node_halt("monitor: unexpected message #{inspect(unexpected)}")
@@ -319,12 +328,22 @@ defmodule Monitor do
   end
 
   def notify(entity, message, args \\ nil) do
-    case args do
-      nil ->
-        send(entity.config.monitor, {message, entity.config.node_num})
+    # If debug level is 1, we don't need to send all messages.
+    level_1_messages = [
+      :CLIENT_REQUEST,
+      :SCOUT_SPAWNED,
+      :SCOUT_FINISHED,
+      :COMMANDER_SPAWNED,
+      :COMMANDER_FINISHED
+    ]
 
-      _ ->
-        send(entity.config.monitor, {message, entity.config.node_num, args})
+    message_payload =
+      if args == nil,
+        do: {message, entity.config.node_num},
+        else: {message, entity.config.node_num, args}
+
+    if entity.config.debug_level > 1 or message in level_1_messages do
+      send(entity.config.monitor, message_payload)
     end
 
     entity
