@@ -1,21 +1,27 @@
 # MultiPaxos
 
-**TODO: Add description**
 
-## Installation
+## Running configurations for experiments
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `multi_paxos` to your list of dependencies in `mix.exs`:
+I have defined a set of configurations which are thoroughly described in the
+lib/configuration.ex file. The way I was running them was to invoke
 
-```elixir
-def deps do
-  [
-    {:multi_paxos, "~> 0.1.0"}
-  ]
-end
+```
+make run PARAMS=<configuration name>
+
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/multi_paxos>.
+The list of available configurations can be seen below
 
+debug
+no_liveness_short
+no_liveness_medium
+partial_liveness_medium
+partial_liveness_long
+crash2
+partial_liveness_crash2
+full_liveness
+full_liveness_stress
+full_liveness_bad_settings
+simplified_liveness
+crash2_liveness

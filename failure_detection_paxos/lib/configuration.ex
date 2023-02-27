@@ -39,7 +39,7 @@ defmodule Configuration do
       # Run configuration name used by monitor when writing logs to a file
       run_configuration: :default,
       # Controls if we want to write numbers of requests done to a file for evaluation.
-      write_to_file: true,
+      write_to_file: false,
       # max requests each client will make
       max_requests: 500,
       # time (ms) to sleep before sending new request
