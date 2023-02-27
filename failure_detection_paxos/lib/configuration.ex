@@ -36,6 +36,10 @@ defmodule Configuration do
   # -----------------------------------------------------------------------------
   def params(:default) do
     %{
+      # Run configuration name used by monitor when writing logs to a file
+      run_configuration: :default,
+      # Controls if we want to write numbers of requests done to a file for evaluation.
+      write_to_file: false,
       # max requests each client will make
       max_requests: 500,
       # time (ms) to sleep before sending new request
@@ -147,6 +151,7 @@ defmodule Configuration do
     Map.merge(
       params(:default),
       %{
+        run_configuration: :partial_liveness_short,
         operation_mode: :partial_liveness,
         max_requests: 5,
         min_random_timeout: 10,
@@ -165,6 +170,7 @@ defmodule Configuration do
     Map.merge(
       params(:default),
       %{
+        run_configuration: :partial_liveness_medium,
         operation_mode: :partial_liveness,
         max_requests: 500,
         min_random_timeout: 100,
@@ -179,6 +185,7 @@ defmodule Configuration do
     Map.merge(
       params(:default),
       %{
+        run_configuration: :partial_liveness_long,
         operation_mode: :partial_liveness,
         max_requests: 2000,
         min_random_timeout: 10,
@@ -193,6 +200,7 @@ defmodule Configuration do
     Map.merge(
       params(:default),
       %{
+        run_configuration: :crash2,
         crash_servers: %{
           3 => 1_500,
           5 => 2_500
@@ -206,6 +214,7 @@ defmodule Configuration do
     Map.merge(
       params(:partial_liveness_medium),
       %{
+        run_configuration: :partial_liveness_crash2,
         crash_servers: %{
           3 => 1_500,
           5 => 2_500
@@ -219,7 +228,21 @@ defmodule Configuration do
   def params(:full_liveness) do
     Map.merge(
       params(:default),
-      %{operation_mode: :full_liveness}
+      %{
+        run_configuration: :full_liveness,
+        operation_mode: :full_liveness
+      }
+    )
+  end
+
+  def params(:full_liveness_long) do
+    Map.merge(
+      params(:default),
+      %{
+        max_requests: 2000,
+        run_configuration: :full_liveness_long,
+        operation_mode: :full_liveness
+      }
     )
   end
 
@@ -228,6 +251,7 @@ defmodule Configuration do
     Map.merge(
       params(:default),
       %{
+        run_configuration: :full_liveness_stress,
         max_requests: 5000,
         client_stop: 20_000,
         operation_mode: :full_liveness
@@ -251,6 +275,7 @@ defmodule Configuration do
     Map.merge(
       params(:default),
       %{
+        run_configuration: :full_liveness_bad_settings,
         max_requests: 2000,
         client_stop: 20_000,
         operation_mode: :full_liveness,
@@ -265,11 +290,20 @@ defmodule Configuration do
 
   # This configuration runs the liveness implementation using the SimpleFailureDetector
   # modules which have a static timeout and continue pinging as long as the leader
-  # keeps responding.
+  # keeps responding. It uses the same number of requests settings as the one above
+  # to be able to contrast the two approaches during evalutation
+  # The fail detection timeout is quite generous to make sure that the main leader
+  # that is working on all decisions has enough time to process them without being
+  # preempted.
   def params(:simplified_liveness) do
     Map.merge(
       params(:default),
-      %{operation_mode: :simplified_liveness}
+      %{
+        max_requests: 2000,
+        simple_fd_timeout: 2000,
+        run_configuration: :simplified_liveness,
+        operation_mode: :simplified_liveness
+      }
     )
   end
 end

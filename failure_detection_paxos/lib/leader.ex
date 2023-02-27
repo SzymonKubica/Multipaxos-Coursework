@@ -69,6 +69,10 @@ defmodule Leader do
     %{self | timeout: new_timeout}
   end
 
+  defp set_preempted_by(self, b) do
+    %{self | preempted_by: b}
+  end
+
   # ____________________________________________________________________________
 
   def start(config) do
@@ -86,7 +90,8 @@ defmodule Leader do
       replicas: replicas,
       failure_detector: nil,
       active: false,
-      proposals: MapSet.new()
+      proposals: MapSet.new(),
+      preempted_by: nil
     }
 
     self
@@ -100,9 +105,17 @@ defmodule Leader do
 
     receive do
       {:RESPONSE_REQUESTED, requestor} ->
-        if self.active do
-          send(requestor, {:STILL_ALIVE, self.ballot_num, self.timeout})
-          self |> Monitor.notify(:PING_RESPONSE_SENT)
+        cond do
+          self.active ->
+            send(requestor, {:STILL_ALIVE, self.ballot_num, self.timeout})
+            self |> Monitor.notify(:PING_RESPONSE_SENT)
+
+          self.preempted_by != nil ->
+            send(requestor, {:STILL_ALIVE, self.preempted_by, self.timeout})
+            self |> Monitor.notify(:PING_RESPONSE_SENT)
+
+          true ->
+            :skip
         end
 
         self |> next
@@ -159,6 +172,7 @@ defmodule Leader do
 
         self
         |> Debug.log(Enum.join(commander_spawning_logs, "\n--> "))
+        |> set_preempted_by(nil)
         |> activate
         |> next
 
@@ -190,11 +204,11 @@ defmodule Leader do
 
           :simplified_liveness ->
             send(self.failure_detector, {:PING, b})
-            self
+            self |> set_preempted_by(b)
 
           :full_liveness ->
             send(self.failure_detector, {:PING, b})
-            self
+            self |> set_preempted_by(b)
         end
         |> deactivate
         |> next

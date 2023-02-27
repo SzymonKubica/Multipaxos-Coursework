@@ -39,14 +39,6 @@ defmodule SimpleFailureDetector do
     self |> Monitor.notify(:PING_SENT)
 
     receive do
-      # If while pinging the leader requests to ping someone else, we need to switch
-      {:PING, ballot_num} ->
-        Process.sleep(self.config.simple_fd_timeout)
-
-        self
-        |> update_ballot_number_if_greater(ballot_num)
-        |> ping
-
       # Here the timeout is ignored to expose the same api to the leader so
       # that the SimpleFailureDetector can replace a regular failure detector
       {:STILL_ALIVE, current_ballot, _timeout} ->

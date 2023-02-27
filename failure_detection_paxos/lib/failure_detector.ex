@@ -47,14 +47,6 @@ defmodule FailureDetector do
     |> Monitor.notify(:PING_SENT)
 
     receive do
-      # If while pinging the leader requests to ping someone else, we need to switch
-      {:PING, ballot_num} ->
-        Process.sleep(self.timeout)
-
-        self
-        |> update_ballot_number_if_greater(ballot_num)
-        |> ping
-
       {:STILL_ALIVE, current_ballot, timeout} ->
         Process.sleep(self.timeout)
 

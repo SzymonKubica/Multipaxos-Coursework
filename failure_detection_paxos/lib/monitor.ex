@@ -314,6 +314,15 @@ defmodule Monitor do
             IO.puts("time = #{clock}      commanders down = #{inspect(sorted)}")
         end
 
+        if self.config.write_to_file do
+          file_name = "outputs/requests_done/#{self.config.run_configuration}.txt"
+          requests_done = for {_, x} <- sorted, do: x
+
+          File.open(file_name, [:append, :utf8], fn file ->
+            IO.puts(file, "#{clock}, #{String.slice(inspect(requests_done), 1..-2)}")
+          end)
+        end
+
         IO.puts("")
 
         self
