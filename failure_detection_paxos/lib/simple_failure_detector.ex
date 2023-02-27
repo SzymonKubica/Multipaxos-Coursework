@@ -1,8 +1,10 @@
 defmodule SimpleFailureDetector do
   # ____________________________________________________________________ Setters
 
-  defp update_ballot_number(self, ballot_num) do
-    %{self | ballot_num: ballot_num}
+  defp update_ballot_number_if_greater(self, ballot_num) do
+    if BallotNumber.greater_than?(ballot_num, self.ballot_num),
+      do: %{self | ballot_num: ballot_num},
+      else: self
   end
 
   # ____________________________________________________________________________
@@ -19,14 +21,12 @@ defmodule SimpleFailureDetector do
   end
 
   defp next(self) do
+    Debug.letter(self.config, "F")
+
     receive do
       {:PING, ballot_num} ->
-        self =
-          if BallotNumber.greater_than?(ballot_num, self.ballot_num),
-            do: self |> update_ballot_number(ballot_num),
-            else: self
-
         self
+        |> update_ballot_number_if_greater(ballot_num)
         |> ping
     end
     |> next
@@ -38,17 +38,21 @@ defmodule SimpleFailureDetector do
     self |> Monitor.notify(:PING_SENT)
 
     receive do
+      # If while pinging the leader requests to ping someone else, we need to switch
+      {:PING, ballot_num} ->
+        Process.sleep(self.config.simple_fd_timeout)
+
+        self
+        |> update_ballot_number_if_greater(ballot_num)
+        |> ping
+
       # Here the timeout is ignored to expose the same api to the leader so
       # that the SimpleFailureDetector can replace a regular failure detector
       {:STILL_ALIVE, current_ballot, _timeout} ->
         Process.sleep(self.config.simple_fd_timeout)
 
-        self =
-          if BallotNumber.greater_than?(current_ballot, self.ballot_num),
-            do: self |> update_ballot_number(current_ballot),
-            else: self
-
         self
+        |> update_ballot_number_if_greater(current_ballot)
         |> Monitor.notify(:PING_RESPONSE_RECEIVED)
         |> ping
     after

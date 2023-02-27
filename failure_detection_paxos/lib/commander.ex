@@ -27,6 +27,8 @@ defmodule Commander do
   end
 
   defp next(self) do
+    Debug.letter(self.config, "C")
+
     receive do
       {:p2b, a, b} ->
         self = self |> Debug.log("p2b received: ballot: #{inspect(b)}")

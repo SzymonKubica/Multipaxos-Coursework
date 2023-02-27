@@ -31,6 +31,8 @@ defmodule Scout do
   end
 
   def next(self) do
+    Debug.letter(self.config, "S")
+
     receive do
       {:p1b, a, b, r} ->
         self =
@@ -45,6 +47,7 @@ defmodule Scout do
 
           self
           |> Monitor.notify(:SCOUT_PREEMPTED)
+          |> Debug.log("Preempted by ballot number #{inspect(b)}")
           |> scout_finished
         end
 

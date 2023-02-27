@@ -60,6 +60,8 @@ defmodule Replica do
   end
 
   defp next(self) do
+    Debug.letter(self.config, "R")
+
     self =
       receive do
         {:CLIENT_REQUEST, c} ->
@@ -122,6 +124,8 @@ defmodule Replica do
     length(decisions_for_s) == 1
   end
 
+  # This is a skeleton implementation of the support for reconfiguration command
+  # it currently doesn't do anything as there is no clients sending reconfig commands
   defp try_to_reconfigure(self) do
     reconfig_slot = self.slot_in - self.config.window_size
 
@@ -140,22 +144,20 @@ defmodule Replica do
   defp perform(self, {client, cid, op} = command) do
     self = self |> Debug.log("Perform: #{inspect(command)} in slot #{self.slot_out}")
 
-    self =
-      if not already_processed?(self, command) or isreconfig?(op) do
-        send(self.database, {:EXECUTE, op})
-        send(client, {:CLIENT_RESPONSE, cid, command})
+    if not already_processed?(self, command) or isreconfig?(op) do
+      send(self.database, {:EXECUTE, op})
+      send(client, {:CLIENT_RESPONSE, cid, command})
 
-        self
-        |> Debug.log("Command sent to DB: #{inspect(command)} in slot #{self.slot_out}", :success)
-      else
-        self
-        |> Debug.log(
-          "Command already processed: #{inspect(command)} in slot #{self.slot_out}",
-          :error
-        )
-      end
-
-    self |> increment_slot_out
+      self
+      |> Debug.log("Command sent to DB: #{inspect(command)} in slot #{self.slot_out}", :success)
+    else
+      self
+      |> Debug.log(
+        "Command already processed: #{inspect(command)} in slot #{self.slot_out}",
+        :error
+      )
+    end
+    |> increment_slot_out
   end
 
   defp already_processed?(self, command) do
@@ -175,6 +177,7 @@ defmodule Replica do
     already_processed
   end
 
+  # Skeleton implementation for the reconfiguration commands.
   defp isreconfig?(op) do
     case op do
       %{leaders: _leaders} -> true
@@ -197,24 +200,21 @@ defmodule Replica do
         Process.exit(self(), :normal)
       end
 
-      self =
-        if length(proposals_for_slot_out) == 1 do
-          {slot_out, c2} = first(proposals_for_slot_out)
-          self = self |> remove_proposal({slot_out, c2})
-          self = if c != c2, do: self |> add_request(c2), else: self
+      if length(proposals_for_slot_out) == 1 do
+        {slot_out, c2} = first(proposals_for_slot_out)
+        self = self |> remove_proposal({slot_out, c2})
+        self = if c != c2, do: self |> add_request(c2), else: self
 
-          self
-          |> Debug.log(
-            "Comparing commands: \n" <>
-              "--> #{inspect(c)} \n" <>
-              "--> #{inspect(c2)} \n" <>
-              "--> equal: #{c == c2}"
-          )
-        else
-          self
-        end
-
-      self
+        self
+        |> Debug.log(
+          "Comparing commands: \n" <>
+            "--> #{inspect(c)} \n" <>
+            "--> #{inspect(c2)} \n" <>
+            "--> equal: #{c == c2}"
+        )
+      else
+        self
+      end
       |> perform(c)
       |> process_pending_decisions
     else

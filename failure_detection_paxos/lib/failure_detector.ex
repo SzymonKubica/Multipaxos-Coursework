@@ -1,8 +1,10 @@
 defmodule FailureDetector do
   # ____________________________________________________________________ Setters
 
-  defp update_ballot_number(self, ballot_num) do
-    %{self | ballot_num: ballot_num}
+  defp update_ballot_number_if_greater(self, ballot_num) do
+    if BallotNumber.greater_than?(ballot_num, self.ballot_num),
+      do: %{self | ballot_num: ballot_num},
+      else: self
   end
 
   defp update_timeout(self, timeout) do
@@ -24,14 +26,12 @@ defmodule FailureDetector do
   end
 
   defp next(self) do
+    Debug.letter(self.config, "F")
+
     receive do
       {:PING, ballot_num} ->
-        self =
-          if BallotNumber.greater_than?(ballot_num, self.ballot_num),
-            do: self |> update_ballot_number(ballot_num),
-            else: self
-
         self
+        |> update_ballot_number_if_greater(ballot_num)
         |> ping
     end
     |> next
@@ -40,18 +40,25 @@ defmodule FailureDetector do
   defp ping(self) do
     preempting_leader = self.ballot_num.leader
     send(preempting_leader, {:RESPONSE_REQUESTED, self()})
-    self |> Monitor.notify(:PING_SENT)
+
+    self
+    |> Debug.log("Ping message sent to Leader: #{inspect(preempting_leader)}")
+    |> Monitor.notify(:PING_SENT)
 
     receive do
+      # If while pinging the leader requests to ping someone else, we need to switch
+      {:PING, ballot_num} ->
+        Process.sleep(self.timeout)
+
+        self
+        |> update_ballot_number_if_greater(ballot_num)
+        |> ping
+
       {:STILL_ALIVE, current_ballot, timeout} ->
         Process.sleep(self.timeout)
 
-        self =
-          if BallotNumber.greater_than?(current_ballot, self.ballot_num),
-            do: self |> update_ballot_number(current_ballot),
-            else: self
-
         self
+        |> update_ballot_number_if_greater(current_ballot)
         |> Monitor.notify(:PING_RESPONSE_RECEIVED)
         |> Debug.log("Ping response received, current timeout: #{timeout}")
         |> update_timeout(timeout)
@@ -62,6 +69,9 @@ defmodule FailureDetector do
 
         self
         |> Monitor.notify(:PING_FINISHED)
+        |> Debug.log(
+          "Leader #{inspect(self.ballot_num.leader)} failed to respond within: #{self.timeout} [ms], pinging stopped."
+        )
         |> next
     end
   end

@@ -19,8 +19,6 @@ defmodule Client do
         :quorum -> div(config.n_servers + 1, 2)
       end
 
-    # case
-
     self = %{
       type: :client,
       config: config,
@@ -69,8 +67,6 @@ defmodule Client do
     end
   end
 
-  # next
-
   defp receive_replies(self) do
     receive do
       # discard reply
@@ -80,11 +76,5 @@ defmodule Client do
       0 ->
         self
     end
-
-    # receive
   end
-
-  # receive_replies
 end
-
-# Client
