@@ -83,6 +83,9 @@ defmodule Monitor do
 
   # __________________________________________________________________________
 
+  # This one ensures that each server always has its corresponding entry in the
+  # map, even if it didn't send any messages associated with that constant. It
+  # makes the output of the monitor more readable
   def empty_totals(config) do
     for i <- 1..config.n_servers, into: Map.new() do
       {i, 0}
