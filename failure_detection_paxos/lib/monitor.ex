@@ -316,10 +316,10 @@ defmodule Monitor do
 
         if self.config.write_to_file do
           file_name = "outputs/requests_done/#{self.config.run_configuration}.txt"
-          requests_done = for {_, x} <- sorted, do: x
+          requests_done = for {_, x} <- sorted, do: Integer.to_string(x)
 
           File.open(file_name, [:append, :utf8], fn file ->
-            IO.puts(file, "#{clock}, #{String.slice(inspect(requests_done), 1..-2)}")
+            IO.puts(file, "#{clock}, #{Enum.join(requests_done, ", ")}")
           end)
         end
 

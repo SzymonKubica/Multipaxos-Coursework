@@ -39,7 +39,7 @@ defmodule Configuration do
       # Run configuration name used by monitor when writing logs to a file
       run_configuration: :default,
       # Controls if we want to write numbers of requests done to a file for evaluation.
-      write_to_file: false,
+      write_to_file: true,
       # max requests each client will make
       max_requests: 500,
       # time (ms) to sleep before sending new request
@@ -138,7 +138,18 @@ defmodule Configuration do
     Map.merge(
       params(:default),
       %{
+        run_configuration: :no_liveness_short,
         max_requests: 5
+      }
+    )
+  end
+
+  def params(:no_liveness_medium) do
+    Map.merge(
+      params(:default),
+      %{
+        run_configuration: :no_liveness_medium,
+        max_requests: 500
       }
     )
   end
@@ -303,6 +314,20 @@ defmodule Configuration do
         simple_fd_timeout: 2000,
         run_configuration: :simplified_liveness,
         operation_mode: :simplified_liveness
+      }
+    )
+  end
+
+  # In this configuration we test a crash of 2 servers with liveness
+  def params(:crash2_liveness) do
+    Map.merge(
+      params(:full_liveness_long),
+      %{
+        run_configuration: :crash2_liveness,
+        crash_servers: %{
+          5 => 20_000,
+          3 => 22_000
+        }
       }
     )
   end

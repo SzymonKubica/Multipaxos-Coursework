@@ -15,6 +15,7 @@
 \usepackage{amsthm}
 \usepackage{minted}
 \usepackage{fancyhdr}
+\usepackage{subcaption}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{parskip}
 \usepackage{blindtext}
@@ -157,12 +158,6 @@ The evaluation was conducted on my laptop with the following specification:
 
 OS: Linux 6.1.12-arch1-1, processor: 11th Gen Intel i7-1165G7 4.700GHz, cores: 8, ram: 32GB.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=400px]{full_liveness_vs_simple.png}
-    \caption{Top-level architecture.}
-    \vspace{-15pt}
-\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -171,7 +166,46 @@ OS: Linux 6.1.12-arch1-1, processor: 11th Gen Intel i7-1165G7 4.700GHz, cores: 8
     \vspace{-15pt}
 \end{figure}
 
+
 \subsection*{Live-locking Implementation and a Partial Fix}
+\begin{figure}[H]
+    \begin{subfigure}[b]{0.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{no_liveness_partial_liveness.png}
+  \end{subfigure}%
+    \begin{subfigure}[b]{0.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{medium.png}
+    \end{subfigure}
+    \centering
+    \caption{Top-level architecture.}
+    \vspace{-15pt}
+\end{figure}
 \subsection*{Full Liveness and Simple Liveness}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=400px]{full_liveness_vs_simple.png}
+    \caption{Top-level architecture.}
+    \vspace{-15pt}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=400px]{crash2.png}
+    \caption{Top-level architecture.}
+    \vspace{-15pt}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=400px]{crash2_no_liveness_plus_partial.png}
+    \caption{Top-level architecture.}
+    \vspace{-15pt}
+\end{figure}
 \subsection*{Crash Failure of the Main Leader}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=400px]{crash2_liveness.png}
+    \caption{Top-level architecture.}
+    \vspace{-15pt}
+\end{figure}
+
 \end{document}

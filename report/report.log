@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2023.2.26)  27 FEB 2023 13:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2023.2.26)  27 FEB 2023 15:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -527,37 +527,37 @@ runsystem(which pygmentize && touch report.aex)...disabled (restricted).
 
 
 
-./report.tex:71: Package minted Error: You must have `pygmentize' installed to use this package.
+./report.tex:72: Package minted Error: You must have `pygmentize' installed to use this package.
 
 See the minted package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \begin{document}
+l.72 \begin{document}
                      
 Refer to the installation instructions in the minted documentation for more information.
 
 (./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
@@ -616,7 +616,7 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 71.
+Package hyperref Info: Link coloring OFF on input line 72.
 (/usr/share/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/share/texmf-dist/tex/latex/refcount/refcount.sty
@@ -626,44 +626,44 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count359
 )
-LaTeX Info: Redefining \ref on input line 71.
-LaTeX Info: Redefining \pageref on input line 71.
-LaTeX Info: Redefining \nameref on input line 71.
+LaTeX Info: Redefining \ref on input line 72.
+LaTeX Info: Redefining \pageref on input line 72.
+LaTeX Info: Redefining \nameref on input line 72.
  (./report.out) (./report.out)
 \@outlinefile=\write5
 \openout5 = `report.out'.
 
 \c@lstlisting=\count360
-LaTeX Font Info:    Trying to load font information for U+msa on input line 76.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 77.
  (/usr/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 76.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 77.
  (/usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for T1+DejaVuSansMono-TLF on input line 84.
+LaTeX Font Info:    Trying to load font information for T1+DejaVuSansMono-TLF on input line 85.
  (/usr/share/texmf-dist/tex/latex/dejavu/T1DejaVuSansMono-TLF.fd
 File: T1DejaVuSansMono-TLF.fd 2011/06/01 Font definitions for T1/DejaVuSansMono-TLF.
 )
 LaTeX Font Info:    Font shape `T1/DejaVuSansMono-TLF/m/n' will be
-(Font)              scaled to size 9.85492pt on input line 84.
+(Font)              scaled to size 9.85492pt on input line 85.
 <architecture0.png, id=4, 1081.03876pt x 256.96pt>
 File: architecture0.png Graphic file (type png)
 <use architecture0.png>
-Package pdftex.def Info: architecture0.png  used on input line 88.
+Package pdftex.def Info: architecture0.png  used on input line 89.
 (pdftex.def)             Requested size: 401.50146pt x 95.43442pt.
 <architecture1.png, id=6, 1278.7775pt x 456.70625pt>
 File: architecture1.png Graphic file (type png)
 <use architecture1.png>
-Package pdftex.def Info: architecture1.png  used on input line 103.
+Package pdftex.def Info: architecture1.png  used on input line 104.
 (pdftex.def)             Requested size: 557.38951pt x 199.0698pt.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./architecture0.png> <./architecture1.png>]
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 117.
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 118.
 LaTeX Font Info:    Font shape `T1/DejaVuSansMono-TLF/m/n' will be
-(Font)              scaled to size 8.09995pt on input line 118.
+(Font)              scaled to size 8.09995pt on input line 119.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -673,16 +673,31 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [2]
-<full_liveness_vs_simple.png, id=39, 494.3268pt x 364.2408pt>
-File: full_liveness_vs_simple.png Graphic file (type png)
-<use full_liveness_vs_simple.png>
-Package pdftex.def Info: full_liveness_vs_simple.png  used on input line 162.
-(pdftex.def)             Requested size: 401.50146pt x 295.85043pt.
-<liveness_simple_bad_config.png, id=40, 559.3698pt x 196.5744pt>
+<liveness_simple_bad_config.png, id=39, 559.3698pt x 196.5744pt>
 File: liveness_simple_bad_config.png Graphic file (type png)
 <use liveness_simple_bad_config.png>
-Package pdftex.def Info: liveness_simple_bad_config.png  used on input line 169.
+Package pdftex.def Info: liveness_simple_bad_config.png  used on input line 164.
 (pdftex.def)             Requested size: 401.50146pt x 141.10153pt.
+<no_liveness_partial_liveness.png, id=40, 411.939pt x 144.54pt>
+File: no_liveness_partial_liveness.png Graphic file (type png)
+<use no_liveness_partial_liveness.png>
+Package pdftex.def Info: no_liveness_partial_liveness.png  used on input line 174.
+(pdftex.def)             Requested size: 278.69475pt x 97.78743pt.
+<medium.png, id=41, 375.0813pt x 177.7842pt>
+File: medium.png Graphic file (type png)
+<use medium.png>
+Package pdftex.def Info: medium.png  used on input line 178.
+(pdftex.def)             Requested size: 278.69475pt x 132.10349pt.
+<full_liveness_vs_simple.png, id=42, 494.3268pt x 364.2408pt>
+File: full_liveness_vs_simple.png Graphic file (type png)
+<use full_liveness_vs_simple.png>
+Package pdftex.def Info: full_liveness_vs_simple.png  used on input line 187.
+(pdftex.def)             Requested size: 401.50146pt x 295.85043pt.
+<crash2.png, id=43, 424.9476pt x 269.5671pt>
+File: crash2.png Graphic file (type png)
+<use crash2.png>
+Package pdftex.def Info: crash2.png  used on input line 193.
+(pdftex.def)             Requested size: 401.50146pt x 254.697pt.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -691,7 +706,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller to compensate:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[3 <./full_liveness_vs_simple.png> <./liveness_simple_bad_config.png>]
+[3 <./liveness_simple_bad_config.png> <./no_liveness_partial_liveness.png> <./medium.png>]
+<crash2_no_liveness_plus_partial.png, id=57, 301.3659pt x 307.8702pt>
+File: crash2_no_liveness_plus_partial.png Graphic file (type png)
+<use crash2_no_liveness_plus_partial.png>
+Package pdftex.def Info: crash2_no_liveness_plus_partial.png  used on input line 199.
+(pdftex.def)             Requested size: 401.50146pt x 410.19504pt.
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -699,25 +720,39 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller to compensate:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[4] (./report.aux)
+[4 <./full_liveness_vs_simple.png> <./crash2.png>]
+<crash2_liveness.png, id=67, 588.2778pt x 180.675pt>
+File: crash2_liveness.png Graphic file (type png)
+<use crash2_liveness.png>
+Package pdftex.def Info: crash2_liveness.png  used on input line 206.
+(pdftex.def)             Requested size: 401.50146pt x 123.315pt.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[5 <./crash2_no_liveness_plus_partial.png> <./crash2_liveness.png>] (./report.aux)
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 runsystem(rm report.pyg)...disabled (restricted).
 
  ) 
 Here is how much of TeX's memory you used:
- 18730 strings out of 478238
- 306815 string characters out of 5850456
- 691182 words of memory out of 5000000
- 36667 multiletter control sequences out of 15000+600000
+ 18775 strings out of 478238
+ 307893 string characters out of 5850456
+ 691192 words of memory out of 5000000
+ 36702 multiletter control sequences out of 15000+600000
  482887 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  74i,11n,77p,521b,1289s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf-dist/fonts/enc/dvips/dejavu/dejavumono_t1-type1.enc}</usr/share/texmf-dist/fonts/type1/public/dejavu/DejaVuSansMono.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfsl1095.pfb>
-Output written on report.pdf (4 pages, 380999 bytes).
+Output written on report.pdf (5 pages, 455858 bytes).
 PDF statistics:
- 106 PDF objects out of 1000 (max. 8388607)
- 73 compressed objects within 1 object stream
- 25 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 124 PDF objects out of 1000 (max. 8388607)
+ 80 compressed objects within 1 object stream
+ 30 named destinations out of 1000 (max. 500000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
