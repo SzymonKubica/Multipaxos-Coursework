@@ -56,12 +56,19 @@ defmodule Configuration do
       crash_servers: %{},
       # determines if a leader waits before retrying after being preempted
       # controls if the liveness implementation is being used
-      # supported values: :no_liveness, :partial_liveness, :full_liveness
+      # supported values:
+      #  :no_liveness - spawns scouts immediately after preempted,
+      # :partial_liveness - waits randomly after preemption,
+      # :simplified_liveness - just pinging with a static timeout,
+      # :full_liveness - full AIMD-like timeouts and pinging from the paper.
       operation_mode: :no_liveness,
 
       # random leader preemption timeout bounds for the partial liveness fix (in ms).
       min_random_timeout: 100,
       max_random_timeout: 1000,
+
+      # static ping timeout for the simplified liveness
+      simple_fd_timeout: 2000,
 
       # AIMD-like timeout scaling factors for liveness
       leader_timeout_increase_factor: 1.2,
@@ -85,6 +92,16 @@ defmodule Configuration do
     }
   end
 
+  # This configuration was used for debugging, it allows for specifying the
+  # level of verbosity of the logs outputted by each of the modules. The
+  # supported values are:
+  # :quiet - no logs
+  # :error - only logs with errors/unsuccessful requests (e.g. preemption)
+  # :success - all errors plus messages with successful actions (e.g. decision made)
+  # :verbose - all logs
+  # I found this to be particularly useful for debugging the initial implementation
+  # of multi-paxos as it allows for tracing how each of the modules processes e.g. a
+  # single proposal for some slot
   def params(:debug) do
     Map.merge(
       params(:default),
@@ -104,31 +121,125 @@ defmodule Configuration do
     )
   end
 
-  # redact: performance/liveness/distribution parameters
-  def params(:random_leader_wait) do
+  # -----------------------------------------------------------------------------
+
+  # I used this configuration to test the if the initial implementation of the
+  # algorithm was correct. In order to get all requests processes one has to
+  # wait for about 2 minutes and so it requires setting the MAX_TIME variable
+  # in the Makefile to be appropriately high. This one definitely livelocks.
+  # An interesting finding was that when tested with various machines (lab machine,
+  # laptop with 11-th Gen Intel i7-1165G7, some older hardware), the effects of
+  # the livelock seem to be less severe when run on a slower machine.
+  def params(:no_liveness_short) do
     Map.merge(
       params(:default),
       %{
-        wait_before_retrying: true,
-        min_wait_time: 500,
-        max_wait_time: 1000
+        max_requests: 5
       }
     )
   end
 
-  # -----------------------------------------------------------------------------
+  # This configuration allows for testing the :partial_liveness operation mode.
+  # That setting is effectively a cheap solution for livelocks which makes each leader
+  # sleep for some time after being preempted. It seems to solve liveness issues when
+  # the number of requests is very small
+  def params(:partial_liveness_short) do
+    Map.merge(
+      params(:default),
+      %{
+        operation_mode: :partial_liveness,
+        max_requests: 5,
+        min_random_timeout: 10,
+        max_random_timeout: 100
+      }
+    )
+  end
 
-  # crash 2 servers
+  # This configuration pushes the quick-fix :partial_liveness configuration to its
+  # limits, we can observe that when we increase the number of requests to process,
+  # the algorithm still livelocks. It is interesting to note that if we increase
+  # the min_random_timeout, it is more likely that the congestion for the acceptors
+  # will be minimised and we actually get the system to process all requests.
+
+  def params(:partial_liveness_medium) do
+    Map.merge(
+      params(:default),
+      %{
+        operation_mode: :partial_liveness,
+        max_requests: 500,
+        min_random_timeout: 100,
+        max_random_timeout: 1000
+      }
+    )
+  end
+
+  # I found that when we increased the number of requests, the probability of it
+  # livelock-ing is much higher. This one almost always livelocked on my machine.
+  def params(:partial_liveness_long) do
+    Map.merge(
+      params(:default),
+      %{
+        operation_mode: :partial_liveness,
+        max_requests: 2000,
+        min_random_timeout: 10,
+        max_random_timeout: 100
+      }
+    )
+  end
+
+  # In this configuration we still get a livelock even though two of the five
+  # servers have crashed.
   def params(:crash2) do
     Map.merge(
       params(:default),
       %{
-        # %{ server_num => crash_after_time, ...}
         crash_servers: %{
           3 => 1_500,
           5 => 2_500
         }
       }
+    )
+  end
+
+  # In this configuration we test the same crash but with partial_liveness settings.
+  def params(:partial_liveness_crash2) do
+    Map.merge(
+      params(:partial_liveness_medium),
+      %{
+        crash_servers: %{
+          3 => 1_500,
+          5 => 2_500
+        }
+      }
+    )
+  end
+
+  # This configuration enables the full liveness for the default config. It is able
+  # to process 2500 requests in about 5 seconds on my machine.
+  def params(:full_liveness) do
+    Map.merge(
+      params(:default),
+      %{operation_mode: :full_liveness}
+    )
+  end
+
+  # This one stress-tests the liveness implementation
+  def params(:full_liveness_stress) do
+    Map.merge(
+      params(:default),
+      %{
+        max_requests: 5000,
+        client_stop: 20_000,
+        operation_mode: :full_liveness
+      }
+    )
+  end
+
+  # TODO: comment this one
+  def params(:simplified_liveness) do
+    Map.merge(
+      params(:default),
+      %{operation_mode: :simplified_liveness}
     )
   end
 end

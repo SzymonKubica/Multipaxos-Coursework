@@ -149,11 +149,15 @@ defmodule Leader do
 
         case self.config.operation_mode do
           :no_liveness ->
+            if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
+
             self
             |> update_ballot_number(value)
             |> spawn_scout
 
           :partial_liveness ->
+            if BallotNumber.less_or_equal?(b, self.ballot_num), do: self |> next
+
             Process.sleep(
               Enum.random(self.config.min_random_timeout..self.config.max_random_timeout)
             )
@@ -161,6 +165,10 @@ defmodule Leader do
             self
             |> update_ballot_number(value)
             |> spawn_scout
+
+          :simplified_liveness ->
+            send(self.failure_detector, {:PING, b})
+            self
 
           :full_liveness ->
             send(self.failure_detector, {:PING, b})
@@ -182,10 +190,19 @@ defmodule Leader do
 
   defp spawn_failure_detector(self) do
     failure_detector =
-      spawn(FailureDetector, :start, [
-        self.config,
-        self()
-      ])
+      case self.config.operation_mode do
+        :full_liveness ->
+          spawn(FailureDetector, :start, [
+            self.config,
+            self()
+          ])
+
+        :simplified_liveness ->
+          spawn(SimpleFailureDetector, :start, [
+            self.config,
+            self()
+          ])
+      end
 
     self = self |> Monitor.notify(:FAILURE_DETECTOR_SPAWNED)
     %{self | failure_detector: failure_detector}
