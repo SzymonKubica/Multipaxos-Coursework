@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1677504332 "report.tex" "report.pdf" "report" 1677504332
+["pdflatex"] 1677504820 "report.tex" "report.pdf" "report" 1677504820
   "/dev/null" 0 -1 0 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1650183167 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/dejavu/dejavumono_t1-type1.enc" 1650179560 2620 1ef8c8026e6f0fc7a8bfd158c7dfbe38 ""
@@ -142,10 +142,12 @@
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1677396920 2927661 b6197ebabf659c3228bcb1e39ebbeb56 ""
   "architecture0.png" 1677502224 49653 1a4dcc64bc1bbf456537c0ed9f71d8ca ""
   "architecture1.png" 1677501428 161292 c8420d541560398c0a76479f11ef2345 ""
-  "report.aux" 1677504307 1314 cf2a70dbbc2bc9e7fe02ec450f1a9c4b "pdflatex"
+  "full_liveness_vs_simple.png" 1677494088 53457 ead0b6266c94828cdc4cabd5bb45cd4e ""
+  "liveness_simple_bad_config.png" 1677504797 29228 cccec1c40ce96e512f3c5985863c9e3b ""
+  "report.aux" 1677504561 1463 8aa845397a9804f5d3b2f09399442b7f "pdflatex"
   "report.out" 0 -1 0 "pdflatex"
   "report.pyg" 1677435752 1691 ae3cd5a93526ad79f4e94401e1ee1f5b ""
-  "report.tex" 1677504330 7005 a522372c1c4d101e52ded13a380df5a8 ""
+  "report.tex" 1677504819 7342 2a4ba9cf2e62ee54c7db1e2327677de1 ""
   (generated)
   "report.aux"
   "report.log"
