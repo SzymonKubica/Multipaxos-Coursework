@@ -1,4 +1,4 @@
-# Modified by Szymon Kubica (sk4520) 18 Feb 2023
+# Modified by Szymon Kubica (sk4520) Feb 2023
 defmodule Scout do
   # ____________________________________________________________________ Setters
 

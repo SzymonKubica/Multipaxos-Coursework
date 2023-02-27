@@ -1,4 +1,4 @@
-# Modified by Szymon Kubica (sk4520) 18 Feb 2023
+# Modified by Szymon Kubica (sk4520) Feb 2023
 # distributed algorithms, n.dulay 31 jan 2023
 # coursework, paxos made moderately complex
 

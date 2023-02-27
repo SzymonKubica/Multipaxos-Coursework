@@ -64,5 +64,3 @@ defmodule Helper do
     :erlang.adler32(x)
   end
 end
-
-# Helper
