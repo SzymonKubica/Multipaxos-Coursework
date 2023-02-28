@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.11.8)  24 FEB 2023 18:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2023.2.26)  27 FEB 2023 18:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -481,76 +481,104 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 286.
 )
 \Hy@SectionHShift=\skip71
+) (/usr/share/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count343
+\lst@gtempboxa=\box62
+\lst@token=\toks37
+\lst@length=\count344
+\lst@currlwidth=\dimen257
+\lst@column=\count345
+\lst@pos=\count346
+\lst@lostspace=\dimen258
+\lst@width=\dimen259
+\lst@newlines=\count347
+\lst@lineno=\count348
+\lst@maxwidth=\dimen260
+ (/usr/share/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
+\c@lstnumber=\count349
+\lst@skipnumbers=\count350
+\lst@framebox=\box63
+) (/usr/share/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2020/03/24 1.8d listings configuration
+))
+Package: listings 2020/03/24 1.8d (Carsten Heinz)
+ (/usr/share/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+) (/usr/share/texmf-dist/tex/latex/dejavu/DejaVuSansMono.sty
+Package: DejaVuSansMono 2011/06/01 Style file for DejaVuSansMono.
 ) (/usr/share/texmf-dist/tex/latex/enumitem/enumitem.sty
 Package: enumitem 2019/06/20 v3.9 Customized lists
 \labelindent=\skip72
-\enit@outerparindent=\dimen257
-\enit@toks=\toks37
-\enit@inbox=\box62
-\enit@count@id=\count343
-\enitdp@description=\count344
+\enit@outerparindent=\dimen261
+\enit@toks=\toks38
+\enit@inbox=\box64
+\enit@count@id=\count351
+\enitdp@description=\count352
+) (/usr/share/texmf-dist/tex/latex/titling/titling.sty
+Package: titling 2009/09/04 v2.1d maketitle typesetting
+\thanksmarkwidth=\skip73
+\thanksmargin=\skip74
+\droptitle=\skip75
+) (/usr/share/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
 )
 runsystem(which pygmentize && touch report.aex)...disabled (restricted).
 
 
 
-./report.tex:37: Package minted Error: You must have `pygmentize' installed to use this package.
+./report.tex:72: Package minted Error: You must have `pygmentize' installed to use this package.
 
 See the minted package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.37 \begin{document}
+l.72 \begin{document}
                      
 Refer to the installation instructions in the minted documentation for more information.
 
 (./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 72.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count345
-\scratchdimen=\dimen258
-\scratchbox=\box63
-\nofMPsegments=\count346
-\nofMParguments=\count347
-\everyMPshowfont=\toks38
-\MPscratchCnt=\count348
-\MPscratchDim=\dimen259
-\MPnumerator=\count349
-\makeMPintoPDFobject=\count350
-\everyMPtoPDFconversion=\toks39
+\scratchcounter=\count353
+\scratchdimen=\dimen262
+\scratchbox=\box65
+\nofMPsegments=\count354
+\nofMParguments=\count355
+\everyMPshowfont=\toks39
+\MPscratchCnt=\count356
+\MPscratchDim=\dimen263
+\MPnumerator=\count357
+\makeMPintoPDFobject=\count358
+\everyMPtoPDFconversion=\toks40
 ) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
- (/usr/share/texmf-dist/tex/latex/grfext/grfext.sty
-Package: grfext 2019/12/03 v1.3 Manage graphics extensions (HO)
-)
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
-Package grfext Info: Graphics extension search list:
-(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 504.
  (/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
@@ -562,14 +590,14 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(56.9055pt, 500.484pt, 56.9055pt)
+* h-part:(L,W,R)=(28.45274pt, 557.38951pt, 28.45274pt)
 * v-part:(T,H,B)=(56.9055pt, 681.15898pt, 56.9055pt)
 * \paperwidth=614.295pt
 * \paperheight=794.96999pt
-* \textwidth=500.484pt
+* \textwidth=557.38951pt
 * \textheight=681.15898pt
-* \oddsidemargin=-15.36449pt
-* \evensidemargin=-15.36449pt
+* \oddsidemargin=-43.81725pt
+* \evensidemargin=-43.81725pt
 * \topmargin=-52.36449pt
 * \headheight=12.0pt
 * \headsep=25.0pt
@@ -588,7 +616,7 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 37.
+Package hyperref Info: Link coloring OFF on input line 72.
 (/usr/share/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/share/texmf-dist/tex/latex/refcount/refcount.sty
@@ -596,41 +624,133 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (/usr/share/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count351
+\c@section@level=\count359
 )
-LaTeX Info: Redefining \ref on input line 37.
-LaTeX Info: Redefining \pageref on input line 37.
-LaTeX Info: Redefining \nameref on input line 37.
+LaTeX Info: Redefining \ref on input line 72.
+LaTeX Info: Redefining \pageref on input line 72.
+LaTeX Info: Redefining \nameref on input line 72.
  (./report.out) (./report.out)
 \@outlinefile=\write5
 \openout5 = `report.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 43.
+\c@lstlisting=\count360
+LaTeX Font Info:    Trying to load font information for U+msa on input line 77.
  (/usr/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 77.
  (/usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1
+)
+LaTeX Font Info:    Trying to load font information for T1+DejaVuSansMono-TLF on input line 85.
+ (/usr/share/texmf-dist/tex/latex/dejavu/T1DejaVuSansMono-TLF.fd
+File: T1DejaVuSansMono-TLF.fd 2011/06/01 Font definitions for T1/DejaVuSansMono-TLF.
+)
+LaTeX Font Info:    Font shape `T1/DejaVuSansMono-TLF/m/n' will be
+(Font)              scaled to size 9.85492pt on input line 85.
+<architecture0.png, id=4, 1081.03876pt x 256.96pt>
+File: architecture0.png Graphic file (type png)
+<use architecture0.png>
+Package pdftex.def Info: architecture0.png  used on input line 89.
+(pdftex.def)             Requested size: 401.50146pt x 95.43442pt.
+<architecture1.png, id=6, 1278.7775pt x 456.70625pt>
+File: architecture1.png Graphic file (type png)
+<use architecture1.png>
+Package pdftex.def Info: architecture1.png  used on input line 104.
+(pdftex.def)             Requested size: 557.38951pt x 199.0698pt.
+ [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./report.aux)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./architecture0.png> <./architecture1.png>]
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 118.
+LaTeX Font Info:    Font shape `T1/DejaVuSansMono-TLF/m/n' will be
+(Font)              scaled to size 8.09995pt on input line 119.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[2]
+<no_liveness_partial_liveness.png, id=39, 411.939pt x 144.54pt>
+File: no_liveness_partial_liveness.png Graphic file (type png)
+<use no_liveness_partial_liveness.png>
+Package pdftex.def Info: no_liveness_partial_liveness.png  used on input line 175.
+(pdftex.def)             Requested size: 278.69475pt x 97.78743pt.
+<medium.png, id=40, 375.0813pt x 177.7842pt>
+File: medium.png Graphic file (type png)
+<use medium.png>
+Package pdftex.def Info: medium.png  used on input line 179.
+(pdftex.def)             Requested size: 278.69475pt x 132.10349pt.
+<liveness_simple_bad_config.png, id=41, 559.3698pt x 196.5744pt>
+File: liveness_simple_bad_config.png Graphic file (type png)
+<use liveness_simple_bad_config.png>
+Package pdftex.def Info: liveness_simple_bad_config.png  used on input line 204.
+(pdftex.def)             Requested size: 401.50146pt x 141.10153pt.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[3 <./no_liveness_partial_liveness.png> <./medium.png>]
+<crash2.png, id=54, 424.9476pt x 269.5671pt>
+File: crash2.png Graphic file (type png)
+<use crash2.png>
+Package pdftex.def Info: crash2.png  used on input line 248.
+(pdftex.def)             Requested size: 200.75073pt x 127.34644pt.
+
+Overfull \hbox (5.66101pt too wide) in paragraph at lines 248--249
+ [][] 
+ []
+
+<crash2_liveness.png, id=55, 588.2778pt x 180.675pt>
+File: crash2_liveness.png Graphic file (type png)
+<use crash2_liveness.png>
+Package pdftex.def Info: crash2_liveness.png  used on input line 253.
+(pdftex.def)             Requested size: 401.50146pt x 123.315pt.
+
+Overfull \hbox (39.20169pt too wide) in paragraph at lines 253--254
+ [][] 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[4 <./liveness_simple_bad_config.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[5 <./crash2.png> <./crash2_liveness.png>] (./report.aux)
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+runsystem(rm report.pyg)...disabled (restricted).
+
  ) 
 Here is how much of TeX's memory you used:
- 16649 strings out of 478238
- 278566 string characters out of 5850456
- 615776 words of memory out of 5000000
- 34650 multiletter control sequences out of 15000+600000
- 474503 words of font info for 48 fonts, out of 8000000 for 9000
+ 18777 strings out of 478238
+ 307575 string characters out of 5850456
+ 779192 words of memory out of 5000000
+ 36700 multiletter control sequences out of 15000+600000
+ 483650 words of font info for 65 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 74i,6n,77p,521b,355s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on report.pdf (1 page, 29996 bytes).
+ 74i,11n,77p,521b,1289s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf-dist/fonts/enc/dvips/dejavu/dejavumono_t1-type1.enc}</usr/share/texmf-dist/fonts/type1/public/dejavu/DejaVuSansMono.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfsl1095.pfb>
+Output written on report.pdf (5 pages, 423389 bytes).
 PDF statistics:
- 28 PDF objects out of 1000 (max. 8388607)
- 18 compressed objects within 1 object stream
- 2 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 131 PDF objects out of 1000 (max. 8388607)
+ 89 compressed objects within 1 object stream
+ 35 named destinations out of 1000 (max. 500000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
