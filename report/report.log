@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2023.2.26)  27 FEB 2023 18:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2023.2.26)  27 FEB 2023 18:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -686,7 +686,7 @@ Package pdftex.def Info: medium.png  used on input line 179.
 <liveness_simple_bad_config.png, id=41, 559.3698pt x 196.5744pt>
 File: liveness_simple_bad_config.png Graphic file (type png)
 <use liveness_simple_bad_config.png>
-Package pdftex.def Info: liveness_simple_bad_config.png  used on input line 205.
+Package pdftex.def Info: liveness_simple_bad_config.png  used on input line 204.
 (pdftex.def)             Requested size: 401.50146pt x 141.10153pt.
 
 
@@ -700,20 +700,20 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 <crash2.png, id=54, 424.9476pt x 269.5671pt>
 File: crash2.png Graphic file (type png)
 <use crash2.png>
-Package pdftex.def Info: crash2.png  used on input line 249.
+Package pdftex.def Info: crash2.png  used on input line 248.
 (pdftex.def)             Requested size: 200.75073pt x 127.34644pt.
 
-Overfull \hbox (5.66101pt too wide) in paragraph at lines 249--250
+Overfull \hbox (5.66101pt too wide) in paragraph at lines 248--249
  [][] 
  []
 
 <crash2_liveness.png, id=55, 588.2778pt x 180.675pt>
 File: crash2_liveness.png Graphic file (type png)
 <use crash2_liveness.png>
-Package pdftex.def Info: crash2_liveness.png  used on input line 254.
+Package pdftex.def Info: crash2_liveness.png  used on input line 253.
 (pdftex.def)             Requested size: 401.50146pt x 123.315pt.
 
-Overfull \hbox (39.20169pt too wide) in paragraph at lines 254--255
+Overfull \hbox (39.20169pt too wide) in paragraph at lines 253--254
  [][] 
  []
 
@@ -747,7 +747,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  74i,11n,77p,521b,1289s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf-dist/fonts/enc/dvips/dejavu/dejavumono_t1-type1.enc}</usr/share/texmf-dist/fonts/type1/public/dejavu/DejaVuSansMono.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfsl1095.pfb>
-Output written on report.pdf (5 pages, 423334 bytes).
+Output written on report.pdf (5 pages, 423389 bytes).
 PDF statistics:
  131 PDF objects out of 1000 (max. 8388607)
  89 compressed objects within 1 object stream

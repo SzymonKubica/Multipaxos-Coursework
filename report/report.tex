@@ -114,7 +114,7 @@ instead of picking a higher ballot number and spawning a scout immediately. I
 implemented that by spawning one failure detector module for each leader. When
 preempted, a leader notifies its failure detector, which starts pinging the
 leader associated with the preempting ballot \texttt{b}, then the leader
-deactivates itself and continues .
+deactivates itself and continues.
 \begin{lstlisting}[language=elixir, caption={New way of handling \texttt{:PREEMPTED} messages.},captionpos=b]
 {:PREEMPTED, b} ->
   send(self.failure_detector, {:PING, b})
@@ -149,7 +149,7 @@ prevent it from live-locking, it introduces an unnecessary congestion. I solved
 this problem by having each leader record the last preempting ballot number. If
 a leader was recently preempted and is now inactive and gets pinged by somebody
 whom he preempted before, it sends the ballot number that preempted it back to
-the requestor (Listing2 above). That way the leader who pinged us doesn't wake up immediately
+the requestor (Listing 2 above). That way the leader who pinged us doesn't wake up immediately
 but starts pinging the leader who is currently working.
 \pagebreak
 \section*{Evaluation}
@@ -185,13 +185,12 @@ those two runs can be found in the files with reference numbers from 01 to 04.
 \subsection*{Full Liveness and Simple Liveness}
 The most interesting observation that I made when running different configurations
 of my implementation for liveness was that the performance of the system was
-dependent on the configuration settings for the timeouts. If picked incorrectly,
+dependent on the configuration settings for the timeouts. If settings are picked incorrectly,
 the leaders can decrease their timeouts too quickly then get preempted immediately.
 One big disadvantage of the AIMD-like approach described in the paper was that
 a leader who is successful in getting its proposals accepted decreases the timeout
 associated with its ballot, and therefore it will eventually get preempted by one
-of the leaders who are pinging it. That's not necessarily what we want for performance
-.I noticed that after preempting a leader it takes a while for the system to make
+of the leaders who are pinging it. That's not necessarily what we want for performance. I noticed that after preempting a leader it takes a while for the system to make
 new decisions because all of the leaders who were previously pinging the main leader have now
 sent scouts and are competing against each other for being the first one who preempts
 everyone else. It tends to happen that multiple of them get adopted, and the leaders spawn
@@ -217,7 +216,7 @@ looks like it is stuck. Before each of those sections what happens is that the c
 main leader gets preempted and the others compete against each other to get accepted.
 Because their timeouts are adjusted incorrectly, it takes a long time before one of
 them finally manages to secure a ballot. This occurs because as the main leader gets
-preempted, the others start spawning scouts and it can happen multiple of them receive
+preempted, the others start spawning scouts and it can happen that multiple of them receive
 an adopted message and cause the leaders to spawn new commanders, which exerts a high
 stress on acceptors and the whole system slows down.
 
@@ -272,7 +271,8 @@ didn't accept any new requests for about 30 seconds. It could look like a live
 lock, however after looking at the logs below one can see that the leader who
 eventually started processing new commands only needed to
 spawn two sets of commanders (roughly 2 times 7000). A live-lock normally causes the system to be
-flooded with scouts and many more commanders than we have in this case.
+flooded with scouts and many more commanders than we have in this case. This indicates that the
+system is able to recover from crash failures.
 \begin{lstlisting}[language=elixir, caption={Commanders spawned before starting to make progress.},captionpos=b]
 time = 22000  db requests done = [{1, 7454}, {2, 7530}, {3, 7529}, {4, 7422}, {5, 6967}]
 time = 22000  commanders up = [{1, 1064}, {2, 0}, {3, 7530}, {4, 0}, {5, 1063}]
